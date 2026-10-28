@@ -3,7 +3,7 @@
 class Database {
 
     private string $host = "localhost";
-    private string $dbName = "name";
+    private string $dbName = "wedding_store";
     private string $username = "root";
     private string $password = "";
 
