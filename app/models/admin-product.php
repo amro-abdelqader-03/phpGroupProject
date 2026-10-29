@@ -1,5 +1,6 @@
 <?php
-class Admin_product{
+class Admin_product
+{
     private PDO $db;
 
     public function __construct(PDO $db)
@@ -7,10 +8,9 @@ class Admin_product{
         $this->db = $db;
     }
 
-    // Get all students (never return passwords)
     public function getAll(): array
     {
-        $sql = "SELECT id, name, description, category, qty, status, price
+        $sql = "SELECT id, subcategory_id, name, description, status, price
                 FROM products
                 ORDER BY id DESC";
 
@@ -19,135 +19,79 @@ class Admin_product{
         return $stmt->fetchAll();
     }
 
-    // Get student by ID (never return password)
     public function getById(int $id): ?array
     {
-        $sql = "SELECT id, name, description, category, qty, status, price
+        $sql = "SELECT id, name, description, status, price
                 FROM products
                 WHERE id = ?";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
 
-        $student = $stmt->fetch();
+        $product = $stmt->fetch();
 
-        return $student ?: null;
+        return $product ?: null;
     }
 
-    // Create student
     public function create(
         string $name,
         string $description,
-        string $category,
-        string $subcategory,
-        int $price,
-        int $images_id,
+        int $subcategory,
+        float $price_cost,
+        float $price,
     ): int {
-        // Hash password before saving
-        
+
 
         $sql = "INSERT INTO products
-                (name, description, category, subcategory, price, images_id)
-                VALUES (?, ?, ?, ?, ?)";
+                (name, description, subcategory_id, price)
+                VALUES (?, ?, ?, ?)";
 
         $stmt = $this->db->prepare($sql);
 
         $stmt->execute([
             $name,
             $description,
-            $category,
             $subcategory,
-            $price,
-            $images_id
+            $price_cost,
+            $price
         ]);
 
         return (int) $this->db->lastInsertId();
     }
 
-    // Update student
-    // Password is optional when updating
     public function update(
         int $id,
         string $name,
-        string $email,
-        string $course,
-        ?string $password = null
+        string $description,
+        int $status
     ): bool {
-        if ($password !== null && $password !== "") {
-            $hashedPassword = password_hash(
-                $password,
-                PASSWORD_DEFAULT
-            );
 
-            $sql = "UPDATE students
+        $sql = "UPDATE products
                     SET name = ?,
-                        email = ?,
-                        course = ?,
-                        password = ?
+                        description = ?,
+                        status = ?,
                     WHERE id = ?";
 
-            $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            $name,
+            $description,
+            $status,
+            $id
+        ]);
 
-            $stmt->execute([
-                $name,
-                $email,
-                $course,
-                $hashedPassword,
-                $id
-            ]);
-        } else {
-            $sql = "UPDATE students
-                    SET name = ?,
-                        email = ?,
-                        course = ?
-                    WHERE id = ?";
-
-            $stmt = $this->db->prepare($sql);
-
-            $stmt->execute([
-                $name,
-                $email,
-                $course,
-                $id
-            ]);
-        }
 
         return $stmt->rowCount() > 0;
     }
 
-    // Verify password (for future login functionality)
-    public function verifyPassword(
-        int $id,
-        string $password
-    ): bool {
-        $sql = "SELECT password
-                FROM students
-                WHERE id = ?";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id]);
-
-        $student = $stmt->fetch();
-
-        if (!$student) {
-            return false;
-        }
-
-        return password_verify(
-            $password,
-            $student["password"]
-        );
-    }
-
-    // Delete student
     public function delete(int $id): bool
     {
-        $sql = "DELETE FROM students WHERE id = ?";
+        $sql = "DELETE FROM products WHERE id = ?";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
 
         return $stmt->rowCount() > 0;
-    } 
+    }
 }
 ?>
