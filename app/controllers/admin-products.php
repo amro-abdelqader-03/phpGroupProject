@@ -1,32 +1,10 @@
-
 <?php
 
-require_once  "../app/config/Database.php";
-require_once  "../app/models/admin-product.php";
-require_once "Response.php";
+require_once __DIR__ . "/../config/Database.php";
+require_once __DIR__ . "/../models/admin-product.php";
+require_once __DIR__ . "/../../core/Response.php";
+header("Content-Type: application/json; charset=UTF-8");
 
-header("Content-Type: application/json; charset=UTF-8 ");
-
-
-// Connect to database
-try {
-    $database = new Database();
-    $pdo = $database->connect();
-
-} catch (Throwable $e) {
-    error_log($e->getMessage());
-
-    Response::json(500, [
-        "success" => false,
-        "message" => "Unable to connect to the database"
-    ]);
-}
-
-// Create product object
-$productModel = new Admin_product($pdo);
-
-// Read HTTP method
-$method = $_SERVER["REQUEST_METHOD"];
 
 // Read and validate product ID
 $id = null;
@@ -75,52 +53,60 @@ function getJsonBody(): array
     return $data;
 }
 
-// Validate common product fields
-function validateProductFields(array $data): array
+// Validate product fields
+// Validate product fields
+function validateProductsFields(array $data): array
 {
-    $name = $data["name"] ?? "";
+    $product_name = $data["product_name"] ?? "";
     $description = $data["description"] ?? "";
-    $subcategory = $data["subcategory"] ?? "";
-    $price = $data["price"] ?? "";
-    $price_cost = $data["price_cost"] ?? "";
-    $status = $data["status"] ?? "";
+    $subcategory_id = $data["subcategory_id"] ?? null;
+    $cost_price = $data["cost_price"] ?? null;
+    $price = $data["price"] ?? null;
 
-    if (!is_string($name) ||
-        !is_string($description) ||
-        !is_string($status)) {
+    if (!is_string($product_name) || !is_string($description)) {
         Response::json(422, [
             "success" => false,
-            "message" => "name, description and status must be strings"
+            "message" => "Name and description must be strings"
         ]);
     }
 
-    $name = trim($name);
+    $product_name = trim($product_name);
     $description = trim($description);
-    $status = trim($status);
 
-    if ($name === "" || $description === "" || $status === "") {
+    if ($product_name === "" || $description === "") {
         Response::json(422, [
             "success" => false,
-            "message" => "name, description and status are required"
+            "message" => "Name and description are required"
         ]);
     }
 
     return [
-        "name" => $name,
-        "email" => $description,
-        "course" => $status
+        "product_name" => $product_name,
+        "description" => $description,
+        "subcategory_id" => $subcategory_id,
+        "cost_price" => $cost_price,
+        "price" => $price
     ];
 }
 
+// Read HTTP method
+$method = $_SERVER["REQUEST_METHOD"];
+
+// Connect to database
 try {
+    $database = new Database();
+    $pdo = $database->connect();
+
+    // Create Products model
+    $ProductsModel = new Admin_product($pdo);
 
     switch ($method) {
 
-        // GET: Retrieve products
+        // GET: Retrieve Products
         case "GET":
 
             if ($id !== null) {
-                $product = $productModel->getById($id);
+                $product = $ProductsModel->getById($id);
 
                 if ($product === null) {
                     Response::json(404, [
@@ -129,34 +115,31 @@ try {
                     ]);
                 }
 
-
                 Response::json(200, [
                     "success" => true,
                     "data" => $product
                 ]);
             }
 
-            $products = $productModel->getAll();
+            $Products = $ProductsModel->getAll();
 
             Response::json(200, [
                 "success" => true,
-                "count" => count($products),
-                "data" => $products
+                "count" => count($Products),
+                "data" => $Products
             ]);
 
         // POST: Create product
         case "POST":
 
             $body = getJsonBody();
-            $data = validateproductFields($body);
+            $data = validateProductsFields($body);
 
-            $newId = $productModel->create(
-                $data["name"],
-                $data["description"],
-                $data["subcategory_id"],
-                $data["price"],
-                $data["price_cost"],
-            );
+            // $newId = $ProductsModel->create(
+            //     $data["name"],
+            //     $data["description"],
+            //     $data["status"]
+            // );
 
             Response::json(201, [
                 "success" => true,
@@ -165,12 +148,11 @@ try {
                     "id" => $newId,
                     "name" => $data["name"],
                     "description" => $data["description"],
-                    "subcategory_id" => $data["subcategory_id"],
-                    "price"=> $data["price"],
-                    "price_cost" => $data["price_cost"],
+                    "status" => $data["status"]
                 ]
             ]);
 
+        // PUT: Update product
         // PUT: Update product
         case "PUT":
 
@@ -182,9 +164,9 @@ try {
             }
 
             $body = getJsonBody();
-            $data = validateProductFields($body);
+            $data = validateProductsFields($body);
 
-            $existingproduct = $productModel->getById($id);
+            $existingproduct = $ProductsModel->getById($id);
 
             if ($existingproduct === null) {
                 Response::json(404, [
@@ -193,11 +175,13 @@ try {
                 ]);
             }
 
-            $productModel->update(
+            $ProductsModel->update(
                 $id,
-                $data["name"],
+                $data["product_name"],
                 $data["description"],
-                $data["status"]
+                $data["subcategory_id"],
+                $data["cost_price"],
+                $data["price"]
             );
 
             Response::json(200, [
@@ -205,10 +189,11 @@ try {
                 "message" => "product updated successfully",
                 "data" => [
                     "id" => $id,
-                    "name" => $data["name"],
+                    "product_name" => $data["product_name"],
                     "description" => $data["description"],
-                    "status" => $data["status"],
-                    "created_at" => $existingproduct["created_at"] ?? null
+                    "subcategory_id" => $data["subcategory_id"],
+                    "cost_price" => $data["cost_price"],
+                    "price" => $data["price"]
                 ]
             ]);
 
@@ -222,7 +207,7 @@ try {
                 ]);
             }
 
-            $existingproduct = $productModel->getById($id);
+            $existingproduct = $ProductsModel->getById($id);
 
             if ($existingproduct === null) {
                 Response::json(404, [
@@ -231,7 +216,7 @@ try {
                 ]);
             }
 
-            $productModel->delete($id);
+            $ProductsModel->delete($id);
 
             Response::json(200, [
                 "success" => true,
@@ -256,7 +241,7 @@ try {
     if ($e->getCode() === "23000") {
         Response::json(409, [
             "success" => false,
-            "message" => "Email already exists or violates a database constraint"
+            "message" => "Operation violates a database constraint"
         ]);
     }
 
