@@ -10,7 +10,7 @@ class Admin_product
 
     public function getAll(): array
     {
-        $sql = "SELECT id, subcategory_id, name, description, status, price
+        $sql = "SELECT id, subcategory_id, product_name, price, cost_price, description
                 FROM products
                 ORDER BY id DESC";
 
@@ -21,7 +21,7 @@ class Admin_product
 
     public function getById(int $id): ?array
     {
-        $sql = "SELECT id, name, description, status, price
+        $sql = "SELECT id, subcategory_id, product_name, price, cost_price, description
                 FROM products
                 WHERE id = ?";
 
@@ -63,20 +63,27 @@ class Admin_product
         int $id,
         string $name,
         string $description,
-        int $status
+        int $subcategory_id,
+        float $cost_price,
+        float $price
+
     ): bool {
 
         $sql = "UPDATE products
-                    SET name = ?,
+                    SET product_name = ?,
                         description = ?,
-                        status = ?,
+                        subcategory_id = ?,
+                        cost_price = ?,
+                        price = ?
                     WHERE id = ?";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             $name,
             $description,
-            $status,
+            $subcategory_id,
+            $cost_price,
+            $price,
             $id
         ]);
 

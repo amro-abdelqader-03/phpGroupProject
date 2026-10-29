@@ -63,8 +63,7 @@ function e($value)
     <title>Categories Management</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
@@ -73,7 +72,7 @@ function e($value)
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Our separate CSS file -->
-    <link href="../public/assets/css/categories.css" rel="stylesheet">
+    <link href="..\public\assests\css\categories.css" rel="stylesheet">
 </head>
 
 <body>
@@ -346,7 +345,6 @@ function e($value)
     </div>
 
     <!-- Bootstrap JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
     <script>
@@ -362,7 +360,7 @@ function e($value)
     let editingCategoryId = null;
 
     const apiUrl =
-        "http://localhost/project-3/phpGroupProject/app/controllers/admin-categories.php";
+        "http://localhost/phpGroupProject/app/controllers/admin-categories.php";
 
     // 2. Show toast notification
     function notify(message) {
