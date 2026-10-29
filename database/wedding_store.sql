@@ -191,8 +191,8 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `subcategory_id`, `name`, `description`, `price`, `status`, `created_at`) VALUES
-(1, 1, '01 Addison Satin Dress White 0004', 'High quality Satin Dress from our dress collection.', 217.00, 'active', '2026-10-28 22:24:38'),
+INSERT INTO `products` (`id`, `subcategory_id`, `name`, `description`, `price`, `cost_price`, `status`, `created_at`) VALUES
+(1, 1, 'Addison Satin Dress White 0004', 'High quality Satin Dress from our dress collection.', 217.00, , 'active', '2026-10-28 22:24:38'),
 (4, 2, '12Orellia Dress Ivory 0020', 'High quality Formal Dress from our dress collection.', 236.00, 'active', '2026-10-28 22:24:38'),
 (5, 3, '19 Myla Maxi Dress White 0001', 'High quality Maxi Dress from our dress collection.', 278.00, 'active', '2026-10-28 22:24:38'),
 (11, 4, '20230511 Meshki Ecomm Deesee7077', 'High quality Party Dress from our dress collection.', 185.00, 'active', '2026-10-28 22:24:38'),
