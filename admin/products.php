@@ -1,3 +1,7 @@
+<?php
+require_once("../core/products_core.php");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
