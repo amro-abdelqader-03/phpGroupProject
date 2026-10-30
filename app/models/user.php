@@ -161,6 +161,37 @@ class User
         return $stmt->rowCount() > 0;
     }
 
+    // (read) All addresses of one user (for the view page)
+    public function getAddresses(int $userId): array
+    {
+        $sql = "SELECT id, full_name, country, city, street, building, phone
+                FROM address
+                WHERE user_id = ?
+                ORDER BY id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+
+        return $stmt->fetchAll();
+    }
+
+    // (read) Latest orders of one user (for the view page)
+    public function getOrders(int $userId, int $limit = 10): array
+    {
+        $sql = "SELECT id, order_date, total_amount, order_status
+                FROM orders
+                WHERE user_id = ?
+                ORDER BY order_date DESC, id DESC
+                LIMIT ?";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
     // Builds the WHERE part shared by getAll() and countAll()
     private function buildFilters(string $search, ?int $status, string $country): array
     {
