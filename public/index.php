@@ -197,7 +197,7 @@
         <div class="product-grid product-grid--four" id="dress-grid">
           <article class="product-card" data-reveal>
             <div class="product-card__media">
-              <img src="assets/images/dress-celeste.jpg"
+              <img src="assets/images/dresses/dress1.jpg"
                    alt="Bride in a floor-length ivory gown standing in a grand, sunlit ballroom."
                    width="1200" height="1600" loading="lazy" decoding="async">
               <span class="badge">New Arrival</span>
@@ -222,7 +222,7 @@
 
           <article class="product-card" data-reveal>
             <div class="product-card__media">
-              <img src="assets/images/dress-aurora.jpg"
+              <img src="assets/images/dresses/dress3.jpg"
                    alt="Bride in a flowing white wedding gown and a long veil, photographed outdoors."
                    width="1200" height="1800" loading="lazy" decoding="async">
               <span class="product-card__veil" aria-hidden="true"></span>
@@ -246,7 +246,7 @@
 
           <article class="product-card" data-reveal>
             <div class="product-card__media">
-              <img src="assets/images/dress-isabella.jpg"
+              <img src="assets/images/dresses/dress4.jpg"
                    alt="Bride wearing a white lace gown and a delicate tiara against a neutral studio backdrop."
                    width="1200" height="1804" loading="lazy" decoding="async">
               <span class="badge">The Icon</span>
@@ -271,7 +271,7 @@
 
           <article class="product-card" data-reveal>
             <div class="product-card__media">
-              <img src="assets/images/dress-serene.jpg"
+              <img src="assets/images/dresses/dress5.jpg"
                    alt="Bride in a strapless white wedding gown seated on a white sofa."
                    width="1200" height="1526" loading="lazy" decoding="async">
               <span class="product-card__veil" aria-hidden="true"></span>
@@ -316,7 +316,7 @@
         <div class="suits__layout" id="suits-grid">
           <article class="suit-feature" data-reveal>
             <div class="suit-feature__media">
-              <img src="assets/images/suit-featured.jpg"
+              <img src="assets/images/suits/suit1.jpg"
                    alt="Groom in a black tuxedo with a boutonniere, standing outdoors in warm sunlight."
                    width="1400" height="2099" loading="lazy" decoding="async">
               <span class="badge badge--dark">Featured</span>
@@ -343,7 +343,7 @@
           <div class="product-grid product-grid--two product-grid--suits">
             <article class="product-card product-card--dark" data-reveal>
               <div class="product-card__media">
-                <img src="assets/images/suit-windsor.jpg"
+                <img src="assets/images/suits/tuxedo.jpg"
                      alt="Groom adjusting the bow tie of a black tuxedo in a softly lit dressing room."
                      width="1000" height="1500" loading="lazy" decoding="async">
                 <span class="product-card__veil" aria-hidden="true"></span>
@@ -367,7 +367,7 @@
 
             <article class="product-card product-card--dark" data-reveal>
               <div class="product-card__media">
-                <img src="assets/images/suit-modern-classic.jpg"
+                <img src="assets/images/suits/classic.jpg"
                      alt="Man in a beige three-piece suit adjusting his waistcoat outdoors."
                      width="1000" height="1500" loading="lazy" decoding="async">
                 <span class="product-card__veil" aria-hidden="true"></span>
@@ -391,7 +391,7 @@
 
             <article class="product-card product-card--dark" data-reveal>
               <div class="product-card__media">
-                <img src="assets/images/suit-ivory-signature.jpg"
+                <img src="assets/images/suits/ivory.jpg"
                      alt="Man in an ivory tuxedo posing inside an elegant bridal boutique."
                      width="1000" height="1500" loading="lazy" decoding="async">
                 <span class="product-card__veil" aria-hidden="true"></span>
@@ -415,7 +415,7 @@
 
             <article class="product-card product-card--dark" data-reveal>
               <div class="product-card__media">
-                <img src="assets/images/suit-midnight.jpg"
+                <img src="assets/images/suits/midnight.jpg"
                      alt="Man in a black midnight tuxedo posing confidently against a dark wood backdrop."
                      width="1000" height="1498" loading="lazy" decoding="async">
                 <span class="product-card__veil" aria-hidden="true"></span>
@@ -454,7 +454,7 @@
 
         <div class="accessory-grid" id="accessories-grid">
           <a class="accessory-card" href="accessories.php#dress-accessories" data-reveal>
-            <img src="assets/images/accessory-bridal.jpg"
+            <img src="assets/images/accessories/accessories.jpg"
                  alt="Close-up of a bride wearing a crystal hairpiece, a veil, and a lace robe."
                  width="1100" height="1650" loading="lazy" decoding="async">
             <span class="accessory-card__shade" aria-hidden="true"></span>
@@ -469,7 +469,7 @@
           </a>
 
           <a class="accessory-card" href="accessories.php#suit-accessories" data-reveal>
-            <img src="assets/images/accessory-groom.jpg"
+            <img src="assets/images/accessories/groomAcc.jpg"
                  alt="Close-up of a groom's hands adjusting a bow tie before the ceremony."
                  width="1100" height="1650" loading="lazy" decoding="async">
             <span class="accessory-card__shade" aria-hidden="true"></span>
@@ -506,7 +506,7 @@
       <div class="container about__grid">
         <figure class="about__media" data-reveal>
           <div class="about__image-wrap">
-            <img src="assets/images/about-couple.jpg"
+            <img src="assets/images/wedding.jpg"
                  alt="A bride and groom embracing beneath ornate columns in a beautifully lit historic venue."
                  width="1800" height="1200" loading="lazy" decoding="async">
           </div>

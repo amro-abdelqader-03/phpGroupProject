@@ -1,3 +1,179 @@
+<?php
+// =====================================================
+// Accessories page (store)
+// Gets the accessories from the database and shows them.
+// =====================================================
+
+// STEP 1: Load the files we need
+require_once __DIR__ . '/../app/config/Database.php';
+require_once __DIR__ . '/../app/models/accessories.php';
+
+
+// STEP 2: Connect to the database and create the model
+$database = new Database();
+$db = $database->connect();
+
+$accessoriesModel = new Accessories($db);
+
+
+// STEP 3: Which subcategories (from the database) belong to each section of the page
+// The key is the section's id on the page, the value is the list of subcategory ids
+$sections = [
+    "groom-shoes"    => [15, 16, 17, 18],   // Derby, Loafers, Monk Strap, Oxford
+    "bow-ties"       => [21],
+    "neck-ties"      => [22],
+    "pocket-squares" => [23],
+    "bridal-shoes"   => [19, 20, 24, 25],   // Bloch Heels, High Heels, Bridal Sandal, Flats
+    "bridal-jewelry" => [7],
+    "bridal-gloves"  => [6],
+    "tiaras-crowns"  => [8],
+    "bridal-veils"   => [9],
+];
+
+
+// STEP 4: Get the products for every section
+// $products["bow-ties"] will be the list of bow ties, and so on
+$products = [];
+
+foreach ($sections as $sectionId => $subcategoryIds) {
+    $products[$sectionId] = $accessoriesModel->getBySubcategories($subcategoryIds);
+}
+
+
+// STEP 5: Get the category cards for the two shoe sections
+$groomShoeTypes = $accessoriesModel->getSubcategories([15, 16, 17, 18]);
+$bridalShoeTypes = $accessoriesModel->getSubcategories([19, 20, 24, 25]);
+
+// The pictures for the category cards (the subcategories table has no image column)
+$categoryCardImages = [
+    15 => "assets/images/accessories/suits/shoes/derby-category.jpg",
+    16 => "assets/images/accessories/suits/shoes/loafers.jpg",
+    17 => "assets/images/accessories/suits/shoes/monk2.jpg",
+    18 => "assets/images/accessories/suits/shoes/oxford-category.jpg",
+    19 => "assets/images/accessories/dresses/shoes/block-heel-category.jpg",
+    20 => "assets/images/accessories/dresses/shoes/high-heel-category.jpg",
+    24 => "assets/images/accessories/dresses/shoes/bridal-sandal-category.jpg",
+    25 => "assets/images/accessories/dresses/shoes/flat-category.jpg",
+];
+
+
+// =====================================================
+// Helper functions (small functions we use in the HTML)
+// =====================================================
+
+// Makes text safe to print in HTML (stops <script> in a product name from running)
+function safe($text)
+{
+    if ($text === null) {
+        return "";
+    }
+
+    return htmlspecialchars($text, ENT_QUOTES, "UTF-8");
+}
+
+// Returns the image path if the photo really exists, or "" if it does not
+// (some products have no photo yet, or still have an old broken path)
+function productImage($imageUrl)
+{
+    if ($imageUrl === null || $imageUrl === "") {
+        return "";
+    }
+
+    // The path is relative to the public folder, e.g. "assets/images/accessories/..."
+    if (file_exists(__DIR__ . "/" . $imageUrl)) {
+        return $imageUrl;
+    }
+
+    return "";
+}
+
+// The small arrow icon used in the "View details" and "Explore Collection" links
+function arrowIcon()
+{
+    return '<svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg>';
+}
+
+// Prints the category cards at the top of a shoe section (Derby, Loafers...)
+function printCategoryCards($shoeTypes, $sectionId, $cardImages)
+{
+    foreach ($shoeTypes as $type) {
+        $image = "";
+        if (isset($cardImages[$type["id"]])) {
+            $image = productImage($cardImages[$type["id"]]);
+        }
+        ?>
+        <a class="acc-cat-card" href="#<?php echo $sectionId; ?>-products" data-reveal
+           aria-label="Explore <?php echo safe($type["name"]); ?>">
+            <span class="acc-cat-card__visual">
+                <?php if ($image !== "") { ?>
+                    <img class="acc-cat-card__image" src="<?php echo safe($image); ?>"
+                         alt="<?php echo safe($type["name"]); ?>" loading="lazy" decoding="async">
+                <?php } else { ?>
+                    <span class="acc-no-photo">Photo coming soon</span>
+                <?php } ?>
+            </span>
+            <span class="acc-cat-card__body">
+                <span class="acc-cat-card__name"><?php echo safe($type["name"]); ?></span>
+                <span class="acc-cat-card__desc"><?php echo safe($type["description"]); ?></span>
+                <span class="text-link text-link--sm acc-cat-card__link">
+                    Explore Collection <?php echo arrowIcon(); ?>
+                </span>
+            </span>
+        </a>
+        <?php
+    }
+}
+
+// Prints one card for each product in a section
+function printProductCards($productList, $sectionId)
+{
+    // No products in this section yet
+    if (count($productList) === 0) {
+        echo '<p class="acc-empty">New pieces are coming soon.</p>';
+        return;
+    }
+
+    $number = 1;   // the small 01, 02, 03... next to each product name
+
+    foreach ($productList as $product) {
+        $image = productImage($product["image_url"]);
+        $price = number_format($product["price"], 2) . " JOD";
+
+        // The "View details" message (product pages are not built yet)
+        $dialog = $product["product_name"] . " is part of the Élan Bridal accessories collection. "
+                . "Product detail pages are coming soon.";
+        ?>
+        <article class="acc-product" data-reveal>
+            <figure class="acc-product__visual">
+                <?php if ($image !== "") { ?>
+                    <img class="acc-product__image" src="<?php echo safe($image); ?>"
+                         alt="<?php echo safe($product["product_name"]); ?>" loading="lazy" decoding="async">
+                <?php } else { ?>
+                    <span class="acc-no-photo">Photo coming soon</span>
+                <?php } ?>
+            </figure>
+            <div class="acc-product__body">
+                <div class="acc-product__heading">
+                    <h4 class="acc-product__name"><?php echo safe($product["product_name"]); ?></h4>
+                    <span class="acc-product__index" aria-hidden="true"><?php echo str_pad($number, 2, "0", STR_PAD_LEFT); ?></span>
+                </div>
+                <p class="acc-product__desc"><?php echo safe($product["description"]); ?></p>
+                <p class="acc-product__price"><?php echo $price; ?></p>
+                <a class="text-link text-link--sm acc-product__link"
+                   href="#<?php echo $sectionId; ?>"
+                   data-placeholder="<?php echo safe($product["product_name"]); ?>"
+                   data-dialog="<?php echo safe($dialog); ?>"
+                   data-dialog-cta="Keep exploring"
+                   data-dialog-target="#<?php echo $sectionId; ?>">
+                    View details <?php echo arrowIcon(); ?>
+                </a>
+            </div>
+        </article>
+        <?php
+        $number++;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,6 +202,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/accessories.css?v=<?php echo filemtime(__DIR__ . '/assets/css/accessories.css'); ?>">
   <script src="assets/js/accessories.js" defer></script>
   <script src="assets/js/main.js" defer></script>
   <script src="assets/js/cart.js" defer></script>
@@ -151,12 +328,6 @@
       </div>
     </nav>
 
-    <noscript>
-      <div class="container nojs-notice">
-        <p><strong>JavaScript is off.</strong> The interactive product grids cannot be assembled. Every accessory is listed as a direct link to its photograph below each category heading.</p>
-      </div>
-    </noscript>
-
     <div class="acc-collection">
       <section class="acc-section acc-section--suit" id="suit-accessories" aria-labelledby="suit-accessories-title">
         <div class="container">
@@ -177,17 +348,13 @@
               <p class="acc-block__text">Discover timeless footwear designed to complement formal tailoring and modern wedding suits.</p>
             </header>
 
-            <div class="acc-cat-grid" data-accessory-cards="groom-shoes"></div>
-            <div class="acc-products" id="groom-shoes-products" data-accessory-products="groom-shoes"></div>
+            <div class="acc-cat-grid">
+              <?php printCategoryCards($groomShoeTypes, "groom-shoes", $categoryCardImages); ?>
+            </div>
+            <div class="acc-products" id="groom-shoes-products">
+              <?php printProductCards($products["groom-shoes"], "groom-shoes"); ?>
+            </div>
 
-            <noscript>
-              <ul class="nojs-list">
-                <li><a href="assets/images/accessories/suits/shoes/derby-heritage.jpg">The Heritage Derby</a></li>
-                <li><a href="assets/images/accessories/suits/shoes/loafer-cognac.jpg">The Cognac Loafer</a></li>
-                <li><a href="assets/images/accessories/suits/shoes/monk-strap-signature.jpg">The Signature Monk Strap</a></li>
-                <li><a href="assets/images/accessories/suits/shoes/oxford-black.jpg">The Black Oxford</a></li>
-              </ul>
-            </noscript>
           </article>
 
           <article class="acc-block" id="bow-ties" aria-labelledby="bow-ties-title">
@@ -197,16 +364,10 @@
               <p class="acc-block__text">A refined finishing touch for black-tie celebrations and sophisticated wedding looks.</p>
             </header>
 
-            <div class="acc-products" id="bow-ties-products" data-accessory-products="bow-ties"></div>
+            <div class="acc-products" id="bow-ties-products">
+              <?php printProductCards($products["bow-ties"], "bow-ties"); ?>
+            </div>
 
-            <noscript>
-              <ul class="nojs-list">
-                <li><a href="assets/images/accessories/suits/bow-ties/classic-black.jpg">The Classic Black Bow Tie</a></li>
-                <li><a href="assets/images/accessories/suits/bow-ties/ivory-ceremony.jpg">The Ivory Ceremony Bow Tie</a></li>
-                <li><a href="assets/images/accessories/suits/bow-ties/midnight.jpg">The Midnight Bow Tie</a></li>
-                <li><a href="assets/images/accessories/suits/bow-ties/crimson.jpg">The Crimson Bow Tie</a></li>
-              </ul>
-            </noscript>
           </article>
 
           <article class="acc-block" id="neck-ties" aria-labelledby="neck-ties-title">
@@ -216,16 +377,10 @@
               <p class="acc-block__text">Explore elegant ties that bring color, texture, and personality to the groom's wedding ensemble.</p>
             </header>
 
-            <div class="acc-products" id="neck-ties-products" data-accessory-products="neck-ties"></div>
+            <div class="acc-products" id="neck-ties-products">
+              <?php printProductCards($products["neck-ties"], "neck-ties"); ?>
+            </div>
 
-            <noscript>
-              <ul class="nojs-list">
-                <li><a href="assets/images/accessories/suits/neck-ties/polka-dot.jpg">The Polka Dot Silk Tie</a></li>
-                <li><a href="assets/images/accessories/suits/neck-ties/crimson.jpg">The Crimson Silk Tie</a></li>
-                <li><a href="assets/images/accessories/suits/neck-ties/striped-silk.jpg">The Striped Silk Tie</a></li>
-                <li><a href="assets/images/accessories/suits/neck-ties/heirloom-collection.jpg">The Heirloom Tie Collection</a></li>
-              </ul>
-            </noscript>
           </article>
 
           <article class="acc-block" id="pocket-squares" aria-labelledby="pocket-squares-title">
@@ -235,16 +390,10 @@
               <p class="acc-block__text">Small details make a lasting impression. Complete your look with carefully selected pocket squares.</p>
             </header>
 
-            <div class="acc-products" id="pocket-squares-products" data-accessory-products="pocket-squares"></div>
+            <div class="acc-products" id="pocket-squares-products">
+              <?php printProductCards($products["pocket-squares"], "pocket-squares"); ?>
+            </div>
 
-            <noscript>
-              <ul class="nojs-list">
-                <li><a href="assets/images/accessories/suits/pocket-squares/ivory-silk.jpg">The Ivory Silk Square</a></li>
-                <li><a href="assets/images/accessories/suits/pocket-squares/folded-silk.jpg">The Folded Silk Square</a></li>
-                <li><a href="assets/images/accessories/suits/pocket-squares/floral-signature.jpg">The Floral Signature Square</a></li>
-                <li><a href="assets/images/accessories/suits/pocket-squares/crimson-accent.jpg">The Crimson Accent</a></li>
-              </ul>
-            </noscript>
           </article>
         </div>
       </section>
@@ -278,17 +427,13 @@
               <p class="acc-block__text">Find the perfect balance of elegance, comfort, and sophistication for every moment of your celebration.</p>
             </header>
 
-            <div class="acc-cat-grid" data-accessory-cards="bridal-shoes"></div>
-            <div class="acc-products" id="bridal-shoes-products" data-accessory-products="bridal-shoes"></div>
+            <div class="acc-cat-grid">
+              <?php printCategoryCards($bridalShoeTypes, "bridal-shoes", $categoryCardImages); ?>
+            </div>
+            <div class="acc-products" id="bridal-shoes-products">
+              <?php printProductCards($products["bridal-shoes"], "bridal-shoes"); ?>
+            </div>
 
-            <noscript>
-              <ul class="nojs-list">
-                <li><a href="assets/images/accessories/dresses/shoes/block-heel-marble.jpg">The Marble Block Heel</a></li>
-                <li><a href="assets/images/accessories/dresses/shoes/silver-sandal.jpg">The Silver Bridal Sandal</a></li>
-                <li><a href="assets/images/accessories/dresses/shoes/beaded-mule.jpg">The Beaded Bridal Mule</a></li>
-                <li><a href="assets/images/accessories/dresses/shoes/ribbon-bow-heel.jpg">The Ribbon Bow Heel</a></li>
-              </ul>
-            </noscript>
           </article>
 
           <article class="acc-block" id="bridal-jewelry" aria-labelledby="bridal-jewelry-title">
@@ -298,16 +443,10 @@
               <p class="acc-block__text">Discover delicate and statement pieces that add a final touch of brilliance to your bridal look.</p>
             </header>
 
-            <div class="acc-products" id="bridal-jewelry-products" data-accessory-products="bridal-jewelry"></div>
+            <div class="acc-products" id="bridal-jewelry-products">
+              <?php printProductCards($products["bridal-jewelry"], "bridal-jewelry"); ?>
+            </div>
 
-            <noscript>
-              <ul class="nojs-list">
-                <li><a href="assets/images/accessories/dresses/jewelry/gold-necklace.jpg">The Fine Gold Necklace</a></li>
-                <li><a href="assets/images/accessories/dresses/jewelry/pearl-earrings.jpg">The Pearl Drop Earrings</a></li>
-                <li><a href="assets/images/accessories/dresses/jewelry/gold-bangle.jpg">The Gold Bangle</a></li>
-                <li><a href="assets/images/accessories/dresses/jewelry/diamond-set.jpg">The Diamond Duo</a></li>
-              </ul>
-            </noscript>
           </article>
 
           <article class="acc-block" id="bridal-gloves" aria-labelledby="bridal-gloves-title">
@@ -317,16 +456,10 @@
               <p class="acc-block__text">Add a touch of timeless romance with elegant bridal gloves, from delicate sheer designs to classic satin styles.</p>
             </header>
 
-            <div class="acc-products" id="bridal-gloves-products" data-accessory-products="bridal-gloves"></div>
+            <div class="acc-products" id="bridal-gloves-products">
+              <?php printProductCards($products["bridal-gloves"], "bridal-gloves"); ?>
+            </div>
 
-            <noscript>
-              <ul class="nojs-list">
-                <li><a href="assets/images/accessories/dresses/gloves/classic-satin.jpg">The Classic Satin Glove</a></li>
-                <li><a href="assets/images/accessories/dresses/gloves/evening-satin.jpg">The Evening Satin Glove</a></li>
-                <li><a href="assets/images/accessories/dresses/gloves/sheer-lace.jpg">The Sheer Lace Glove</a></li>
-                <li><a href="assets/images/accessories/dresses/gloves/opera-satin.jpg">The Opera Satin Glove</a></li>
-              </ul>
-            </noscript>
           </article>
 
           <article class="acc-block" id="tiaras-crowns" aria-labelledby="tiaras-crowns-title">
@@ -336,16 +469,10 @@
               <p class="acc-block__text">Discover exquisite headpieces that bring a regal finishing touch to your wedding-day look.</p>
             </header>
 
-            <div class="acc-products" id="tiaras-crowns-products" data-accessory-products="tiaras-crowns"></div>
+            <div class="acc-products" id="tiaras-crowns-products">
+              <?php printProductCards($products["tiaras-crowns"], "tiaras-crowns"); ?>
+            </div>
 
-            <noscript>
-              <ul class="nojs-list">
-                <li><a href="assets/images/accessories/dresses/tiaras-crowns/crystal-tiara.jpg">The Crystal Tiara</a></li>
-                <li><a href="assets/images/accessories/dresses/tiaras-crowns/silver-pearl-tiara.jpg">The Silver Pearl Tiara</a></li>
-                <li><a href="assets/images/accessories/dresses/tiaras-crowns/gold-tiara.jpg">The Gold Heirloom Tiara</a></li>
-                <li><a href="assets/images/accessories/dresses/tiaras-crowns/celestial-crown.jpg">The Celestial Crown</a></li>
-              </ul>
-            </noscript>
           </article>
 
           <article class="acc-block" id="bridal-veils" aria-labelledby="bridal-veils-title">
@@ -355,16 +482,10 @@
               <p class="acc-block__text">From delicate fingertip veils to dramatic cathedral-length designs, discover the perfect finishing layer for your bridal look.</p>
             </header>
 
-            <div class="acc-products" id="bridal-veils-products" data-accessory-products="bridal-veils"></div>
+            <div class="acc-products" id="bridal-veils-products">
+              <?php printProductCards($products["bridal-veils"], "bridal-veils"); ?>
+            </div>
 
-            <noscript>
-              <ul class="nojs-list">
-                <li><a href="assets/images/accessories/dresses/veils/fingertip-veil.jpg">The Fingertip Veil</a></li>
-                <li><a href="assets/images/accessories/dresses/veils/chapel-veil.jpg">The Chapel-Length Veil</a></li>
-                <li><a href="assets/images/accessories/dresses/veils/cathedral-veil.jpg">The Cathedral Veil</a></li>
-                <li><a href="assets/images/accessories/dresses/veils/lace-trimmed-veil.jpg">The Lace-Trimmed Veil</a></li>
-              </ul>
-            </noscript>
           </article>
         </div>
       </section>
