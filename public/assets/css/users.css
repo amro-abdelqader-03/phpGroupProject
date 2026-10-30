@@ -1,0 +1,227 @@
+/* Styles only used by admin/users.php */
+/* User Cell */
+.user-initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--badge-blue-bg);
+    color: var(--badge-blue-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.user-title {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.member-since {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.orders-pill {
+    background-color: #f1f5f9;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    display: inline-block;
+    min-width: 36px;
+    text-align: center;
+}
+
+.country-code {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 700;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.45rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+}
+
+/* Inactive users are red on this page */
+.btn-status-pill.inactive {
+    background-color: var(--badge-red-bg);
+    color: var(--badge-red-text);
+}
+
+.btn-status-pill.inactive::before {
+    background-color: var(--badge-red-text);
+}
+
+/* View (eye) and Edit (pencil) icons in the ACTIONS column */
+.action-icons {
+    display: flex;
+    flex-wrap: nowrap;          /* never put the pencil under the eye */
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Keep the ACTIONS column only as wide as the two icons, with no extra space on the right.
+   sticky + right: 0 pins it to the right edge, so the icons stay visible
+   even when the table is too wide and scrolls sideways. */
+.custom-table th:last-child,
+.custom-table td:last-child {
+    width: 1%;
+    white-space: nowrap;
+    position: sticky;
+    right: 0;
+    z-index: 2;
+}
+
+.custom-table td:last-child {
+    background-color: #ffffff;
+}
+
+/* Small screens (or zoomed in): hide the initials circle to save space */
+@media (max-width: 1199.98px) {
+    .user-initials {
+        display: none;
+    }
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #334155;
+    font-size: 1.25rem;
+    text-decoration: none;
+}
+
+.action-btn:hover {
+    background-color: var(--active-nav-bg);
+    color: var(--brand-primary);
+}
+
+/* Greyed-out Previous / Next arrow on the first and last page */
+.custom-pagination .page-item.disabled .page-link {
+    color: #cbd5e1;
+    cursor: default;
+}
+
+/* ===== Status popup (built with <details>, no JavaScript) ===== */
+
+/* The badge is the <summary>: make it look like a button and hide the default arrow */
+.status-dropdown-wrapper summary {
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+}
+
+.status-dropdown-wrapper summary::-webkit-details-marker {
+    display: none;
+}
+
+.status-dropdown-wrapper summary .bi-chevron-down {
+    font-size: 0.65rem;
+}
+
+/* The popup items are <button>s: remove the default button look */
+.status-popover .popover-item {
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+}
+
+/* Let the popup show over the rows below it on big screens */
+/* Wide screens: the whole table fits, so let the popup show over the rows below it */
+@media (min-width: 1400px) {
+    .table-card .table-responsive {
+        overflow: visible;
+    }
+}
+
+/* Smaller screens: the table scrolls sideways inside the card,
+   so the popup opens inside the row instead of floating (or it would be cut off) */
+@media (max-width: 1399.98px) {
+    .status-popover {
+        position: static;
+    }
+
+    /* Less space around each cell, so more of the table fits */
+    .custom-table th,
+    .custom-table td {
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+    }
+
+    .user-initials {
+        width: 34px;
+        height: 34px;
+        font-size: 0.8rem;
+    }
+
+    .action-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 1.1rem;
+    }
+}
+
+/* Rounded top corners on the table header, to match the card */
+.custom-table thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.custom-table thead th:last-child {
+    border-top-right-radius: 12px;
+}
+
+/* ===== Add / Edit form and View page ===== */
+.form-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.form-card .form-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #0f172a;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+}
+
+.user-initials-lg {
+    width: 56px;
+    height: 56px;
+    font-size: 1.1rem;
+}
