@@ -1,58 +1,3 @@
-<?php
-// بيانات تجريبية للواجهة فقط، بدون اتصال بقاعدة البيانات
-$categories = [
-    [
-        'id' => 1,
-        'name' => 'Electronics',
-        'slug' => 'electronics',
-        'description' => 'Electronic devices, gadgets, and accessories.',
-        'products' => 125,
-        'status' => 'Active',
-        'icon' => 'bi-pc-display'
-    ],
-    [
-        'id' => 2,
-        'name' => 'Clothing',
-        'slug' => 'clothing',
-        'description' => 'Fashion, apparel, and everyday wear.',
-        'products' => 86,
-        'status' => 'Active',
-        'icon' => 'bi-person'
-    ],
-    [
-        'id' => 3,
-        'name' => 'Home & Kitchen',
-        'slug' => 'home-kitchen',
-        'description' => 'Home essentials, furniture, and kitchen tools.',
-        'products' => 64,
-        'status' => 'Active',
-        'icon' => 'bi-cup-hot'
-    ],
-    [
-        'id' => 4,
-        'name' => 'Sports & Outdoors',
-        'slug' => 'sports-outdoors',
-        'description' => 'Sports equipment and outdoor accessories.',
-        'products' => 42,
-        'status' => 'Inactive',
-        'icon' => 'bi-bicycle'
-    ],
-    [
-        'id' => 5,
-        'name' => 'Books',
-        'slug' => 'books-stationery',
-        'description' => 'Books, educational materials, and stationery.',
-        'products' => 37,
-        'status' => 'Active',
-        'icon' => 'bi-book-half'
-    ],
-];
-
-function e($value)
-{
-    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -344,8 +289,8 @@ function e($value)
 
     </div>
 
-    <!-- Bootstrap JavaScript -->
-
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
   // هاي اسمها IIFE، يعني دالة بتشتغل مباشرة أول ما المتصفح يقرأها  (()=>{})
