@@ -25,7 +25,7 @@ function e($value)
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Our separate CSS file -->
-    <link href="..\public\assests\css\products.css" rel="stylesheet">
+    <link href="..\public\assets\css\products.css" rel="stylesheet">
 </head>
 
 <body>
