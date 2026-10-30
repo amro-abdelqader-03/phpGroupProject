@@ -20,9 +20,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Our styles: admin.css is shared by all admin pages, users.css is only for this page -->
-    <link rel="stylesheet" href="../public/assets/css/admin.css">
-    <link rel="stylesheet" href="../public/assets/css/users.css">
+    <!-- Our styles: admin.css is shared by all admin pages, users.css is only for the user pages.
+         ?v= is the time the file was last changed. When the file changes, the link changes too,
+         so the browser downloads the new CSS instead of using its old saved copy. -->
+    <link rel="stylesheet" href="../public/assets/css/admin.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/admin.css'); ?>">
+    <link rel="stylesheet" href="../public/assets/css/users.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/users.css'); ?>">
 </head>
 <body>
 
@@ -96,11 +98,6 @@
                         <i class="bi bi-search"></i>
                         <input type="text" class="form-control" placeholder="Search orders, products, users...">
                     </div>
-
-                    <button class="icon-btn" title="Notifications">
-                        <i class="bi bi-bell"></i>
-                        <span class="notification-badge">4</span>
-                    </button>
 
                     <button class="icon-btn" title="Messages">
                         <i class="bi bi-envelope"></i>

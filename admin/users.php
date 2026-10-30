@@ -201,7 +201,7 @@ require __DIR__ . '/includes/header.php';   // <head>, sidebar and top bar
                                     <th class="text-center">TOTAL ORDERS</th>
                                     <th>STATUS</th>
                                     <th>LOCATION</th>
-                                    <th class="text-end">ACTIONS</th>
+                                    <th class="text-center">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -310,9 +310,11 @@ require __DIR__ . '/includes/header.php';   // <head>, sidebar and top bar
                                         </td>
 
                                         <!-- View and Edit: normal links with the user's id in the URL -->
-                                        <td class="text-end text-nowrap">
-                                            <a href="user-view.php?id=<?php echo $user["id"]; ?>" class="action-btn" title="View"><i class="bi bi-eye"></i></a>
-                                            <a href="user-edit.php?id=<?php echo $user["id"]; ?>" class="action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+                                        <td>
+                                            <div class="action-icons">
+                                                <a href="user-view.php?id=<?php echo $user["id"]; ?>" class="action-btn" title="View"><i class="bi bi-eye"></i></a>
+                                                <a href="user-edit.php?id=<?php echo $user["id"]; ?>" class="action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+                                            </div>
                                         </td>
                                     </tr>
 

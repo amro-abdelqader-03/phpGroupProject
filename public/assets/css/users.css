@@ -18,12 +18,14 @@
     font-weight: 600;
     color: #0f172a;
     font-size: 0.875rem;
+    white-space: nowrap;
 }
 
 .member-since {
     font-size: 0.75rem;
     color: #94a3b8;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .orders-pill {
@@ -58,14 +60,52 @@
     background-color: var(--badge-red-text);
 }
 
+/* View (eye) and Edit (pencil) icons in the ACTIONS column */
+.action-icons {
+    display: flex;
+    flex-wrap: nowrap;          /* never put the pencil under the eye */
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Keep the ACTIONS column only as wide as the two icons, with no extra space on the right.
+   sticky + right: 0 pins it to the right edge, so the icons stay visible
+   even when the table is too wide and scrolls sideways. */
+.custom-table th:last-child,
+.custom-table td:last-child {
+    width: 1%;
+    white-space: nowrap;
+    position: sticky;
+    right: 0;
+    z-index: 2;
+}
+
+.custom-table td:last-child {
+    background-color: #ffffff;
+}
+
+/* Small screens (or zoomed in): hide the initials circle to save space */
+@media (max-width: 1199.98px) {
+    .user-initials {
+        display: none;
+    }
+}
+
 .action-btn {
-    color: #64748b;
-    font-size: 1.1rem;
-    padding: 0.25rem 0.4rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #334155;
+    font-size: 1.25rem;
     text-decoration: none;
 }
 
 .action-btn:hover {
+    background-color: var(--active-nav-bg);
     color: var(--brand-primary);
 }
 
@@ -101,10 +141,47 @@
 }
 
 /* Let the popup show over the rows below it on big screens */
-@media (min-width: 992px) {
+/* Wide screens: the whole table fits, so let the popup show over the rows below it */
+@media (min-width: 1400px) {
     .table-card .table-responsive {
         overflow: visible;
     }
+}
+
+/* Smaller screens: the table scrolls sideways inside the card,
+   so the popup opens inside the row instead of floating (or it would be cut off) */
+@media (max-width: 1399.98px) {
+    .status-popover {
+        position: static;
+    }
+
+    /* Less space around each cell, so more of the table fits */
+    .custom-table th,
+    .custom-table td {
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+    }
+
+    .user-initials {
+        width: 34px;
+        height: 34px;
+        font-size: 0.8rem;
+    }
+
+    .action-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 1.1rem;
+    }
+}
+
+/* Rounded top corners on the table header, to match the card */
+.custom-table thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.custom-table thead th:last-child {
+    border-top-right-radius: 12px;
 }
 
 /* ===== Add / Edit form and View page ===== */
