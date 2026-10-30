@@ -289,8 +289,8 @@
 
     </div>
 
-    <!-- Bootstrap JavaScript -->
-
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
   // هاي اسمها IIFE، يعني دالة بتشتغل مباشرة أول ما المتصفح يقرأها  (()=>{})
