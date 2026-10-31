@@ -654,43 +654,42 @@ body {
         width: 200px;
     }
 }
+/* =========================
+   Sidebar Logout Button
+========================= */
 
-/* Fix shared admin layout */
-/* #wrapper {
+.sidebar-footer {
+    padding: 15px;
+    margin-top: auto;
+}
+
+.logout-btn {
     display: flex;
+    align-items: center;
+    gap: 12px;
     width: 100%;
-    min-height: 100vh;
+    padding: 12px 16px;
+
+    color: #dc3545;
+    background-color: #fff5f5;
+
+    border: 1px solid #ffe0e0;
+    border-radius: 10px;
+
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: all 0.25s ease;
 }
 
-#sidebar {
-    flex-shrink: 0;
+.logout-btn i {
+    font-size: 18px;
 }
 
-#content-wrapper {
-    flex: 1;
-    min-width: 0;
-    width: calc(100% - 240px);
+.logout-btn:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+    border-color: #dc3545;
+    transform: translateY(-2px);
 }
-
-.main-container {
-    width: 100%;
-    max-width: none;
-    padding: 0;
-}
-
-.content-area {
-    width: 100%;
-    max-width: none;
-    padding: 2rem 2.5rem;
-} */
-
-/* Responsive layout */
-/* @media (max-width: 991.98px) {
-    #content-wrapper {
-        width: 100%;
-    }
-
-    .content-area {
-        padding: 1.5rem;
-    }
-} */
