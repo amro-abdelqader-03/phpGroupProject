@@ -151,7 +151,6 @@ a { color: inherit; }
     .table-footer { align-items: flex-start; flex-direction: column; padding: 15px 17px; }
     .pagination { align-self: flex-end; }
 }
-/* تنسيق أزرار التصفح (Pagination) */
 .pagination {
     display: flex;
     gap: 8px;
@@ -175,7 +174,6 @@ a { color: inherit; }
     border-color: #007bff;
 }
 
-/* Staggered Fade In Animation for Table Rows */
 @keyframes staggerFadeIn {
     from {
         opacity: 0;

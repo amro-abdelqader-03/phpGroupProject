@@ -59,7 +59,6 @@ $totalPages = ceil($totalOrders / $limit);
         </div>
 
         <section class="orders-card" aria-label="Order list">
-            <!-- نموذج بحث يعمل عند الضغط على Enter أو النقر على زر البحث -->
             <form method="GET" action="orders.php" class="filters">
                 <label class="table-search">
                     <span aria-hidden="true">⌕</span>
@@ -195,7 +194,6 @@ function updateOrderStatus(orderId, newStatus) {
     console.log(`Updating order ${orderId} to status: ${newStatus}`);
 }
 
-// تفعيل زر التصدير إلى CSV
 document.getElementById('export-orders').addEventListener('click', function () {
     const rows = document.querySelectorAll('.orders-table tr');
     let csv = [];
