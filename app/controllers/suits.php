@@ -2,7 +2,7 @@
 <?php
 
 require_once __DIR__ . "/../config/Database.php";
-require_once __DIR__ . "/../models/suits.php";
+require_once __DIR__ . "/../models/mensuits.php";
 require_once __DIR__ . "/../../core/Response.php";
 
 header("Content-Type: application/json; charset=UTF-8");
