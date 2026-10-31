@@ -1,3 +1,38 @@
+
+
+
+<?php
+require_once __DIR__ . '/../app/config/Database.php';
+require_once __DIR__ . '/../app/models/Dress.php';
+
+$dress = null;
+$dressImages = [];
+
+if (
+    ($_GET['category'] ?? '') === 'dresses'
+    && isset($_GET['id'])
+    && ctype_digit((string) $_GET['id'])
+) {
+    $database = new Database();
+    $db = $database->connect();
+
+    $dressModel = new Dress($db);
+
+    $dress = $dressModel->getById((int) $_GET['id']);
+
+    if ($dress) {
+        $dressImages = $dressModel->getImages((int) $dress['id']);
+    }
+}
+?>
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,6 +53,21 @@
   <script src="assets/js/collections.js" defer></script>
   <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
   <script src="assets/js/cart.js" defer></script>
+  <?php if ($dress): ?>
+<script>
+    window.ELAN_DB_DRESS = <?= json_encode(
+        [
+            'id' => (int) $dress['id'],
+            'name' => $dress['product_name'],
+            'description' => $dress['description'],
+            'price' => (float) $dress['price'],
+            'image' => $dress['image_url'],
+            'images' => $dressImages
+        ],
+        JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+    ) ?>;
+</script>
+<?php endif; ?>
   <script src="assets/js/product-details.js" defer></script>
   <script src="assets/js/ai-recommendations.js" defer></script>
 </head>

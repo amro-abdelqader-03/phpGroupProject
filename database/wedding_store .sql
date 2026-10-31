@@ -904,3 +904,400 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+
+-- DANA DUMMY DATA --
+-- Compatible with wedding_store database
+
+USE wedding_store;
+
+-- =====================================================
+-- DASHBOARD DUMMY DATA
+-- For testing charts and statistics only
+-- Run after creating all tables and foreign keys
+-- =====================================================
+
+START TRANSACTION;
+
+-- =====================================================
+-- 1. TEST CUSTOMERS
+-- Removed is_active because it does not exist in users
+-- =====================================================
+
+INSERT INTO users
+(id, full_name, email, password_hash, phone, created_at)
+VALUES
+(9001, 'Sara Ahmad', 'dashboard.sara@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0791111111', '2026-01-10 10:00:00'),
+
+(9002, 'Lina Khaled', 'dashboard.lina@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0792222222', '2026-02-15 11:00:00'),
+
+(9003, 'Omar Ali', 'dashboard.omar@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0793333333', '2026-03-20 12:00:00'),
+
+(9004, 'Dana Mohammad', 'dashboard.dana@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0794444444', '2026-04-12 13:00:00'),
+
+(9005, 'Rama Hasan', 'dashboard.rama@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0795555555', '2026-05-18 14:00:00');
+
+
+-- =====================================================
+-- 2. TEST ORDERS
+-- =====================================================
+
+INSERT INTO orders
+(id, user_id, order_date, total_amount, order_status,
+ full_name, phone, country, city, area,
+ shipping_address, building_details, shipping_cost, revenue)
+VALUES
+
+(9001, 9001, '2026-01-15 10:00:00', 304.00, 'Delivered',
+ 'Sara Ahmad', '0791111111', 'Jordan', 'Amman', 'Khalda',
+ 'Khalda Street', 'Building 12', 5.00, 299.00),
+
+(9002, 9002, '2026-02-18 11:00:00', 174.00, 'Delivered',
+ 'Lina Khaled', '0792222222', 'Jordan', 'Irbid', 'University Street',
+ 'University Street', 'Building 8', 5.00, 169.00),
+
+(9003, 9003, '2026-03-22 12:00:00', 318.00, 'Delivered',
+ 'Omar Ali', '0793333333', 'United States', 'New York', 'Manhattan',
+ 'Broadway Street', 'Apartment 5', 0.00, 318.00),
+
+(9004, 9004, '2026-04-14 13:00:00', 348.00, 'Delivered',
+ 'Dana Mohammad', '0794444444', 'Germany', 'Berlin', 'Mitte',
+ 'Berlin Street', 'Apartment 10', 0.00, 348.00),
+
+(9005, 9005, '2026-05-20 14:00:00', 299.00, 'Delivered',
+ 'Rama Hasan', '0795555555', 'United Kingdom', 'London', 'Central',
+ 'Oxford Street', 'Apartment 3', 0.00, 299.00),
+
+(9006, 9001, '2026-06-10 10:30:00', 207.00, 'Delivered',
+ 'Sara Ahmad', '0791111111', 'Jordan', 'Amman', 'Sweifieh',
+ 'Sweifieh Street', 'Building 7', 0.00, 207.00),
+
+(9007, 9002, '2026-07-12 11:30:00', 318.00, 'Delivered',
+ 'Lina Khaled', '0792222222', 'France', 'Paris', 'Central',
+ 'Paris Street', 'Apartment 4', 0.00, 318.00),
+
+(9008, 9003, '2026-08-16 12:30:00', 169.00, 'Delivered',
+ 'Omar Ali', '0793333333', 'Canada', 'Toronto', 'Downtown',
+ 'King Street', 'Apartment 9', 0.00, 169.00),
+
+(9009, 9004, '2026-09-08 13:30:00', 598.00, 'Delivered',
+ 'Dana Mohammad', '0794444444', 'Jordan', 'Amman', 'Abdoun',
+ 'Abdoun Street', 'Building 15', 0.00, 598.00),
+
+(9010, 9005, '2026-10-05 14:30:00', 188.00, 'Delivered',
+ 'Rama Hasan', '0795555555', 'Germany', 'Munich', 'Central',
+ 'Munich Street', 'Apartment 6', 0.00, 188.00),
+
+(9011, 9001, '2026-10-12 10:00:00', 318.00, 'Confirmed',
+ 'Sara Ahmad', '0791111111', 'United States', 'Chicago', 'Central',
+ 'Lake Street', 'Apartment 2', 0.00, 318.00),
+
+(9012, 9002, '2026-10-18 11:00:00', 299.00, 'Shipped',
+ 'Lina Khaled', '0792222222', 'Jordan', 'Amman', 'Jubeiha',
+ 'Jubeiha Street', 'Building 20', 0.00, 299.00),
+
+(9013, 9003, '2026-10-21 12:00:00', 49.00, 'Pending',
+ 'Omar Ali', '0793333333', 'United Kingdom', 'London', 'Central',
+ 'Baker Street', 'Apartment 1', 0.00, 49.00),
+
+(9014, 9004, '2026-10-24 13:00:00', 169.00, 'Cancelled',
+ 'Dana Mohammad', '0794444444', 'France', 'Paris', 'Central',
+ 'Paris Street', 'Apartment 11', 0.00, 0.00),
+
+(9015, 9005, '2026-10-28 14:00:00', 337.00, 'Delivered',
+ 'Rama Hasan', '0795555555', 'Jordan', 'Zarqa', 'New Zarqa',
+ 'Main Street', 'Building 3', 0.00, 337.00);
+
+
+-- =====================================================
+-- 3. ORDER ITEMS
+-- Product IDs refer to existing products (1 to 56)
+-- =====================================================
+
+INSERT INTO order_items
+(order_id, product_id, variant_id, quantity, unit_price)
+VALUES
+
+(9001, 1, NULL, 1, 299.00),
+
+(9002, 6, NULL, 1, 169.00),
+
+(9003, 2, NULL, 1, 299.00),
+(9003, 12, NULL, 1, 19.00),
+
+(9004, 3, NULL, 1, 299.00),
+(9004, 22, NULL, 1, 49.00),
+
+(9005, 4, NULL, 1, 299.00),
+
+(9006, 6, NULL, 1, 169.00),
+(9006, 12, NULL, 2, 19.00),
+
+(9007, 2, NULL, 1, 299.00),
+(9007, 13, NULL, 1, 19.00),
+
+(9008, 7, NULL, 1, 169.00),
+
+(9009, 1, NULL, 2, 299.00),
+
+(9010, 6, NULL, 1, 169.00),
+(9010, 15, NULL, 1, 19.00),
+
+(9011, 2, NULL, 1, 299.00),
+(9011, 12, NULL, 1, 19.00),
+
+(9012, 5, NULL, 1, 299.00),
+
+(9013, 22, NULL, 1, 49.00),
+
+(9014, 8, NULL, 1, 169.00),
+
+(9015, 3, NULL, 1, 299.00),
+(9015, 14, NULL, 2, 19.00);
+
+
+-- =====================================================
+-- 4. TEST PAYMENTS
+-- =====================================================
+
+INSERT INTO payments
+(order_id, payment_method, amount, payment_status,
+ transaction_reference, paid_at)
+VALUES
+
+(9001, 'Credit Card', 304.00, 'Paid', 'DEMO-PAY-9001', '2026-01-15 10:05:00'),
+(9002, 'Credit Card', 174.00, 'Paid', 'DEMO-PAY-9002', '2026-02-18 11:05:00'),
+(9003, 'Credit Card', 318.00, 'Paid', 'DEMO-PAY-9003', '2026-03-22 12:05:00'),
+(9004, 'Credit Card', 348.00, 'Paid', 'DEMO-PAY-9004', '2026-04-14 13:05:00'),
+(9005, 'Credit Card', 299.00, 'Paid', 'DEMO-PAY-9005', '2026-05-20 14:05:00'),
+(9006, 'Cash on Delivery', 207.00, 'Paid', 'DEMO-PAY-9006', '2026-06-10 10:35:00'),
+(9007, 'Credit Card', 318.00, 'Paid', 'DEMO-PAY-9007', '2026-07-12 11:35:00'),
+(9008, 'Credit Card', 169.00, 'Paid', 'DEMO-PAY-9008', '2026-08-16 12:35:00'),
+(9009, 'Credit Card', 598.00, 'Paid', 'DEMO-PAY-9009', '2026-09-08 13:35:00'),
+(9010, 'Cash on Delivery', 188.00, 'Paid', 'DEMO-PAY-9010', '2026-10-05 14:35:00'),
+(9011, 'Credit Card', 318.00, 'Pending', 'DEMO-PAY-9011', NULL),
+(9012, 'Cash on Delivery', 299.00, 'Pending', 'DEMO-PAY-9012', NULL),
+(9013, 'Cash on Delivery', 49.00, 'Pending', 'DEMO-PAY-9013', NULL),
+(9014, 'Credit Card', 169.00, 'Failed', 'DEMO-PAY-9014', NULL),
+(9015, 'Credit Card', 337.00, 'Paid', 'DEMO-PAY-9015', '2026-10-28 14:05:00');
+
+COMMIT;
+
+-- =====================================================
+-- END OF DASHBOARD DUMMY DATA
+-- =====================================================
+
+
+
+
+
+
+
+
+
+--DANA DUMMY DATA --
+
+
+
+-- =====================================================
+-- DASHBOARD DUMMY DATA
+-- For testing charts and statistics only
+-- =====================================================
+
+-- IMPORTANT:
+-- Run this section after creating the tables,
+-- indexes, AUTO_INCREMENT and foreign keys.
+
+START TRANSACTION;
+
+-- =====================================================
+-- 1. TEST CUSTOMERS
+-- =====================================================
+
+INSERT INTO users
+(id, full_name, email, password_hash, phone, is_active, created_at)
+VALUES
+(9001, 'Sara Ahmad', 'dashboard.sara@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0791111111', 1, '2026-01-10 10:00:00'),
+
+(9002, 'Lina Khaled', 'dashboard.lina@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0792222222', 1, '2026-02-15 11:00:00'),
+
+(9003, 'Omar Ali', 'dashboard.omar@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0793333333', 1, '2026-03-20 12:00:00'),
+
+(9004, 'Dana Mohammad', 'dashboard.dana@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0794444444', 1, '2026-04-12 13:00:00'),
+
+(9005, 'Rama Hasan', 'dashboard.rama@example.com',
+ '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ '0795555555', 1, '2026-05-18 14:00:00');
+
+
+-- =====================================================
+-- 2. TEST ORDERS
+-- Orders distributed across months and countries
+-- =====================================================
+
+INSERT INTO orders
+(id, user_id, order_date, total_amount, order_status,
+ full_name, phone, country, city, area,
+ shipping_address, building_details, shipping_cost, revenue)
+VALUES
+
+(9001, 9001, '2026-01-15 10:00:00', 304.00, 'Delivered',
+ 'Sara Ahmad', '0791111111', 'Jordan', 'Amman', 'Khalda',
+ 'Khalda Street', 'Building 12', 5.00, 299.00),
+
+(9002, 9002, '2026-02-18 11:00:00', 174.00, 'Delivered',
+ 'Lina Khaled', '0792222222', 'Jordan', 'Irbid', 'University Street',
+ 'University Street', 'Building 8', 5.00, 169.00),
+
+(9003, 9003, '2026-03-22 12:00:00', 318.00, 'Delivered',
+ 'Omar Ali', '0793333333', 'United States', 'New York', 'Manhattan',
+ 'Broadway Street', 'Apartment 5', 0.00, 318.00),
+
+(9004, 9004, '2026-04-14 13:00:00', 348.00, 'Delivered',
+ 'Dana Mohammad', '0794444444', 'Germany', 'Berlin', 'Mitte',
+ 'Berlin Street', 'Apartment 10', 0.00, 348.00),
+
+(9005, 9005, '2026-05-20 14:00:00', 299.00, 'Delivered',
+ 'Rama Hasan', '0795555555', 'United Kingdom', 'London', 'Central',
+ 'Oxford Street', 'Apartment 3', 0.00, 299.00),
+
+(9006, 9001, '2026-06-10 10:30:00', 207.00, 'Delivered',
+ 'Sara Ahmad', '0791111111', 'Jordan', 'Amman', 'Sweifieh',
+ 'Sweifieh Street', 'Building 7', 0.00, 207.00),
+
+(9007, 9002, '2026-07-12 11:30:00', 318.00, 'Delivered',
+ 'Lina Khaled', '0792222222', 'France', 'Paris', 'Central',
+ 'Paris Street', 'Apartment 4', 0.00, 318.00),
+
+(9008, 9003, '2026-08-16 12:30:00', 169.00, 'Delivered',
+ 'Omar Ali', '0793333333', 'Canada', 'Toronto', 'Downtown',
+ 'King Street', 'Apartment 9', 0.00, 169.00),
+
+(9009, 9004, '2026-09-08 13:30:00', 598.00, 'Delivered',
+ 'Dana Mohammad', '0794444444', 'Jordan', 'Amman', 'Abdoun',
+ 'Abdoun Street', 'Building 15', 0.00, 598.00),
+
+(9010, 9005, '2026-10-05 14:30:00', 188.00, 'Delivered',
+ 'Rama Hasan', '0795555555', 'Germany', 'Munich', 'Central',
+ 'Munich Street', 'Apartment 6', 0.00, 188.00),
+
+(9011, 9001, '2026-10-12 10:00:00', 318.00, 'Confirmed',
+ 'Sara Ahmad', '0791111111', 'United States', 'Chicago', 'Central',
+ 'Lake Street', 'Apartment 2', 0.00, 318.00),
+
+(9012, 9002, '2026-10-18 11:00:00', 299.00, 'Shipped',
+ 'Lina Khaled', '0792222222', 'Jordan', 'Amman', 'Jubeiha',
+ 'Jubeiha Street', 'Building 20', 0.00, 299.00),
+
+(9013, 9003, '2026-10-21 12:00:00', 49.00, 'Pending',
+ 'Omar Ali', '0793333333', 'United Kingdom', 'London', 'Central',
+ 'Baker Street', 'Apartment 1', 0.00, 49.00),
+
+(9014, 9004, '2026-10-24 13:00:00', 169.00, 'Cancelled',
+ 'Dana Mohammad', '0794444444', 'France', 'Paris', 'Central',
+ 'Paris Street', 'Apartment 11', 0.00, 0.00),
+
+(9015, 9005, '2026-10-28 14:00:00', 337.00, 'Delivered',
+ 'Rama Hasan', '0795555555', 'Jordan', 'Zarqa', 'New Zarqa',
+ 'Main Street', 'Building 3', 0.00, 337.00);
+
+
+-- =====================================================
+-- 3. ORDER ITEMS
+-- Product IDs are from the existing products table
+-- =====================================================
+
+INSERT INTO order_items
+(order_id, product_id, variant_id, quantity, unit_price)
+VALUES
+
+(9001, 1, NULL, 1, 299.00),
+
+(9002, 6, NULL, 1, 169.00),
+
+(9003, 2, NULL, 1, 299.00),
+(9003, 12, NULL, 1, 19.00),
+
+(9004, 3, NULL, 1, 299.00),
+(9004, 22, NULL, 1, 49.00),
+
+(9005, 4, NULL, 1, 299.00),
+
+(9006, 6, NULL, 1, 169.00),
+(9006, 12, NULL, 2, 19.00),
+
+(9007, 2, NULL, 1, 299.00),
+(9007, 13, NULL, 1, 19.00),
+
+(9008, 7, NULL, 1, 169.00),
+
+(9009, 1, NULL, 2, 299.00),
+
+(9010, 6, NULL, 1, 169.00),
+(9010, 15, NULL, 1, 19.00),
+
+(9011, 2, NULL, 1, 299.00),
+(9011, 12, NULL, 1, 19.00),
+
+(9012, 5, NULL, 1, 299.00),
+
+(9013, 22, NULL, 1, 49.00),
+
+(9014, 8, NULL, 1, 169.00),
+
+(9015, 3, NULL, 1, 299.00),
+(9015, 14, NULL, 2, 19.00);
+
+
+-- =====================================================
+-- 4. TEST PAYMENTS
+-- =====================================================
+
+INSERT INTO payments
+(order_id, payment_method, amount, payment_status,
+ transaction_reference, paid_at)
+VALUES
+
+(9001, 'Credit Card', 304.00, 'Paid', 'DEMO-PAY-9001', '2026-01-15 10:05:00'),
+(9002, 'Credit Card', 174.00, 'Paid', 'DEMO-PAY-9002', '2026-02-18 11:05:00'),
+(9003, 'Credit Card', 318.00, 'Paid', 'DEMO-PAY-9003', '2026-03-22 12:05:00'),
+(9004, 'Credit Card', 348.00, 'Paid', 'DEMO-PAY-9004', '2026-04-14 13:05:00'),
+(9005, 'Credit Card', 299.00, 'Paid', 'DEMO-PAY-9005', '2026-05-20 14:05:00'),
+(9006, 'Cash on Delivery', 207.00, 'Paid', 'DEMO-PAY-9006', '2026-06-10 10:35:00'),
+(9007, 'Credit Card', 318.00, 'Paid', 'DEMO-PAY-9007', '2026-07-12 11:35:00'),
+(9008, 'Credit Card', 169.00, 'Paid', 'DEMO-PAY-9008', '2026-08-16 12:35:00'),
+(9009, 'Credit Card', 598.00, 'Paid', 'DEMO-PAY-9009', '2026-09-08 13:35:00'),
+(9010, 'Cash on Delivery', 188.00, 'Paid', 'DEMO-PAY-9010', '2026-10-05 14:35:00'),
+(9011, 'Credit Card', 318.00, 'Pending', 'DEMO-PAY-9011', NULL),
+(9012, 'Cash on Delivery', 299.00, 'Pending', 'DEMO-PAY-9012', NULL),
+(9013, 'Cash on Delivery', 49.00, 'Pending', 'DEMO-PAY-9013', NULL),
+(9014, 'Credit Card', 169.00, 'Failed', 'DEMO-PAY-9014', NULL),
+(9015, 'Credit Card', 337.00, 'Paid', 'DEMO-PAY-9015', '2026-10-28 14:05:00');
+
+COMMIT;
+
+-- =====================================================
+-- END OF DASHBOARD DUMMY DATA
+-- =====================================================
+
+
