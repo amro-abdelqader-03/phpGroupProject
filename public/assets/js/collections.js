@@ -13,6 +13,7 @@
 
   const SUITS_API = "/phpGroupProject/app/controllers/suits.php";
 
+  // وظيفتها تحويل الرموز الخاصة إلى HTML entities قبل إدخال البيانات إلى HTML.
   const escapeHtml = (value) =>
     String(value ?? "")
       .replace(/&/g, "&amp;")
@@ -152,10 +153,7 @@
     }
   };
 
-  /* ----------------------------------------------------------------------
-     Suit category mapping
-     Database subcategory names -> HTML data-category values
-     ---------------------------------------------------------------------- */
+  // عندنا اختلاف بين أسماء الأقسام في قاعدة البيانات وبين أسماء الأقسام في HTML.
 
   const SUIT_CATEGORY_MAP = {
     "Tuxedo": "tuxedo",
@@ -165,9 +163,7 @@
     "Double Breasted Suit": "double-breasted"
   };
 
-  /* ----------------------------------------------------------------------
-     Image helpers
-     ---------------------------------------------------------------------- */
+  // وظيفتها تجهيز مسار الصورة حتى نستخدمه داخل خاصية src.
 
   function getImageUrl(path) {
     if (!path) return "";
@@ -205,9 +201,7 @@
       : `Additional photograph of ${product.name}.`;
   }
 
-  /* ----------------------------------------------------------------------
-     Card renderer
-     ---------------------------------------------------------------------- */
+// مسؤولة عن بناء كرت المنتج
 
   function cardMarkup(product, index, categoryId, config) {
 
@@ -380,10 +374,9 @@
     });
   }
 
-  /* ----------------------------------------------------------------------
-     Render suits from API
-     ---------------------------------------------------------------------- */
-
+  
+    //Render suits from API : دالة ربط مع الـ API
+    
   async function renderSuits() {
 
     const grids = $$('[data-collection-grid][data-collection="suits"]');
@@ -411,6 +404,7 @@
 
       const products = result.data;
 
+      // توزيع المنتجات على الأقسام
       grids.forEach((grid) => {
 
         const categoryId = grid.dataset.category;
@@ -423,6 +417,8 @@
           grid.innerHTML = "<p>No products available in this category.</p>";
           return;
         }
+
+        // عرض المنتجات
 
         grid.innerHTML = matchingProducts
           .map((product, index) => {
@@ -448,10 +444,7 @@
     }
   }
 
-  /* ----------------------------------------------------------------------
-     Front / alternate view toggle
-     ---------------------------------------------------------------------- */
-
+//  هدول مسؤولين عن زر تبديل الصورة.
   function setView(card, button, alternate) {
 
     card.dataset.touched = "true";
@@ -494,9 +487,7 @@
     });
   }
 
-  /* ----------------------------------------------------------------------
-     Category navigation active state
-     ---------------------------------------------------------------------- */
+  // هاي مسؤولة عن التنقل بين الأقسام وتحديد القسم النشط في القائمة.
 
   function initCategoryNav() {
 
