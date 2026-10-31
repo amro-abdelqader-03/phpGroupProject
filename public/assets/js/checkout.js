@@ -1,4 +1,4 @@
-/* Local checkout preview; no address, order, or payment data leaves this page. */
+/* Local checkout preview with backend integration via Fetch */
 (() => {
   "use strict";
   const form = document.getElementById("checkout-form");
@@ -71,10 +71,12 @@
       itemHost.append(row);
     });
 
+    const shippingCost = 5.00; // Fixed shipping cost matching backend
+    const totalAmount = subtotal + shippingCost;
+
     document.getElementById("checkout-subtotal").textContent = allPricesKnown ? money(subtotal) : "To be confirmed";
-    // No delivery-rate table exists yet, so delivery fee and total are never fabricated.
-    document.getElementById("checkout-delivery").textContent = "To be confirmed";
-    document.getElementById("checkout-total").textContent = "To be confirmed";
+    document.getElementById("checkout-delivery").textContent = allPricesKnown ? money(shippingCost) : "To be confirmed";
+    document.getElementById("checkout-total").textContent = allPricesKnown ? money(totalAmount) : "To be confirmed";
   }
 
   const requiredFields = [
@@ -130,36 +132,68 @@
   });
 
   let submitting = false;
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (submitting) return;
-    document.getElementById("checkout-result").textContent = "";
+
+    const result = document.getElementById("checkout-result");
+    result.textContent = "";
+    result.classList.remove("is-error");
+
     const addressValid = validateAddress();
     const cart = window.ElanCart.read();
     if (!cart.length) {
-      document.getElementById("checkout-result").textContent = "Your bag is empty. Add a look before continuing.";
+      result.textContent = "Your bag is empty. Add a look before continuing.";
+      result.classList.add("is-error");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       document.getElementById("checkout-empty").scrollIntoView({ block: "center", behavior: reducedMotion ? "auto" : "smooth" });
       return;
     }
+
     const payment = form.querySelector('input[name="payment"]:checked');
-    if (!payment) paymentError.textContent = "Please choose a payment method.";
-    if (!addressValid || !payment) return;
+    if (!payment) {
+      paymentError.textContent = "Please choose a payment method.";
+      return;
+    }
+    if (!addressValid) return;
 
     submitting = true;
-    const submit = document.getElementById("place-order");
-    submit.disabled = true;
-    const result = document.getElementById("checkout-result");
-    result.classList.add("is-error");
-    if (payment.value === "visa") {
-      result.textContent = "Order not placed: secure Visa payments are unavailable until a payment gateway is integrated. Your bag is unchanged.";
-    } else {
-      result.textContent = "Order not placed: no order service is connected. Your delivery details remain on this page and your bag is unchanged.";
-    }
-    submit.disabled = false;
-    submitting = false;
-  });
+    const submitBtn = document.getElementById("place-order");
+    submitBtn.disabled = true;
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Processing order...";
 
+    try {
+      const formData = new FormData(form);
+
+      const response = await fetch("../app/controllers/process-order.php", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        window.location.href = data.redirect_url;
+      } else {
+        result.classList.add("is-error");
+        result.textContent = data.message || "An error occurred while processing your order.";
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        submitting = false;
+      }
+    } catch (error) {
+      console.error("Network Error:", error);
+      result.classList.add("is-error");
+      result.textContent = "A network error occurred. Please try again.";
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+      submitting = false;
+    }
+  });
   window.addEventListener("elan:cart-updated", renderSummary);
   window.addEventListener("storage", (event) => {
     if (event.key === window.ElanCart.key) renderSummary();

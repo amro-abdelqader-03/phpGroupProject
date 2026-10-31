@@ -184,7 +184,7 @@
           method: "POST",
           credentials: "same-origin",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ user_id: 9001 }),
+          body: JSON.stringify({ user_id: 2 }),
         });
         const cartResult = await cartResponse.json();
         if (!cartResponse.ok || !cartResult.success || !cartResult.data?.id) {

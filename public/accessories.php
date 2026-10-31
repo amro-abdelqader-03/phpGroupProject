@@ -7,7 +7,7 @@
 // STEP 1: Load the files we need
 require_once __DIR__ . '/../app/config/Database.php';
 require_once __DIR__ . '/../app/models/accessories.php';
-
+ require_once 'session.php';
 
 // STEP 2: Connect to the database and create the model
 $database = new Database();

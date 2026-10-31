@@ -1,3 +1,5 @@
+<?php require_once 'session.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,8 +38,8 @@
       <nav class="detail-breadcrumb" aria-label="Breadcrumb"><a href="index.php">Home</a><span aria-hidden="true">/</span><a href="cart.php">Your Bag</a><span aria-hidden="true">/</span><span aria-current="page">Checkout</span></nav>
       <header class="checkout-heading"><p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>Élan Bridal</p><h1 class="checkout-title">Complete Your <em>Order</em></h1><p class="checkout-intro">Share your delivery details and review your selected looks.</p></header>
       <div class="checkout-layout">
-        <form class="checkout-form" id="checkout-form" novalidate>
-          <section class="checkout-section" aria-labelledby="delivery-title">
+              <form class="checkout-form" id="checkout-form" action="../controllers/ProcessOrderController.php" method="POST" novalidate>
+              <section class="checkout-section" aria-labelledby="delivery-title">
             <div class="checkout-section__heading"><span class="checkout-section__index">01</span><div><h2 id="delivery-title">Delivery Address</h2><p>Where should we deliver your selection?</p></div></div>
             <div class="checkout-fields">
               <div class="checkout-field checkout-field--wide"><label for="delivery-name">Full Name <span aria-hidden="true">*</span></label><input id="delivery-name" name="name" autocomplete="name" type="text" placeholder="Your full name" required aria-describedby="delivery-name-error"><p class="checkout-error" id="delivery-name-error"></p></div>
