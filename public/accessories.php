@@ -22,6 +22,7 @@ $sections = [
     "groom-shoes"    => [15, 16, 17, 18],   // Derby, Loafers, Monk Strap, Oxford
     "bow-ties"       => [21],
     "neck-ties"      => [22],
+    "cuff-links"     => [26],
     "pocket-squares" => [23],
     "bridal-shoes"   => [19, 20, 24, 25],   // Bloch Heels, High Heels, Bridal Sandal, Flats
     "bridal-jewelry" => [7],
@@ -41,20 +42,9 @@ foreach ($sections as $sectionId => $subcategoryIds) {
 
 
 // STEP 5: Get the category cards for the two shoe sections
+// (each card's photo is in the image_url column of the subcategories table)
 $groomShoeTypes = $accessoriesModel->getSubcategories([15, 16, 17, 18]);
 $bridalShoeTypes = $accessoriesModel->getSubcategories([19, 20, 24, 25]);
-
-// The pictures for the category cards (the subcategories table has no image column)
-$categoryCardImages = [
-    15 => "assets/images/accessories/suits/shoes/derby-category.jpg",
-    16 => "assets/images/accessories/suits/shoes/loafers.jpg",
-    17 => "assets/images/accessories/suits/shoes/monk2.jpg",
-    18 => "assets/images/accessories/suits/shoes/oxford-category.jpg",
-    19 => "assets/images/accessories/dresses/shoes/block-heel-category.jpg",
-    20 => "assets/images/accessories/dresses/shoes/high-heel-category.jpg",
-    24 => "assets/images/accessories/dresses/shoes/bridal-sandal-category.jpg",
-    25 => "assets/images/accessories/dresses/shoes/flat-category.jpg",
-];
 
 
 // =====================================================
@@ -94,13 +84,10 @@ function arrowIcon()
 }
 
 // Prints the category cards at the top of a shoe section (Derby, Loafers...)
-function printCategoryCards($shoeTypes, $sectionId, $cardImages)
+function printCategoryCards($shoeTypes, $sectionId)
 {
     foreach ($shoeTypes as $type) {
-        $image = "";
-        if (isset($cardImages[$type["id"]])) {
-            $image = productImage($cardImages[$type["id"]]);
-        }
+        $image = productImage($type["image_url"]);
         ?>
         <a class="acc-cat-card" href="#<?php echo $sectionId; ?>-products" data-reveal
            aria-label="Explore <?php echo safe($type["name"]); ?>">
@@ -204,7 +191,7 @@ function printProductCards($productList, $sectionId)
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/accessories.css?v=<?php echo filemtime(__DIR__ . '/assets/css/accessories.css'); ?>">
   <script src="assets/js/accessories.js" defer></script>
-  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
   <script src="assets/js/cart.js" defer></script>
 </head>
 <body>
@@ -258,8 +245,8 @@ function printProductCards($productList, $sectionId)
         <nav class="primary-nav" aria-label="Primary">
           <ul class="primary-nav__list">
             <li><a class="primary-nav__link" href="index.php">Home</a></li>
-            <li><a class="primary-nav__link" href="suits.php">Suits</a></li>
             <li><a class="primary-nav__link" href="dresses.php">Dress</a></li>
+            <li><a class="primary-nav__link" href="suits.php">Suits</a></li>
             <li><a class="primary-nav__link is-active" href="accessories.php" aria-current="page">Accessories</a></li>
             <li><a class="primary-nav__link" href="index.php#about">About Us</a></li>
             <li><a class="primary-nav__link" href="register.php">Register</a></li>
@@ -279,8 +266,8 @@ function printProductCards($productList, $sectionId)
         <p class="mobile-menu__eyebrow">Explore Élan Bridal</p>
         <ul class="mobile-menu__list">
           <li><a class="mobile-menu__link" href="index.php"><span>01</span>Home</a></li>
-          <li><a class="mobile-menu__link" href="suits.php"><span>02</span>Suits</a></li>
-          <li><a class="mobile-menu__link" href="dresses.php"><span>03</span>Dress</a></li>
+          <li><a class="mobile-menu__link" href="dresses.php"><span>02</span>Dress</a></li>
+          <li><a class="mobile-menu__link" href="suits.php"><span>03</span>Suits</a></li>
           <li><a class="mobile-menu__link is-active" href="accessories.php" aria-current="page"><span>04</span>Accessories</a></li>
           <li><a class="mobile-menu__link" href="index.php#about"><span>05</span>About Us</a></li>
           <li><a class="mobile-menu__link" href="register.php"><span>06</span>Register</a></li>
@@ -349,7 +336,7 @@ function printProductCards($productList, $sectionId)
             </header>
 
             <div class="acc-cat-grid">
-              <?php printCategoryCards($groomShoeTypes, "groom-shoes", $categoryCardImages); ?>
+              <?php printCategoryCards($groomShoeTypes, "groom-shoes"); ?>
             </div>
             <div class="acc-products" id="groom-shoes-products">
               <?php printProductCards($products["groom-shoes"], "groom-shoes"); ?>
@@ -383,9 +370,22 @@ function printProductCards($productList, $sectionId)
 
           </article>
 
-          <article class="acc-block" id="pocket-squares" aria-labelledby="pocket-squares-title">
+          <article class="acc-block" id="cuff-links" aria-labelledby="cuff-links-title">
             <header class="acc-block__head" data-reveal>
               <p class="acc-block__index" aria-hidden="true">04</p>
+              <h3 class="acc-block__title" id="cuff-links-title">Cuff Links</h3>
+              <p class="acc-block__text">Finish the groom's shirt with a polished detail, from classic silver to understated gold.</p>
+            </header>
+
+            <div class="acc-products" id="cuff-links-products">
+              <?php printProductCards($products["cuff-links"], "cuff-links"); ?>
+            </div>
+
+          </article>
+
+          <article class="acc-block" id="pocket-squares" aria-labelledby="pocket-squares-title">
+            <header class="acc-block__head" data-reveal>
+              <p class="acc-block__index" aria-hidden="true">05</p>
               <h3 class="acc-block__title" id="pocket-squares-title">Pocket Squares</h3>
               <p class="acc-block__text">Small details make a lasting impression. Complete your look with carefully selected pocket squares.</p>
             </header>
@@ -428,7 +428,7 @@ function printProductCards($productList, $sectionId)
             </header>
 
             <div class="acc-cat-grid">
-              <?php printCategoryCards($bridalShoeTypes, "bridal-shoes", $categoryCardImages); ?>
+              <?php printCategoryCards($bridalShoeTypes, "bridal-shoes"); ?>
             </div>
             <div class="acc-products" id="bridal-shoes-products">
               <?php printProductCards($products["bridal-shoes"], "bridal-shoes"); ?>
@@ -494,8 +494,8 @@ function printProductCards($productList, $sectionId)
     <aside class="collection-note acc-note" aria-labelledby="acc-note-title">
       <div class="container collection-note__inner">
         <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>A Note on the Collection</p>
-        <h2 class="collection-note__title" id="acc-note-title">Editorial preview, honestly labelled.</h2>
-        <p class="collection-note__text">This is a frontend demonstration. Product names and descriptions are editorial examples; no prices, stock availability, or reviews are claimed. Photography is licensed from Pexels and recorded in CREDITS.md, and every image is stored locally so the page can be replaced with real inventory photography without changing the layout.</p>
+        <h2 class="collection-note__title" id="acc-note-title">The finishing touch, chosen with care.</h2>
+        <p class="collection-note__text">Every accessory in our collection is selected to complete the look of our gowns and suits, from polished shoes and silk ties to delicate veils and heirloom-worthy jewelry. Prices are shown in Jordanian dinars, and new pieces are added throughout the season. For help pairing accessories with your dress or suit, visit our atelier and our stylists will guide you through every detail.</p>
       </div>
     </aside>
   </main>

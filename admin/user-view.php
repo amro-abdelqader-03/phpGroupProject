@@ -71,7 +71,8 @@ require __DIR__ . '/includes/header.php';
                         <a href="users.php" class="btn btn-outline-custom">
                             <i class="bi bi-arrow-left me-1"></i> Back to Users
                         </a>
-                        <a href="user-edit.php?id=<?php echo $user["id"]; ?>" class="btn btn-brand">
+                        <!-- Opens the users list with this user's Edit popup open -->
+                        <a href="users.php?edit=<?php echo $user["id"]; ?>#edit-user-<?php echo $user["id"]; ?>" class="btn btn-brand">
                             <i class="bi bi-pencil me-1"></i> Edit User
                         </a>
                     </div>
