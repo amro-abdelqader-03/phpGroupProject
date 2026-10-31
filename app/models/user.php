@@ -9,7 +9,6 @@ class User
         $this->db = $db;
     }
 
-    // Create a new user (used by the "Add User" button)
     public function create(
         string $fullName,
         string $email,
@@ -31,12 +30,7 @@ class User
         return (int) $this->db->lastInsertId();
     }
 
-
-
-
-
-    // (read)Get users for the admin table (search, filters and pages)
-    // $status: null = all, 1 = active, 0 = inactive
+    // Get users for the admin table
     public function getAll(
         string $search = "",
         ?int $status = null,
@@ -69,7 +63,6 @@ class User
         return $stmt->fetchAll();
     }
 
-    // Count users that match the filters (for "Showing 1-5 of 25" and the page numbers)
     public function countAll(
         string $search = "",
         ?int $status = null,
@@ -85,7 +78,6 @@ class User
         return (int) $stmt->fetchColumn();
     }
 
-    // Countries for the "All Locations" dropdown
     public function getCountries(): array
     {
         $sql = "SELECT DISTINCT country
@@ -97,7 +89,6 @@ class User
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    // Get one user (for the view and edit icons), never returns the password
     public function getById(int $id): ?array
     {
         $sql = "SELECT u.id, u.full_name, u.email, u.phone, u.is_active, u.created_at,
@@ -115,10 +106,9 @@ class User
         return $user ?: null;
     }
 
-    // Find a user by email (to stop duplicate emails when adding or editing)
     public function findByEmail(string $email): ?array
     {
-        $sql = "SELECT id, full_name, email, phone, is_active
+        $sql = "SELECT id, full_name, email, password_hash, phone
                 FROM users
                 WHERE email = ?";
 
@@ -130,7 +120,6 @@ class User
         return $user ?: null;
     }
 
-    // (update) Edit a user's details (used by the pencil icon)
     public function update(
         int $id,
         string $fullName,
@@ -147,8 +136,6 @@ class User
         return $stmt->rowCount() > 0;
     }
 
-    // (delete)Change a user's status (used by the Active / Inactive dropdown)
-    // $isActive: 1 = active, 0 = inactive
     public function setStatus(int $id, int $isActive): bool
     {
         $sql = "UPDATE users
@@ -161,7 +148,6 @@ class User
         return $stmt->rowCount() > 0;
     }
 
-    // (read) All addresses of one user (for the view page)
     public function getAddresses(int $userId): array
     {
         $sql = "SELECT id, full_name, country, city, street, building, phone
@@ -175,7 +161,6 @@ class User
         return $stmt->fetchAll();
     }
 
-    // (read) Latest orders of one user (for the view page)
     public function getOrders(int $userId, int $limit = 10): array
     {
         $sql = "SELECT id, order_date, total_amount, order_status
@@ -192,7 +177,6 @@ class User
         return $stmt->fetchAll();
     }
 
-    // Builds the WHERE part shared by getAll() and countAll()
     private function buildFilters(string $search, ?int $status, string $country): array
     {
         $conditions = [];

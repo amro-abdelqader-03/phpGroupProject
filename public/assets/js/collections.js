@@ -212,10 +212,12 @@
   function cardMarkup(product, index, categoryId, config) {
 
     const ready = product.secondaryReady === true;
-
-    const primary = config.kind === "suit"
-      ? getImageUrl(product.image_url)
-      : config.base + product.slug + config.primarySuffix;
+    
+    const primary = "../" + getImageUrl(product.image_url)
+    
+    // const primary = config.kind === "suit"
+    //   ? getImageUrl(product.image_url)
+    //   : config.base + product.slug + config.primarySuffix;
 
     const secondary = config.kind === "suit"
       ? (
