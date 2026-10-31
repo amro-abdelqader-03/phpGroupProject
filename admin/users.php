@@ -212,6 +212,7 @@ if (isset($_GET["error"]) && $_GET["error"] === "notfound") {
 // STEP 8: Show the page
 $pageTitle = "Users Management";
 $breadcrumb = "Users";
+$activePage = "users";
 require __DIR__ . '/includes/header.php';   // <head>, sidebar and top bar
 ?>
 
