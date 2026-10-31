@@ -4,10 +4,24 @@
   const params = new URLSearchParams(window.location.search);
   const collectionKey = params.get("category");
   const slug = params.get("slug");
-  const collection = window.ELAN_COLLECTIONS && window.ELAN_COLLECTIONS[collectionKey];
-  const match = collection && slug
-    ? Object.values(collection.categories).flat().find((product) => product.slug === slug)
+ 
+const isDatabaseDress = collectionKey === "dresses" && Boolean(window.ELAN_DB_DRESS);
+
+const collection = window.ELAN_COLLECTIONS && window.ELAN_COLLECTIONS[collectionKey];
+
+const match = isDatabaseDress
+  ? {
+      slug: String(window.ELAN_DB_DRESS.id),
+      name: window.ELAN_DB_DRESS.name,
+      desc: window.ELAN_DB_DRESS.description,
+      price: window.ELAN_DB_DRESS.price
+    }
+  : collection && slug
+    ? Object.values(collection.categories).flat()
+        .find((product) => product.slug === slug)
     : null;
+
+
   const detail = document.getElementById("product-details");
   const missing = document.getElementById("product-missing");
   if (!match || !detail) {
@@ -18,7 +32,11 @@
   const isDress = collectionKey === "dresses";
   const categoryName = isDress ? "Wedding Dresses" : "Suits";
   const collectionUrl = isDress ? "dresses.php" : "suits.php";
-  const image = `${collection.base}${match.slug}${collection.primarySuffix}`;
+
+
+const image = isDatabaseDress
+  ? "/project_3" + window.ELAN_DB_DRESS.image
+  : `${collection.base}${match.slug}${collection.primarySuffix}`;
   const fullAlt = isDress
     ? `Model wearing ${match.name} in a full-length bridal portrait.`
     : `Model wearing ${match.name}, photographed in full length.`;
@@ -30,7 +48,11 @@
 
   detail.hidden = false;
   label("detail-name").textContent = match.name;
-  label("detail-description").textContent = match.desc;
+  
+  if (isDatabaseDress) {
+  label("detail-price").textContent =
+    Number(match.price).toFixed(2) + " JOD";
+}
   label("detail-category").textContent = isDress ? "The Bridal Collection" : "The Groom's Collection";
   label("detail-collection-link").textContent = categoryName;
   label("detail-collection-link").href = collectionUrl;
@@ -38,13 +60,40 @@
   label("detail-breadcrumb-name").textContent = match.name;
   document.title = `${match.name} | ÉLAN BRIDAL`;
 
-  const mainImage = label("detail-primary-image");
-  mainImage.src = image;
-  mainImage.alt = fullAlt;
-  document.querySelectorAll("[data-thumb-image]").forEach((thumb) => {
+ 
+const mainImage = label("detail-primary-image");
+
+const dressImages = isDatabaseDress
+  ? [
+      window.ELAN_DB_DRESS.image,
+      ...window.ELAN_DB_DRESS.images.map((item) => item.image_url)
+    ]
+      .filter(Boolean)
+      .filter((path, index, all) => all.indexOf(path) === index)
+      .map((path) =>
+        path.startsWith("/Data/") ? "/project_3" + path : path
+      )
+  : [];
+
+mainImage.src = image;
+mainImage.alt = fullAlt;
+
+document.querySelectorAll("[data-thumb-image]").forEach((thumb, index) => {
+  if (isDatabaseDress) {
+    const imagePath = dressImages[index];
+
+    if (imagePath) {
+      thumb.src = imagePath;
+      thumb.alt = `${match.name} - Image ${index + 1}`;
+    } else {
+      thumb.closest("[data-gallery-view]").hidden = true;
+    }
+  } else {
     thumb.src = image;
     thumb.alt = "";
-  });
+  }
+});
+
 
   const sizeContainer = label("size-options");
   const colorContainer = label("color-options");
@@ -87,19 +136,42 @@
 
   const galleryLabels = ["Full look", "Upper silhouette crop", isDress ? "Bodice detail crop" : "Jacket detail crop", "Lower silhouette crop"];
   const galleryAlts = [fullAlt, `Upper silhouette crop from the campaign photograph of ${match.name}.`, `${isDress ? "Bodice" : "Jacket"} detail crop from the campaign photograph of ${match.name}.`, `Lower silhouette crop from the campaign photograph of ${match.name}.`];
-  document.querySelectorAll("[data-gallery-view]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const view = Number(button.dataset.galleryView);
+  
+document.querySelectorAll("[data-gallery-view]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const view = Number(button.dataset.galleryView);
+
+    if (isDatabaseDress) {
+      if (!dressImages[view]) return;
+
+      mainImage.src = dressImages[view];
+
+      // Remove the old crop effect
+      mainImage.removeAttribute("data-crop");
+
+      mainImage.alt = `${match.name} - Image ${view + 1}`;
+
+      label("detail-image-label").textContent =
+        `Image ${view + 1}`;
+
+    } else {
+      // Keep the original suits behavior
       mainImage.dataset.crop = String(view);
       mainImage.alt = galleryAlts[view];
-      label("detail-image-label").textContent = galleryLabels[view];
-      document.querySelectorAll("[data-gallery-view]").forEach((thumb) => {
-        const active = thumb === button;
-        thumb.classList.toggle("is-selected", active);
-        thumb.setAttribute("aria-pressed", String(active));
-      });
+
+      label("detail-image-label").textContent =
+        galleryLabels[view];
+    }
+
+    document.querySelectorAll("[data-gallery-view]").forEach((thumb) => {
+      const active = thumb === button;
+
+      thumb.classList.toggle("is-selected", active);
+      thumb.setAttribute("aria-pressed", String(active));
     });
   });
+});
+
 
   label("quantity-minus").addEventListener("click", () => {
     quantity = Math.max(1, quantity - 1);
