@@ -654,3 +654,43 @@ body {
         width: 200px;
     }
 }
+
+/* Fix shared admin layout */
+/* #wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+#sidebar {
+    flex-shrink: 0;
+}
+
+#content-wrapper {
+    flex: 1;
+    min-width: 0;
+    width: calc(100% - 240px);
+}
+
+.main-container {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+}
+
+.content-area {
+    width: 100%;
+    max-width: none;
+    padding: 2rem 2.5rem;
+} */
+
+/* Responsive layout */
+/* @media (max-width: 991.98px) {
+    #content-wrapper {
+        width: 100%;
+    }
+
+    .content-area {
+        padding: 1.5rem;
+    }
+} */

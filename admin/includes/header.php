@@ -8,6 +8,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,9 +24,15 @@
     <!-- Our styles: admin.css is shared by all admin pages, users.css is only for the user pages.
          ?v= is the time the file was last changed. When the file changes, the link changes too,
          so the browser downloads the new CSS instead of using its old saved copy. -->
-    <link rel="stylesheet" href="../public/assets/css/admin.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/admin.css'); ?>">
-    <link rel="stylesheet" href="../public/assets/css/users.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/users.css'); ?>">
+    <link rel="stylesheet"
+        href="../public/assets/css/admin.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/admin.css'); ?>">
+    <link rel="stylesheet"
+        href="../public/assets/css/users.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/users.css'); ?>">
+    <?php if (!empty($pageCss)) { ?>
+        <link rel="stylesheet" href="<?php echo safe($pageCss); ?>">
+    <?php } ?>
 </head>
+
 <body>
 
     <div id="wrapper">
@@ -40,33 +47,44 @@
 
             <div class="sidebar-heading">Navigation</div>
 
-            <ul class="sidebar-nav">
-                <li class="nav-item">
-                    <a href="dashboard.php" class="nav-link">
-                        <i class="bi bi-grid-1x2 me-2"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="users.php" class="nav-link active">
-                        <i class="bi bi-people me-2"></i> Users
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="categories.php" class="nav-link">
-                        <i class="bi bi-tags me-2"></i> Categories
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="products.php" class="nav-link">
-                        <i class="bi bi-box-seam me-2"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="orders.php" class="nav-link">
-                        <i class="bi bi-cart3 me-2"></i> Orders
-                    </a>
-                </li>
-            </ul>
+           <ul class="sidebar-nav">
+
+    <li class="nav-item">
+        <a href="dashboard.php"
+           class="nav-link <?= $activePage === 'dashboard' ? 'active' : '' ?>">
+            <i class="bi bi-grid-1x2 me-2"></i> Dashboard
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a href="users.php"
+           class="nav-link <?= $activePage === 'users' ? 'active' : '' ?>">
+            <i class="bi bi-people me-2"></i> Users
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a href="categories.php"
+           class="nav-link <?= $activePage === 'categories' ? 'active' : '' ?>">
+            <i class="bi bi-tags me-2"></i> Categories
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a href="products.php"
+           class="nav-link <?= $activePage === 'products' ? 'active' : '' ?>">
+            <i class="bi bi-box-seam me-2"></i> Products
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a href="orders.php"
+           class="nav-link <?= $activePage === 'orders' ? 'active' : '' ?>">
+            <i class="bi bi-cart3 me-2"></i> Orders
+        </a>
+    </li>
+
+</ul>
 
             <!-- <div class="sidebar-footer">
                 <button class="collapse-btn">
