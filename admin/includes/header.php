@@ -47,52 +47,92 @@
 
             <div class="sidebar-heading">Navigation</div>
 
-           <ul class="sidebar-nav">
+            <ul class="sidebar-nav">
 
-    <li class="nav-item">
-        <a href="dashboard.php"
-           class="nav-link <?= $activePage === 'dashboard' ? 'active' : '' ?>">
-            <i class="bi bi-grid-1x2 me-2"></i> Dashboard
-        </a>
-    </li>
+                <li class="nav-item">
+                    <a href="dashboard.php" class="nav-link <?= $activePage === 'dashboard' ? 'active' : '' ?>">
+                        <i class="bi bi-grid-1x2 me-2"></i> Dashboard
+                    </a>
+                </li>
 
-    <li class="nav-item">
-        <a href="users.php"
-           class="nav-link <?= $activePage === 'users' ? 'active' : '' ?>">
-            <i class="bi bi-people me-2"></i> Users
-        </a>
-    </li>
+                <li class="nav-item">
+                    <a href="users.php" class="nav-link <?= $activePage === 'users' ? 'active' : '' ?>">
+                        <i class="bi bi-people me-2"></i> Users
+                    </a>
+                </li>
 
-    <li class="nav-item">
-        <a href="categories.php"
-           class="nav-link <?= $activePage === 'categories' ? 'active' : '' ?>">
-            <i class="bi bi-tags me-2"></i> Categories
-        </a>
-    </li>
+                <li class="nav-item">
+                    <a href="categories.php" class="nav-link <?= $activePage === 'categories' ? 'active' : '' ?>">
+                        <i class="bi bi-tags me-2"></i> Categories
+                    </a>
+                </li>
 
-    <li class="nav-item">
-        <a href="products.php"
-           class="nav-link <?= $activePage === 'products' ? 'active' : '' ?>">
-            <i class="bi bi-box-seam me-2"></i> Products
-        </a>
-    </li>
+                <li class="nav-item">
+                    <a href="products.php" class="nav-link <?= $activePage === 'products' ? 'active' : '' ?>">
+                        <i class="bi bi-box-seam me-2"></i> Products
+                    </a>
+                </li>
 
-    <li class="nav-item">
-        <a href="orders.php"
-           class="nav-link <?= $activePage === 'orders' ? 'active' : '' ?>">
-            <i class="bi bi-cart3 me-2"></i> Orders
-        </a>
-    </li>
+                <li class="nav-item">
+                    <a href="orders.php" class="nav-link <?= $activePage === 'orders' ? 'active' : '' ?>">
+                        <i class="bi bi-cart3 me-2"></i> Orders
+                    </a>
+                </li>
 
-</ul>
+            </ul>
 
-            <!-- <div class="sidebar-footer">
-                <button class="collapse-btn">
-                    <span><i class="bi bi-layout-sidebar me-2"></i> Collapse Sidebar</span>
-                    <span class="badge bg-light text-muted border">⌘[</span>
+            <div class="sidebar-footer">
+                <button type="button" class="logout-btn" data-bs-toggle="modal" data-bs-target="#logoutModal">
+
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
                 </button>
-            </div> -->
+            </div>
         </aside>
+
+        <!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1"
+     aria-labelledby="logoutModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel">
+                    Confirm Logout
+                </h5>
+
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <i class="bi bi-box-arrow-right text-danger"
+                   style="font-size: 45px;"></i>
+
+                <p class="mt-3 mb-0">
+                    Are you sure you want to log out?
+                </p>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <a href="logout.php" class="btn btn-danger">
+                    Yes, Logout
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
         <!-- Main Content Wrapper -->
         <div id="content-wrapper">
