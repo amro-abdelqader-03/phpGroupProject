@@ -20,11 +20,35 @@
     }
   }
 
+  // function imageUrl(path) {
+  //   if (!path) return "";
+  //   // The API returns paths rooted at the project, such as /Data/...
+  //   return new URL(path.replace(/^\//, ""), `${window.location.origin}/phpGroupProject/`).href;
+  // }
+
+
+
+
+
+
   function imageUrl(path) {
-    if (!path) return "";
-    // The API returns paths rooted at the project, such as /Data/...
-    return new URL(path.replace(/^\//, ""), `${window.location.origin}/phpGroupProject/`).href;
+  if (!path) return "";
+
+  if (/^https?:\/\//i.test(path)) {
+    return path;
   }
+
+  const projectRoot = new URL("../", window.location.href);
+
+  return new URL(
+    path.replace(/^\/+/, ""),
+    projectRoot
+  ).href;
+}
+
+
+
+
 
   async function loadProduct() {
     if (!productId) {
@@ -51,8 +75,25 @@
   function renderProduct(product) {
     if (!product || !detail) return showMissing();
     const name = product.product_name || "Product";
-    const images = Array.isArray(product.images) ? product.images : [];
-    const primary = images.find((item) => Number(item.is_primary) === 1) || images[0];
+    // const images = Array.isArray(product.images) ? product.images : [];
+    // const primary = images.find((item) => Number(item.is_primary) === 1) || images[0];
+
+const apiImages = Array.isArray(product.images) ? product.images : [];
+
+const isDress = new URLSearchParams(window.location.search).get("category") === "dresses";
+
+const dressImage = isDress ? window.ELAN_DB_DRESS?.image : null;
+
+const images = [
+  ...(dressImage ? [{ image_url: dressImage, is_primary: 1 }] : []),
+  ...apiImages
+].filter((item, index, all) => {
+  return item.image_url &&
+    all.findIndex(other => other.image_url === item.image_url) === index;
+});
+
+const primary = images[0] || null;
+
     const variants = Array.isArray(product.variants) ? product.variants : [];
     const availableVariants = variants.filter((variant) => Number(variant.stock_quantity) > 0);
     const hasColorVariants = availableVariants.some((variant) => variant.color);
@@ -72,7 +113,10 @@
     const galleryButtons = [...document.querySelectorAll("[data-gallery-view]")];
     const thumbs = [...document.querySelectorAll("[data-thumb-image]")];
     galleryButtons.forEach((button, index) => {
-      const item = images[index] || primary;
+      // const item = images[index] || primary;
+const item = images[index];
+
+
       const src = imageUrl(item && item.image_url);
       button.hidden = !item;
       if (thumbs[index]) {

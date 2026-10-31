@@ -1,0 +1,4 @@
+# Keep local secrets out of the web root, even though .env is git-ignored.
+<FilesMatch "^\.env$">
+  Require all denied
+</FilesMatch>

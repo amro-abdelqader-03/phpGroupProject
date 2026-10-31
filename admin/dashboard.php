@@ -1,4 +1,3 @@
-
 <?php
 
 session_start();
@@ -38,728 +37,587 @@ $productSales = array_map(
 // Get monthly revenue from database
 $monthlyRevenue = $controller->getMonthlyRevenue();
 
+// Get top 5 products by gross profit
+$topRevenueProducts = $controller->getTopProductsByRevenue();
 
+// Get orders grouped by country
+$ordersByCountry = $controller->getOrdersByCountry();
 
-    // Get top 5 products by gross profit
-    $topRevenueProducts = $controller->getTopProductsByRevenue();
+// Get latest 5 orders from database
+$recentOrders = $controller->getRecentOrders();
 
-    // Get orders grouped by country
-    $ordersByCountry = $controller->getOrdersByCountry();
+// Shared admin layout settings
+require_once __DIR__ . '/includes/helpers.php';
 
+$pageTitle = "Dashboard";
+$breadcrumb = "Dashboard";
+$activePage = "dashboard";
+$pageCss = "../public/assets/css/adminDashboard.css";
 
-    // Get latest 5 orders from database
-    $recentOrders = $controller->getRecentOrders();
+require_once __DIR__ . '/includes/header.php';
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Admin Dashboard | Wedding Store</title>
-
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-          rel="stylesheet">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet">
-
-    <!-- Dashboard CSS -->
-    <link rel="stylesheet" href="../public/assets/css/adminDashboard.css">
-
-
-    <link rel="stylesheet" href="../public/assets/css/admin.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/admin.css'); ?>">
-    <link rel="stylesheet" href="../public/assets/css/users.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/users.css'); ?>">
-
-    
-
 <!-- Leaflet Map CSS -->
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-</head>
+<!-- Dashboard Content -->
+<div class="page-content">
 
-<body>
+    <h1>Dashboard</h1>
+    <p>Overview of your store's performance.</p>
 
-    <!-- Admin Navbar -->
-    <nav class="admin-navbar">
+    <!-- Dashboard Statistics Cards -->
+    <section class="stats-grid">
 
-        <div class="navbar-left">
-
-            <button class="menu-btn" type="button" aria-label="Toggle menu">
-                <i class="bi bi-list"></i>
-            </button>
-
-            <div class="breadcrumb-text">
-                <span>Home</span>
-                <i class="bi bi-chevron-right"></i>
-                <strong>Dashboard</strong>
+        <!-- Total Revenue -->
+        <div class="stat-card">
+            <div class="stat-header">
+                <span>TOTAL REVENUE</span>
+                <div class="stat-icon revenue-icon">
+                    <i class="bi bi-wallet2"></i>
+                </div>
             </div>
 
+            <h2>
+                $<?= number_format($stats['revenue'], 2) ?>
+            </h2>
+
+            <p>Total store revenue</p>
         </div>
-    </nav>
 
-    <!-- Sidebar -->
-    <aside class="admin-sidebar" id="adminSidebar">
-
-        <div class="sidebar-brand">
-            <div class="brand-logo">
-                <i class="bi bi-layers-fill"></i>
+        <!-- Total Customers -->
+        <div class="stat-card">
+            <div class="stat-header">
+                <span>TOTAL CUSTOMERS</span>
+                <div class="stat-icon customers-icon">
+                    <i class="bi bi-people"></i>
+                </div>
             </div>
+
+            <h2><?= number_format($stats['customers']) ?></h2>
+
+            <p>Registered customers</p>
+        </div>
+
+        <!-- Total Products -->
+        <div class="stat-card">
+            <div class="stat-header">
+                <span>TOTAL PRODUCTS</span>
+                <div class="stat-icon products-icon">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+            </div>
+
+            <h2><?= number_format($stats['products']) ?></h2>
+
+            <p>Available store products</p>
+        </div>
+
+        <!-- Total Orders -->
+        <div class="stat-card">
+            <div class="stat-header">
+                <span>TOTAL ORDERS</span>
+                <div class="stat-icon orders-icon">
+                    <i class="bi bi-bag-check"></i>
+                </div>
+            </div>
+
+            <h2><?= number_format($stats['orders']) ?></h2>
+
+            <p>All customer orders</p>
+        </div>
+
+    </section>
+
+    <!-- Revenue Overview -->
+    <section class="revenue-section">
+
+        <div class="revenue-header">
             <div>
-                <strong>CoreAdmin</strong>
+                <h2>Revenue Overview</h2>
+                <p>Track your store's monthly performance.</p>
             </div>
         </div>
 
-        <p class="sidebar-label">NAVIGATION</p>
-
-        <nav class="sidebar-menu">
-
-            <a href="dashboard.php" class="sidebar-link active">
-                <i class="bi bi-grid-1x2"></i>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="users.php" class="sidebar-link">
-                <i class="bi bi-people"></i>
-                <span>Users</span>
-            </a>
-
-            <a href="categories.php" class="sidebar-link">
-                <i class="bi bi-tags"></i>
-                <span>Categories</span>
-            </a>
-
-            <a href="products.php" class="sidebar-link">
-                <i class="bi bi-box-seam"></i>
-                <span>Products</span>
-            </a>
-
-            <a href="orders.php" class="sidebar-link">
-                <i class="bi bi-bag-check"></i>
-                <span>Orders</span>
-            </a>
-
-        </nav>
-
-        <div class="sidebar-bottom">
-            <button type="button" class="sidebar-collapse" id="collapseSidebar">
-                <i class="bi bi-layout-sidebar-inset"></i>
-                <span>Collapse Sidebar</span>
-            </button>
+        <div class="revenue-chart">
+            <canvas id="revenueChart"></canvas>
         </div>
 
-    </aside>
+    </section>
 
-    <!-- Dashboard Content -->
-    <main class="dashboard-content">
+    <!-- Product Analytics -->
+    <section class="product-analytics-grid">
 
-        <h1>Dashboard</h1>
-        <p>Overview of your store's performance.</p>
-
-        <!-- Dashboard Statistics Cards -->
-        <section class="stats-grid">
-
-            <!-- Total Revenue -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span>TOTAL REVENUE</span>
-                    <div class="stat-icon revenue-icon">
-                        <i class="bi bi-wallet2"></i>
-                    </div>
-                </div>
-
-                <h2>
-                    $<?= number_format($stats['revenue'], 2) ?>
-                </h2>
-
-                <p>Total store revenue</p>
-            </div>
-
-            <!-- Total Customers -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span>TOTAL CUSTOMERS</span>
-                    <div class="stat-icon customers-icon">
-                        <i class="bi bi-people"></i>
-                    </div>
-                </div>
-
-                <h2><?= number_format($stats['customers']) ?></h2>
-
-                <p>Registered customers</p>
-            </div>
-
-            <!-- Total Products -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span>TOTAL PRODUCTS</span>
-                    <div class="stat-icon products-icon">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
-                </div>
-
-                <h2><?= number_format($stats['products']) ?></h2>
-
-                <p>Available store products</p>
-            </div>
-
-            <!-- Total Orders -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span>TOTAL ORDERS</span>
-                    <div class="stat-icon orders-icon">
-                        <i class="bi bi-bag-check"></i>
-                    </div>
-                </div>
-
-                <h2><?= number_format($stats['orders']) ?></h2>
-
-                <p>All customer orders</p>
-            </div>
-
-        </section>
-
-        <!-- Revenue Overview -->
-        <section class="revenue-section">
-
-            <div class="revenue-header">
-                <div>
-                    <h2>Revenue Overview</h2>
-                    <p>Track your store's monthly performance.</p>
-                </div>
-            </div>
-
-            <div class="revenue-chart">
-                <canvas id="revenueChart"></canvas>
-            </div>
-
-        </section>
-
-        <!-- Stitch: Product Analytics -->
-        <section class="product-analytics-grid">
-
-          
-
-<!-- Products by Revenue -->
-<div class="analytics-card">
-    <div class="analytics-heading">
-        <div>
-            <h2>Products by Gross Profit</h2>
-            <p>Top 5 products by gross profit</p>
-        </div>
-        <i class="bi bi-three-dots-vertical"></i>
-    </div>
-
-    <div class="revenue-products">
-
-        <?php if (!empty($topRevenueProducts)): ?>
-
-            <?php
-            $maxProfit = max(
-                0,
-                ...array_map(
-                    'floatval',
-                    array_column($topRevenueProducts, 'total_revenue')
-                )
-            );
-            ?>
-
-            <?php foreach ($topRevenueProducts as $index => $product): ?>
-
-                <?php
-                $profit = (float) $product['total_revenue'];
-
-                $percentage = $maxProfit > 0
-                    ? max(0, $profit / $maxProfit * 100)
-                    : 0;
-                ?>
-
-                <div class="revenue-product">
-                    <div class="product-line">
-                        <span>
-                            <b>#<?= $index + 1 ?></b>
-                            <?= htmlspecialchars(
-                                $product['name'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
-                        </span>
-
-                        <strong>
-                            $<?= number_format($profit, 2) ?>
-                        </strong>
-                    </div>
-
-                    <div class="analytics-track">
-                        <div style="width: <?= $percentage ?>%"></div>
-                    </div>
-                </div>
-
-            <?php endforeach; ?>
-
-        <?php else: ?>
-
-            <p>No delivered product sales yet.</p>
-
-        <?php endif; ?>
-
-    </div>
-
-    <div class="analytics-footer">
-        <span>Top 5 profitable products</span>
-        <a href="products.php">View All Products →</a>
-    </div>
-</div>
-
-            
-<!-- Products by Number of Orders -->
-<div class="analytics-card">
-    <div class="analytics-heading">
-        <div>
-            <h2>Products by Number of Orders</h2>
-            <p>Top 5 products by number of orders</p>
-        </div>
-        <span class="analytics-period">All Time</span>
-    </div>
-
-    <div class="orders-chart-area">
-        <canvas id="productOrdersChart"></canvas>
-    </div>
-
-    <div class="analytics-footer">
-        <span>
-            Total Orders (All Statuses):
-            <?= number_format($stats['orders']) ?>
-        </span>
-    </div>
-</div>
-
-        </section>
-
-        <!-- Stitch: Orders by Country -->
-        <section class="country-section">
-
+        <!-- Products by Revenue -->
+        <div class="analytics-card">
             <div class="analytics-heading">
                 <div>
-                    <h2>Orders by Country</h2>
-                    <p>Global geographic distribution and order density</p>
+                    <h2>Products by Gross Profit</h2>
+                    <p>Top 5 products by gross profit</p>
                 </div>
-                <span class="analytics-period">All Regions</span>
+                <i class="bi bi-three-dots-vertical"></i>
             </div>
 
-            <div class="country-layout">
+            <div class="revenue-products">
 
-                <div class="country-map-column">
-                    <div class="country-map">
-                        <div id="ordersWorldMap"></div>
-                        
-                       
-                        <div class="map-message">
-                            <strong>Global Order Distribution</strong>
-                            <span>Geographic overview · Demo</span>
+                <?php if (!empty($topRevenueProducts)): ?>
+
+                    <?php
+                    $maxProfit = max(
+                        0,
+                        ...array_map(
+                            'floatval',
+                            array_column($topRevenueProducts, 'total_revenue')
+                        )
+                    );
+                    ?>
+
+                    <?php foreach ($topRevenueProducts as $index => $product): ?>
+
+                        <?php
+                        $profit = (float) $product['total_revenue'];
+
+                        $percentage = $maxProfit > 0
+                            ? max(0, $profit / $maxProfit * 100)
+                            : 0;
+                        ?>
+
+                        <div class="revenue-product">
+                            <div class="product-line">
+                                <span>
+                                    <b>#<?= $index + 1 ?></b>
+                                    <?= htmlspecialchars(
+                                        $product['name'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+                                </span>
+
+                                <strong>
+                                    $<?= number_format($profit, 2) ?>
+                                </strong>
+                            </div>
+
+                            <div class="analytics-track">
+                                <div style="width: <?= $percentage ?>%"></div>
+                            </div>
                         </div>
-                        <div class="map-legend">
-                            Order Density
-                            <div class="legend-gradient"></div>
-                            <small>Low &nbsp;&nbsp;&nbsp;&nbsp; High</small>
-                        </div>
-                    </div>
-                    
-<div class="country-map-footer">
-    <span>
-        Active Shipping Destinations:
-        <?= count($ordersByCountry) ?> countries
-    </span>
-</div>
 
-                </div>
+                    <?php endforeach; ?>
 
-                
-<div class="markets-column">
+                <?php else: ?>
 
-    <div class="markets-heading">
-        <strong>Top Performing Markets</strong>
-        <span>Share of Total</span>
-    </div>
+                    <p>No delivered product sales yet.</p>
 
-    <?php
-    // Total orders excluding cancelled orders
-    $totalCountryOrders = array_sum(
-        array_map('intval', array_column($ordersByCountry, 'total_orders'))
-    );
-
-    // Show top 5 countries
-    $topCountries = array_slice($ordersByCountry, 0, 5);
-
-    // Country display codes
-    $countryCodes = [
-        'Jordan' => 'JO',
-        'United States' => 'US',
-        'Germany' => 'DE',
-        'United Kingdom' => 'GB',
-        'France' => 'FR',
-        'Canada' => 'CA'
-    ];
-    ?>
-
-    <?php if (!empty($topCountries)): ?>
-
-        <?php foreach ($topCountries as $country): ?>
-
-            <?php
-            $name = $country['country'];
-            $orders = (int) $country['total_orders'];
-            $sales = (float) $country['total_sales'];
-
-            $percentage = $totalCountryOrders > 0
-                ? ($orders / $totalCountryOrders) * 100
-                : 0;
-
-            $code = $countryCodes[$name] ?? '';
-            ?>
-
-            <div class="market-item">
-
-                <div class="market-title">
-                    <strong>
-                        <?= htmlspecialchars($code, ENT_QUOTES, 'UTF-8') ?>
-                        &nbsp;
-                        <?= htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?>
-                    </strong>
-
-                    <b><?= number_format($percentage, 1) ?>%</b>
-                </div>
-
-                <div class="analytics-track">
-                    <div style="width: <?= $percentage ?>%"></div>
-                </div>
-
-                <div class="market-meta">
-                    <span><?= number_format($orders) ?> orders</span>
-                    <span>$<?= number_format($sales, 2) ?> sales</span>
-                </div>
+                <?php endif; ?>
 
             </div>
 
-        <?php endforeach; ?>
-
-    <?php else: ?>
-
-        <p>No orders by country yet.</p>
-
-    <?php endif; ?>
-
-</div>
-
+            <div class="analytics-footer">
+                <span>Top 5 profitable products</span>
+                <a href="products.php">View All Products →</a>
             </div>
-        </section>
+        </div>
 
-        <!-- Recent Orders -->
-        <section class="recent-orders-section">
-
-            <div class="recent-orders-header">
+        <!-- Products by Number of Orders -->
+        <div class="analytics-card">
+            <div class="analytics-heading">
                 <div>
-                    <h2>Recent Orders</h2>
-                    <p>Latest customer orders.</p>
+                    <h2>Products by Number of Orders</h2>
+                    <p>Top 5 products by number of orders</p>
+                </div>
+                <span class="analytics-period">All Time</span>
+            </div>
+
+            <div class="orders-chart-area">
+                <canvas id="productOrdersChart"></canvas>
+            </div>
+
+            <div class="analytics-footer">
+                <span>
+                    Total Orders (All Statuses):
+                    <?= number_format($stats['orders']) ?>
+                </span>
+            </div>
+        </div>
+
+    </section>
+
+        <!-- Orders by Country -->
+    <section class="country-section">
+
+        <div class="analytics-heading">
+            <div>
+                <h2>Orders by Country</h2>
+                <p>Global geographic distribution and order density</p>
+            </div>
+            <span class="analytics-period">All Regions</span>
+        </div>
+
+        <div class="country-layout">
+
+            <div class="country-map-column">
+                <div class="country-map">
+                    <div id="ordersWorldMap"></div>
+
+                    <div class="map-message">
+                        <strong>Global Order Distribution</strong>
+                        <span>Geographic overview · Demo</span>
+                    </div>
+
+                    <div class="map-legend">
+                        Order Density
+                        <div class="legend-gradient"></div>
+                        <small>Low &nbsp;&nbsp;&nbsp;&nbsp; High</small>
+                    </div>
                 </div>
 
-
-
-
-
-            </div>
-
-            <div class="orders-table-wrapper">
-
-                <table class="orders-table">
-
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    
-
-<tbody>
-    <?php if (!empty($recentOrders)): ?>
-
-        <?php foreach ($recentOrders as $order): ?>
-
-            <?php
-            $status = $order['order_status'];
-
-            $allowedStatuses = [
-                'Pending',
-                'Confirmed',
-                'Shipped',
-                'Delivered',
-                'Cancelled'
-            ];
-
-            $statusClass = in_array($status, $allowedStatuses, true)
-                ? strtolower($status)
-                : '';
-            ?>
-
-            <tr>
-                <td>
-                    #ORD-<?= (int) $order['id'] ?>
-                </td>
-
-                <td>
-                    <?= htmlspecialchars(
-                        $order['full_name'],
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ) ?>
-                </td>
-
-                <td>
-                    <?= htmlspecialchars(
-                        date('Y-m-d', strtotime($order['order_date'])),
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ) ?>
-                </td>
-
-                <td>
-                    $<?= number_format(
-                        (float) $order['total_amount'],
-                        2
-                    ) ?>
-                </td>
-
-                <td>
-                    <span class="order-status <?= $statusClass ?>">
-                        <?= htmlspecialchars(
-                            $status,
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>
+                <div class="country-map-footer">
+                    <span>
+                        Active Shipping Destinations:
+                        <?= count($ordersByCountry) ?> countries
                     </span>
-                </td>
-            </tr>
+                </div>
+            </div>
 
-        <?php endforeach; ?>
+            <div class="markets-column">
 
-    <?php else: ?>
+                <div class="markets-heading">
+                    <strong>Top Performing Markets</strong>
+                    <span>Share of Total</span>
+                </div>
 
-        <tr>
-            <td colspan="5" class="text-center">
-                No orders found.
-            </td>
-        </tr>
+                <?php
+                // Total orders excluding cancelled orders
+                $totalCountryOrders = array_sum(
+                    array_map(
+                        'intval',
+                        array_column($ordersByCountry, 'total_orders')
+                    )
+                );
 
-    <?php endif; ?>
-</tbody>
+                // Show top 5 countries
+                $topCountries = array_slice($ordersByCountry, 0, 5);
 
-                </table>
+                // Country display codes
+                $countryCodes = [
+                    'Jordan' => 'JO',
+                    'United States' => 'US',
+                    'Germany' => 'DE',
+                    'United Kingdom' => 'GB',
+                    'France' => 'FR',
+                    'Canada' => 'CA'
+                ];
+                ?>
+
+                <?php if (!empty($topCountries)): ?>
+
+                    <?php foreach ($topCountries as $country): ?>
+
+                        <?php
+                        $name = $country['country'];
+                        $orders = (int) $country['total_orders'];
+                        $sales = (float) $country['total_sales'];
+
+                        $percentage = $totalCountryOrders > 0
+                            ? ($orders / $totalCountryOrders) * 100
+                            : 0;
+
+                        $code = $countryCodes[$name] ?? '';
+                        ?>
+
+                        <div class="market-item">
+
+                            <div class="market-title">
+                                <strong>
+                                    <?= htmlspecialchars($code, ENT_QUOTES, 'UTF-8') ?>
+                                    &nbsp;
+                                    <?= htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?>
+                                </strong>
+
+                                <b><?= number_format($percentage, 1) ?>%</b>
+                            </div>
+
+                            <div class="analytics-track">
+                                <div style="width: <?= $percentage ?>%"></div>
+                            </div>
+
+                            <div class="market-meta">
+                                <span><?= number_format($orders) ?> orders</span>
+                                <span>$<?= number_format($sales, 2) ?> sales</span>
+                            </div>
+
+                        </div>
+
+                    <?php endforeach; ?>
+
+                <?php else: ?>
+
+                    <p>No orders by country yet.</p>
+
+                <?php endif; ?>
 
             </div>
 
-        </section>
+        </div>
+    </section>
 
-    </main>
+    <!-- Recent Orders -->
+    <section class="recent-orders-section">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+        <div class="recent-orders-header">
+            <div>
+                <h2>Recent Orders</h2>
+                <p>Latest customer orders.</p>
+            </div>
+        </div>
 
-    <script>
-        const sidebar = document.getElementById('adminSidebar');
-        const menuButton = document.querySelector('.menu-btn');
-        const collapseButton = document.getElementById('collapseSidebar');
+        <div class="orders-table-wrapper">
 
-        function toggleSidebar() {
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('mobile-open');
-            } else {
-                sidebar.classList.toggle('collapsed');
-                document.body.classList.toggle('sidebar-collapsed');
-            }
-        }
+            <table class="orders-table">
 
-        menuButton.addEventListener('click', toggleSidebar);
-        collapseButton.addEventListener('click', toggleSidebar);
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
 
-        // Navbar glass effect on scroll
-        const navbar = document.querySelector('.admin-navbar');
+                <tbody>
 
-        function updateNavbar() {
-            if (window.scrollY > 20) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        }
+                    <?php if (!empty($recentOrders)): ?>
 
-        window.addEventListener('scroll', updateNavbar);
-        updateNavbar();
-    </script>
+                        <?php foreach ($recentOrders as $order): ?>
 
-    <!-- Revenue Overview Chart -->
-    <script>
-        // Month labels
-        const months = [
-            'Jan', 'Feb', 'Mar',
-            'Apr', 'May', 'Jun',
-            'Jul', 'Aug', 'Sep',
-            'Oct', 'Nov', 'Dec'
-        ];
+                            <?php
+                            $status = $order['order_status'];
 
-        // Monthly revenue from PHP / MySQL
-        const monthlyRevenue = <?= json_encode(
-            $monthlyRevenue,
-            JSON_NUMERIC_CHECK
-        ) ?>;
+                            $allowedStatuses = [
+                                'Pending',
+                                'Confirmed',
+                                'Shipped',
+                                'Delivered',
+                                'Cancelled'
+                            ];
 
-        const chartElement = document.getElementById('revenueChart');
+                            $statusClass = in_array($status, $allowedStatuses, true)
+                                ? strtolower($status)
+                                : '';
+                            ?>
 
-        if (chartElement && typeof Chart !== 'undefined') {
-            new Chart(chartElement, {
-                type: 'line',
+                            <tr>
+                                <td>
+                                    #ORD-<?= (int) $order['id'] ?>
+                                </td>
 
-                data: {
-                    labels: months,
-                    datasets: [{
-                        label: 'Monthly Revenue',
-                        data: monthlyRevenue,
-                        borderColor: '#5145e8',
-                        backgroundColor: 'rgba(81, 69, 232, 0.08)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#5145e8'
-                    }]
+                                <td>
+                                    <?= htmlspecialchars(
+                                        $order['full_name'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+                                </td>
+
+                                <td>
+                                    <?= htmlspecialchars(
+                                        date('Y-m-d', strtotime($order['order_date'])),
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+                                </td>
+
+                                <td>
+                                    $<?= number_format(
+                                        (float) $order['total_amount'],
+                                        2
+                                    ) ?>
+                                </td>
+
+                                <td>
+                                    <span class="order-status <?= $statusClass ?>">
+                                        <?= htmlspecialchars(
+                                            $status,
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+                                    </span>
+                                </td>
+                            </tr>
+
+                        <?php endforeach; ?>
+
+                    <?php else: ?>
+
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                No orders found.
+                            </td>
+                        </tr>
+
+                    <?php endif; ?>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+<!-- Revenue Overview Chart -->
+<script>
+    // Month labels
+    const months = [
+        'Jan', 'Feb', 'Mar',
+        'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep',
+        'Oct', 'Nov', 'Dec'
+    ];
+
+    // Monthly revenue from PHP / MySQL
+    const monthlyRevenue = <?= json_encode(
+        $monthlyRevenue,
+        JSON_NUMERIC_CHECK
+    ) ?>;
+
+    const chartElement = document.getElementById('revenueChart');
+
+    if (chartElement && typeof Chart !== 'undefined') {
+        new Chart(chartElement, {
+            type: 'line',
+
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Monthly Revenue',
+                    data: monthlyRevenue,
+                    borderColor: '#5145e8',
+                    backgroundColor: 'rgba(81, 69, 232, 0.08)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#5145e8'
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
                 },
 
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-
-                    plugins: {
-                        legend: {
-                            display: false
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
                         }
                     },
 
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return '$' + value;
-                                }
-                            }
-                        },
-
-                        x: {
-                            grid: {
-                                display: false
-                            }
+                    x: {
+                        grid: {
+                            display: false
                         }
                     }
                 }
-            });
-        }
-    </script>
+            }
+        });
+    }
+</script>
 
-    <!-- Products by Number of Orders Chart -->
-    <script>
-        //Product names from PHP / MySQL
-        const productNames = <?= json_encode(
-            $productNames,
-            JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
-        ) ?>;
+<!-- Products by Number of Orders Chart -->
+<script>
+    // Product names from PHP / MySQL
+    const productNames = <?= json_encode(
+        $productNames,
+        JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+    ) ?>;
 
-        // Number of orders from PHP / MySQL
-        const productSales = <?= json_encode($productSales) ?>;
+    // Number of orders from PHP / MySQL
+    const productSales = <?= json_encode($productSales) ?>;
 
-        const productOrdersCanvas =
-            document.getElementById('productOrdersChart');
+    const productOrdersCanvas =
+        document.getElementById('productOrdersChart');
 
-        if (productOrdersCanvas && typeof Chart !== 'undefined') {
-            new Chart(productOrdersCanvas, {
-                type: 'bar',
+    if (productOrdersCanvas && typeof Chart !== 'undefined') {
+        new Chart(productOrdersCanvas, {
+            type: 'bar',
 
-                data: {
-                    labels: productNames,
-                    datasets: [{
-                        label: 'Number of Orders',
-                        data: productSales,
-                        backgroundColor: [
-                            '#3730db',
-                            '#4f46e5',
-                            '#625af4',
-                            '#aaa5fa',
-                            '#d9d6ff'
-                        ],
-                        borderRadius: 7,
-                        maxBarThickness: 45
-                    }]
+            data: {
+                labels: productNames,
+                datasets: [{
+                    label: 'Number of Orders',
+                    data: productSales,
+                    backgroundColor: [
+                        '#3730db',
+                        '#4f46e5',
+                        '#625af4',
+                        '#aaa5fa',
+                        '#d9d6ff'
+                    ],
+                    borderRadius: 7,
+                    maxBarThickness: 45
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
                 },
 
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-
-                    plugins: {
-                        legend: {
+                scales: {
+                    x: {
+                        grid: {
                             display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 10
+                            }
                         }
                     },
 
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#edf0f7'
                         },
-
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: '#edf0f7'
-                            },
-                            ticks: {
-                                precision: 0
-                            }
+                        ticks: {
+                            precision: 0
                         }
                     }
                 }
-            });
-        }
-    </script>
-
-
-
+            }
+        });
+    }
+</script>
 
 <!-- Leaflet Map JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-
-<!-- Interactive World Map -->
 
 <!-- Interactive World Map -->
 <script>
@@ -818,16 +676,14 @@ $monthlyRevenue = $controller->getMonthlyRevenue();
         })
         .then(data => {
 
-
-        
-const countryMarkers = {
-    'jordan': [31.95, 35.93],
-    'united states of america': [39.5, -98.35],
-    'germany': [51.16, 10.45],
-    'united kingdom': [54.5, -3.4],
-    'france': [46.6, 2.2],
-    'canada': [56.13, -106.35]
-};
+            const countryMarkers = {
+                'jordan': [31.95, 35.93],
+                'united states of america': [39.5, -98.35],
+                'germany': [51.16, 10.45],
+                'united kingdom': [54.5, -3.4],
+                'france': [46.6, 2.2],
+                'canada': [56.13, -106.35]
+            };
 
             const countryLayer = L.geoJSON(data, {
                 style: function(feature) {
@@ -856,12 +712,12 @@ const countryMarkers = {
 
                 onEachFeature: function(feature, layer) {
 
-if (feature.properties.name === 'Antarctica') {
-    layer.setStyle({
-        fillOpacity: 0,
-        opacity: 0
-    });
-}
+                    if (feature.properties.name === 'Antarctica') {
+                        layer.setStyle({
+                            fillOpacity: 0,
+                            opacity: 0
+                        });
+                    }
 
                     const countryName =
                         feature.properties.name || 'Unknown';
@@ -887,65 +743,59 @@ if (feature.properties.name === 'Antarctica') {
                 }
             }).addTo(worldMap);
 
+            // Add interactive markers for countries with orders
+            Object.entries(countryData).forEach(([country, info]) => {
 
-            
-// Add interactive markers for countries with orders
-Object.entries(countryData).forEach(([country, info]) => {
+                const coordinates = countryMarkers[country];
 
-    const coordinates = countryMarkers[country];
+                if (!coordinates || info.orders <= 0) {
+                    return;
+                }
 
-    if (!coordinates || info.orders <= 0) {
-        return;
-    }
+                const marker = L.circleMarker(coordinates, {
+                    radius: 5 + Math.min(info.orders, 10),
+                    color: '#ffffff',
+                    weight: 2,
+                    fillColor: '#5145e8',
+                    fillOpacity: 0.95
+                }).addTo(worldMap);
 
-    const marker = L.circleMarker(coordinates, {
-        radius: 5 + Math.min(info.orders, 10),
-        color: '#ffffff',
-        weight: 2,
-        fillColor: '#5145e8',
-        fillOpacity: 0.95
-    }).addTo(worldMap);
+                const countryName = country
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
 
-    const countryName = country
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+                marker.bindPopup(`
+                    <div class="stitch-map-popup">
+                        <strong>${countryName}</strong>
+                        <span>${info.orders.toLocaleString()} orders</span>
+                        <span>$${info.sales.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })} sales</span>
+                    </div>
+                `);
 
-    marker.bindPopup(`
-        <div class="stitch-map-popup">
-            <strong>${countryName}</strong>
-            <span>${info.orders.toLocaleString()} orders</span>
-            <span>$${info.sales.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            })} sales</span>
-        </div>
-    `);
+                marker.bindTooltip(
+                    `${countryName}: ${info.orders} orders`,
+                    { direction: 'top' }
+                );
+            });
 
-    marker.bindTooltip(
-        `${countryName}: ${info.orders} orders`,
-        { direction: 'top' }
-    );
-});
+            worldMap.fitBounds(
+                [[-55, -170], [75, 180]],
+                {
+                    padding: [0, 0],
+                    animate: false
+                }
+            );
 
+            worldMap.setZoom(worldMap.getZoom() + 0.5);
 
-        
-worldMap.fitBounds(
-    [[-55, -170], [75, 180]],
-    {
-        padding: [0, 0],
-        animate: false
-    }
-);
-
-worldMap.setZoom(worldMap.getZoom() + 0.5);
- 
         })
         .catch(error => {
             console.error('World map error:', error);
         });
 </script>
 
-
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
