@@ -43,7 +43,7 @@ class Accessories{
 
         $placeholders = implode(", ", array_fill(0, count($subcategoryIds), "?"));
 
-        $sql = "SELECT id, name, description
+        $sql = "SELECT id, name, description, image_url
                 FROM subcategories
                 WHERE id IN ($placeholders)
                 ORDER BY id";
