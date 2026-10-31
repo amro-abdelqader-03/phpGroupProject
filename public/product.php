@@ -16,6 +16,7 @@
   <script src="assets/js/main.js" defer></script>
   <script src="assets/js/cart.js" defer></script>
   <script src="assets/js/product-details.js" defer></script>
+  <script src="assets/js/ai-recommendations.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -64,6 +65,65 @@
         </section>
       </div>
       <section class="detail-missing" id="product-missing" hidden><p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>Collection detail</p><h1 class="detail-name">This look could not be found.</h1><p>Choose a look from one of our current collections to see its details.</p><a class="btn detail-add-button" href="suits.php">Explore the suit collection</a><a class="text-link" href="dresses.php">Explore the dress collection</a></section>
+
+      <section class="ai-recommendation" id="ai-recommendation" aria-labelledby="ai-recommendation-title">
+        <div class="ai-recommendation__head">
+          <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>Personal styling</p>
+          <h2 class="section-title ai-recommendation__title" id="ai-recommendation-title">AI Outfit <em>Recommendation</em></h2>
+          <p class="ai-recommendation__intro">Share a few details and our AI stylist will select pieces from the current Élan Bridal collection that suit your occasion, measurements, and budget.</p>
+        </div>
+
+        <div class="ai-recommendation__panel">
+          <form class="ai-recommendation__form" id="ai-recommendation-form" novalidate>
+            <fieldset class="ai-field ai-field--type">
+              <legend>What are you looking for?</legend>
+              <div class="ai-choices">
+                <label class="ai-choice">
+                  <input type="radio" name="product_type" value="suit" checked>
+                  <span>Men's Suit</span>
+                </label>
+                <label class="ai-choice">
+                  <input type="radio" name="product_type" value="dress">
+                  <span>Women's Dress</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="ai-fields">
+              <div class="ai-field">
+                <label for="ai-height">Height (cm)</label>
+                <input type="number" id="ai-height" name="height" min="100" max="250" step="1" inputmode="decimal" placeholder="e.g. 180" required aria-describedby="ai-height-hint">
+                <p class="ai-field__hint" id="ai-height-hint">Between 100 and 250 cm.</p>
+              </div>
+
+              <div class="ai-field">
+                <label for="ai-width">Chest / Bust Measurement (cm)</label>
+                <input type="number" id="ai-width" name="width" min="30" max="200" step="1" inputmode="decimal" placeholder="e.g. 96" required aria-describedby="ai-width-hint">
+                <p class="ai-field__hint" id="ai-width-hint">Measure around the fullest part &mdash; chest for suits, bust for dresses. Between 30 and 200 cm.</p>
+              </div>
+
+              <div class="ai-field">
+                <label for="ai-budget">Maximum Budget (JOD)</label>
+                <input type="number" id="ai-budget" name="budget" min="0.01" max="1000000" step="0.01" inputmode="decimal" placeholder="e.g. 250" required aria-describedby="ai-budget-hint">
+                <p class="ai-field__hint" id="ai-budget-hint">Prices are shown in Jordanian dinars, as used throughout the store.</p>
+              </div>
+            </div>
+
+            <p class="ai-recommendation__disclaimer">Height and chest or bust measurements guide the recommendation only; they do not guarantee fit. Always check the product&rsquo;s size information before ordering.</p>
+            <p class="ai-recommendation__error" id="ai-recommendation-error" role="alert"></p>
+
+            <button class="btn ai-recommendation__submit" type="submit" id="ai-recommendation-submit">
+              Get AI Recommendations
+            </button>
+          </form>
+
+          <div class="ai-recommendation__results" id="ai-recommendation-results" hidden>
+            <p class="ai-recommendation__status" id="ai-recommendation-status" role="status" aria-live="polite"></p>
+            <div class="ai-recommendation__grid" id="ai-recommendation-grid"></div>
+            <p class="ai-recommendation__fit-note" id="ai-recommendation-fit-note"></p>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
   <footer class="site-footer auth-footer" id="footer"><div class="container auth-footer__inner"><a class="brand brand--footer" href="index.php" aria-label="Élan Bridal — home"><span class="brand__primary">Élan</span><span class="brand__secondary">Bridal</span></a><p class="footer__copyright">&copy; <span id="year">2026</span> Élan Bridal. A frontend demonstration.</p><nav aria-label="Account"><a href="cart.php">Bag <span data-cart-count>0</span></a><a href="index.php">Home</a></nav></div></footer>
