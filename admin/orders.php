@@ -28,7 +28,7 @@ $totalPages = ceil($totalOrders / $limit);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Orders | CoreAdmin</title>
-    <link rel="stylesheet" href="../public/assets.css">
+    <link rel="stylesheet" href="../public/assets/css/order.css">
 </head>
 <body class="admin-page">
 <aside class="sidebar" id="sidebar">
@@ -37,9 +37,9 @@ $totalPages = ceil($totalOrders / $limit);
     </a>
     <div class="nav-caption">Navigation</div>
     <nav class="side-nav" aria-label="Admin navigation">
-        <a href="../public/index.php"><span class="nav-icon">▦</span>Dashboard</a>
-        <a href="#users"><span class="nav-icon">♙</span>Users</a>
-        <a href="#categories"><span class="nav-icon">▤</span>Categories</a>
+        <a href="dashboard.php"><span class="nav-icon">▦</span>Dashboard</a>
+        <a href="users.php"><span class="nav-icon">♙</span>Users</a>
+        <a href="categories.php"><span class="nav-icon">▤</span>Categories</a>
         <a href="products.php"><span class="nav-icon">▣</span>Products</a>
         <a href="orders.php" class="active" aria-current="page"><span class="nav-icon">▧</span>Orders</a>
     </nav>
@@ -59,7 +59,6 @@ $totalPages = ceil($totalOrders / $limit);
         </div>
 
         <section class="orders-card" aria-label="Order list">
-            <!-- نموذج بحث يعمل عند الضغط على Enter أو النقر على زر البحث -->
             <form method="GET" action="orders.php" class="filters">
                 <label class="table-search">
                     <span aria-hidden="true">⌕</span>
@@ -195,7 +194,6 @@ function updateOrderStatus(orderId, newStatus) {
     console.log(`Updating order ${orderId} to status: ${newStatus}`);
 }
 
-// تفعيل زر التصدير إلى CSV
 document.getElementById('export-orders').addEventListener('click', function () {
     const rows = document.querySelectorAll('.orders-table tr');
     let csv = [];

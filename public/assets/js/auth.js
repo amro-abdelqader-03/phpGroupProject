@@ -1,4 +1,4 @@
-/* ÉLAN BRIDAL account form demonstration. No credentials are stored or sent. */
+/* ÉLAN BRIDAL account form demonstration. */
 (() => {
   "use strict";
 
@@ -41,35 +41,24 @@
     return true;
   }
 
-  function processDemo(form, button, status, message) {
-    button.disabled = true;
-    button.dataset.originalLabel = button.textContent;
-    button.textContent = "Please wait…";
-    status.className = "auth-status";
-    status.textContent = "";
-    window.setTimeout(() => {
-      button.disabled = false;
-      button.textContent = button.dataset.originalLabel;
-      status.textContent = message;
-      form.reset();
-    }, 450);
-  }
-
   const register = document.getElementById("register-form");
   if (register) {
     const name = document.getElementById("full-name");
     const email = document.getElementById("register-email");
     const password = document.getElementById("register-password");
     const confirm = document.getElementById("confirm-password");
+    const phoneInput = document.getElementById("register-phone");
     const button = register.querySelector('[type="submit"]');
     const status = document.getElementById("register-status");
 
     [name, email, password, confirm].forEach((input) => {
-      input.addEventListener("input", () => {
-        clearError(input);
-        status.textContent = "";
-        if (input === password || input === confirm) clearError(confirm);
-      });
+      if (input) {
+        input.addEventListener("input", () => {
+          clearError(input);
+          status.textContent = "";
+          if (input === password || input === confirm) clearError(confirm);
+        });
+      }
     });
 
     register.addEventListener("submit", (event) => {
@@ -89,7 +78,53 @@
         if (firstInvalid) firstInvalid.focus();
         return;
       }
-      processDemo(register, button, status, "Your details passed validation, but no account was created. Registration needs a connected authentication service.");
+
+      button.disabled = true;
+      button.dataset.originalLabel = button.textContent;
+      button.textContent = "Please wait…";
+      status.className = "auth-status";
+      status.textContent = "";
+
+      const phoneValue = phoneInput ? phoneInput.value.trim() : "";
+
+      fetch('/phpGroupProject/app/controllers/auth.php', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'register',
+          full_name: name.value.trim(),
+          email: email.value.trim(),
+          password: password.value,
+          phone: phoneValue
+        })
+      })
+      .then(response => response.json().then(data => ({ status: response.status, body: data })))
+      .then(result => {
+        button.disabled = false;
+        button.textContent = button.dataset.originalLabel;
+
+        if (result.body.success) {
+          status.style.color = "green";
+          status.textContent = result.body.message;
+          register.reset();
+          window.setTimeout(() => {
+            window.location.href = "login.php";
+          }, 1000);
+        } else {
+          status.style.color = "red";
+          status.textContent = result.body.message || "Registration failed.";
+        }
+      })
+      .catch(error => {
+        button.disabled = false;
+        button.textContent = button.dataset.originalLabel;
+        status.style.color = "red";
+        status.textContent = "A network error occurred.";
+        console.error('Error:', error);
+      });
     });
   }
 
@@ -99,10 +134,12 @@
     const password = document.getElementById("login-password");
     const button = login.querySelector('[type="submit"]');
     const status = document.getElementById("login-status");
+
     [email, password].forEach((input) => input.addEventListener("input", () => {
       clearError(input);
       status.textContent = "";
     }));
+
     login.addEventListener("submit", (event) => {
       event.preventDefault();
       if (button.disabled) return;
@@ -114,8 +151,51 @@
         if (firstInvalid) firstInvalid.focus();
         return;
       }
-      processDemo(login, button, status, "We could not sign you in because authentication is not connected in this demonstration.");
+
+      button.disabled = true;
+      button.dataset.originalLabel = button.textContent;
+      button.textContent = "Please wait…";
+      status.className = "auth-status";
+      status.textContent = "";
+
+      fetch('/phpGroupProject/app/controllers/auth.php', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'login',
+          email: email.value.trim(),
+          password: password.value
+        })
+      })
+      .then(response => response.json().then(data => ({ status: response.status, body: data })))
+      .then(result => {
+        button.disabled = false;
+        button.textContent = button.dataset.originalLabel;
+
+        if (result.body.success) {
+          status.style.color = "green";
+          status.textContent = result.body.message;
+          login.reset();
+          window.setTimeout(() => {
+            window.location.href = "index.php";
+          }, 1000);
+        } else {
+          status.style.color = "red";
+          status.textContent = result.body.message || "Login failed.";
+        }
+      })
+      .catch(error => {
+        button.disabled = false;
+        button.textContent = button.dataset.originalLabel;
+        status.style.color = "red";
+        status.textContent = "A network error occurred.";
+        console.error('Error:', error);
+      });
     });
+
     document.getElementById("forgot-password").addEventListener("click", () => {
       status.textContent = "Password reset is not available until an authentication service is connected.";
     });

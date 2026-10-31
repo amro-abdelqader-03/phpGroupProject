@@ -19,19 +19,58 @@ class Admin_product
         return $stmt->fetchAll();
     }
 
-    public function getById(int $id): ?array
-    {
-        $sql = "SELECT id, subcategory_id, product_name, price, cost_price, description
-                FROM products
-                WHERE id = ?";
+    public function getByID(int $id): ?array
+{
+    // Get product details
+    $sql = "SELECT
+                id AS product_id,
+                product_name,
+                price,
+                cost_price,
+                description,
+                stock_quantity
+            FROM products
+            WHERE id = ?";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id]);
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$id]);
 
-        $product = $stmt->fetch();
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $product ?: null;
+    if (!$product) {
+        return null;
     }
+
+    // Get product images
+    $sql = "SELECT
+                image_id,
+                image_url,
+                is_primary
+            FROM product_images
+            WHERE product_id = ?
+            ORDER BY is_primary DESC, image_id ASC";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$id]);
+
+    $product['images'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Get product variants
+    $sql = "SELECT
+                id AS variant_id,
+                size,
+                color,
+                stock_quantity
+            FROM product_variants
+            WHERE product_id = ?";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$id]);
+
+    $product['variants'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $product;
+}
 
     public function create(
         string $name,

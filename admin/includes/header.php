@@ -42,7 +42,7 @@
 
             <ul class="sidebar-nav">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="dashboard.php" class="nav-link">
                         <i class="bi bi-grid-1x2 me-2"></i> Dashboard
                     </a>
                 </li>
@@ -52,7 +52,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="categories.php" class="nav-link">
                         <i class="bi bi-tags me-2"></i> Categories
                     </a>
                 </li>
@@ -62,18 +62,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="orders.php" class="nav-link">
                         <i class="bi bi-cart3 me-2"></i> Orders
                     </a>
                 </li>
             </ul>
 
-            <div class="sidebar-footer">
+            <!-- <div class="sidebar-footer">
                 <button class="collapse-btn">
                     <span><i class="bi bi-layout-sidebar me-2"></i> Collapse Sidebar</span>
                     <span class="badge bg-light text-muted border">⌘[</span>
                 </button>
-            </div>
+            </div> -->
         </aside>
 
         <!-- Main Content Wrapper -->
@@ -89,11 +89,11 @@
                         <i class="bi bi-list fs-4"></i>
                     </button>
                     <div class="breadcrumb-nav">
-                        Home / <span><?php echo safe($breadcrumb); ?></span>
+                        Home > <span><?php echo safe($breadcrumb); ?></span>
                     </div>
                 </div>
 
-                <div class="top-navbar-right">
+                <!-- <div class="top-navbar-right">
                     <div class="global-search d-none d-md-block">
                         <i class="bi bi-search"></i>
                         <input type="text" class="form-control" placeholder="Search orders, products, users...">
@@ -117,7 +117,7 @@
                             <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                         </ul>
                     </div>
-                </div>
+                </div> -->
             </header>
 
             <!-- Main Page Content -->

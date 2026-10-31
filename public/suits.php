@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -28,7 +28,7 @@
   <link rel="preload" as="image" href="assets/images/suit-featured.jpg" type="image/jpeg" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/collections.js" defer></script>
-  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
   <script src="assets/js/cart.js" defer></script>
 </head>
 <body>
@@ -82,8 +82,8 @@
         <nav class="primary-nav" aria-label="Primary">
           <ul class="primary-nav__list">
             <li><a class="primary-nav__link" href="index.php">Home</a></li>
-            <li><a class="primary-nav__link is-active" href="suits.php" aria-current="page">Suits</a></li>
             <li><a class="primary-nav__link" href="dresses.php">Dress</a></li>
+            <li><a class="primary-nav__link is-active" href="suits.php" aria-current="page">Suits</a></li>
             <li><a class="primary-nav__link" href="accessories.php">Accessories</a></li>
             <li><a class="primary-nav__link" href="index.php#about">About Us</a></li>
             <li><a class="primary-nav__link" href="register.php">Register</a></li>
@@ -103,8 +103,8 @@
         <p class="mobile-menu__eyebrow">Explore Élan Bridal</p>
         <ul class="mobile-menu__list">
           <li><a class="mobile-menu__link" href="index.php"><span>01</span>Home</a></li>
-          <li><a class="mobile-menu__link is-active" href="suits.php" aria-current="page"><span>02</span>Suits</a></li>
-          <li><a class="mobile-menu__link" href="dresses.php"><span>03</span>Dress</a></li>
+          <li><a class="mobile-menu__link" href="dresses.php"><span>02</span>Dress</a></li>
+          <li><a class="mobile-menu__link is-active" href="suits.php" aria-current="page"><span>03</span>Suits</a></li>
           <li><a class="mobile-menu__link" href="accessories.php"><span>04</span>Accessories</a></li>
           <li><a class="mobile-menu__link" href="index.php#about"><span>05</span>About Us</a></li>
           <li><a class="mobile-menu__link" href="register.php"><span>06</span>Register</a></li>

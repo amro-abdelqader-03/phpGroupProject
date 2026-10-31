@@ -1,212 +1,230 @@
-/* Shared detail renderer for the suits and dress collections. */
+/* Product detail page backed by the admin products GET endpoint. */
 (() => {
   "use strict";
-  const params = new URLSearchParams(window.location.search);
-  const collectionKey = params.get("category");
-  const slug = params.get("slug");
- 
-const isDatabaseDress = collectionKey === "dresses" && Boolean(window.ELAN_DB_DRESS);
-
-const collection = window.ELAN_COLLECTIONS && window.ELAN_COLLECTIONS[collectionKey];
-
-const match = isDatabaseDress
-  ? {
-      slug: String(window.ELAN_DB_DRESS.id),
-      name: window.ELAN_DB_DRESS.name,
-      desc: window.ELAN_DB_DRESS.description,
-      price: window.ELAN_DB_DRESS.price
-    }
-  : collection && slug
-    ? Object.values(collection.categories).flat()
-        .find((product) => product.slug === slug)
-    : null;
-
 
   const detail = document.getElementById("product-details");
   const missing = document.getElementById("product-missing");
-  if (!match || !detail) {
-    if (missing) missing.hidden = false;
-    return;
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get("id");
+
+  const byId = (id) => document.getElementById(id);
+
+  function showMissing(message) {
+    if (detail) detail.hidden = true;
+    if (missing) {
+      missing.hidden = Boolean(productId);
+      if (!productId) {
+        const paragraph = missing.querySelector("p:not(.eyebrow)");
+        if (paragraph && message) paragraph.textContent = message;
+      }
+    }
   }
 
-  const isDress = collectionKey === "dresses";
-  const categoryName = isDress ? "Wedding Dresses" : "Suits";
-  const collectionUrl = isDress ? "dresses.php" : "suits.php";
-
-
-const image = isDatabaseDress
-  ? "/project_3" + window.ELAN_DB_DRESS.image
-  : `${collection.base}${match.slug}${collection.primarySuffix}`;
-  const fullAlt = isDress
-    ? `Model wearing ${match.name} in a full-length bridal portrait.`
-    : `Model wearing ${match.name}, photographed in full length.`;
-  const label = (id) => document.getElementById(id);
-  const sizeOptions = isDress ? ["UK 4", "UK 6", "UK 8", "UK 10", "UK 12", "UK 14", "UK 16", "UK 18"] : ["36", "38", "40", "42", "44", "46", "48"];
-  const colorOptions = isDress
-    ? [{ name: "Ivory", value: "#F4EFE8" }, { name: "Champagne", value: "#D9C6AE" }, { name: "Soft White", value: "#FFFFFF" }, { name: "Blush", value: "#D6B6AC" }]
-    : [{ name: "Midnight", value: "#24282F" }, { name: "Charcoal", value: "#55514F" }, { name: "Ivory", value: "#EDE7DD" }, { name: "Navy", value: "#26354A" }];
-
-  detail.hidden = false;
-  label("detail-name").textContent = match.name;
-  
-  if (isDatabaseDress) {
-  label("detail-price").textContent =
-    Number(match.price).toFixed(2) + " JOD";
-}
-  label("detail-category").textContent = isDress ? "The Bridal Collection" : "The Groom's Collection";
-  label("detail-collection-link").textContent = categoryName;
-  label("detail-collection-link").href = collectionUrl;
-  label("detail-back-link").href = collectionUrl;
-  label("detail-breadcrumb-name").textContent = match.name;
-  document.title = `${match.name} | ÉLAN BRIDAL`;
-
- 
-const mainImage = label("detail-primary-image");
-
-const dressImages = isDatabaseDress
-  ? [
-      window.ELAN_DB_DRESS.image,
-      ...window.ELAN_DB_DRESS.images.map((item) => item.image_url)
-    ]
-      .filter(Boolean)
-      .filter((path, index, all) => all.indexOf(path) === index)
-      .map((path) =>
-        path.startsWith("/Data/") ? "/project_3" + path : path
-      )
-  : [];
-
-mainImage.src = image;
-mainImage.alt = fullAlt;
-
-document.querySelectorAll("[data-thumb-image]").forEach((thumb, index) => {
-  if (isDatabaseDress) {
-    const imagePath = dressImages[index];
-
-    if (imagePath) {
-      thumb.src = imagePath;
-      thumb.alt = `${match.name} - Image ${index + 1}`;
-    } else {
-      thumb.closest("[data-gallery-view]").hidden = true;
-    }
-  } else {
-    thumb.src = image;
-    thumb.alt = "";
+  function imageUrl(path) {
+    if (!path) return "";
+    // The API returns paths rooted at the project, such as /Data/...
+    return new URL(path.replace(/^\//, ""), `${window.location.origin}/phpGroupProject/`).href;
   }
-});
 
-
-  const sizeContainer = label("size-options");
-  const colorContainer = label("color-options");
-  let selectedSize = "";
-  let selectedColor = "";
-  let quantity = 1;
-
-  sizeOptions.forEach((size) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "detail-size-button";
-    button.textContent = size;
-    button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => {
-      selectedSize = size;
-      sizeContainer.querySelectorAll("button").forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
-      label("size-error").textContent = "";
-      label("detail-form-error").textContent = "";
-    });
-    sizeContainer.append(button);
-  });
-
-  colorOptions.forEach((color) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "detail-color-button";
-    button.setAttribute("aria-label", color.name);
-    button.setAttribute("aria-pressed", "false");
-    button.style.setProperty("--swatch", color.value);
-    button.innerHTML = `<span class="detail-color-button__swatch" aria-hidden="true"></span><span class="detail-color-button__name">${color.name}</span>`;
-    button.addEventListener("click", () => {
-      selectedColor = color.name;
-      colorContainer.querySelectorAll("button").forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
-      label("selected-color-label").textContent = color.name;
-      label("color-error").textContent = "";
-      label("detail-form-error").textContent = "";
-    });
-    colorContainer.append(button);
-  });
-
-  const galleryLabels = ["Full look", "Upper silhouette crop", isDress ? "Bodice detail crop" : "Jacket detail crop", "Lower silhouette crop"];
-  const galleryAlts = [fullAlt, `Upper silhouette crop from the campaign photograph of ${match.name}.`, `${isDress ? "Bodice" : "Jacket"} detail crop from the campaign photograph of ${match.name}.`, `Lower silhouette crop from the campaign photograph of ${match.name}.`];
-  
-document.querySelectorAll("[data-gallery-view]").forEach((button) => {
-  button.addEventListener("click", () => {
-    const view = Number(button.dataset.galleryView);
-
-    if (isDatabaseDress) {
-      if (!dressImages[view]) return;
-
-      mainImage.src = dressImages[view];
-
-      // Remove the old crop effect
-      mainImage.removeAttribute("data-crop");
-
-      mainImage.alt = `${match.name} - Image ${view + 1}`;
-
-      label("detail-image-label").textContent =
-        `Image ${view + 1}`;
-
-    } else {
-      // Keep the original suits behavior
-      mainImage.dataset.crop = String(view);
-      mainImage.alt = galleryAlts[view];
-
-      label("detail-image-label").textContent =
-        galleryLabels[view];
-    }
-
-    document.querySelectorAll("[data-gallery-view]").forEach((thumb) => {
-      const active = thumb === button;
-
-      thumb.classList.toggle("is-selected", active);
-      thumb.setAttribute("aria-pressed", String(active));
-    });
-  });
-});
-
-
-  label("quantity-minus").addEventListener("click", () => {
-    quantity = Math.max(1, quantity - 1);
-    label("quantity-value").textContent = String(quantity);
-  });
-  label("quantity-plus").addEventListener("click", () => {
-    quantity += 1;
-    label("quantity-value").textContent = String(quantity);
-  });
-
-  label("detail-form").addEventListener("submit", (event) => {
-    event.preventDefault();
-    const hasSize = Boolean(selectedSize);
-    const hasColor = Boolean(selectedColor);
-    label("size-error").textContent = hasSize ? "" : "Please select a size.";
-    label("color-error").textContent = hasColor ? "" : "Please select a colour.";
-    if (!hasSize || !hasColor) {
-      label("detail-form-error").textContent = "Choose a size and colour before adding this look to your bag.";
+  async function loadProduct() {
+    if (!productId) {
+      showMissing("Choose a product from one of our current collections to see its details.");
       return;
     }
-    label("detail-form-error").textContent = "";
-    try {
-      const cart = window.ElanCart.add({
-        productId: match.slug,
-        productName: match.name,
-        category: collectionKey,
-        image,
-        unitPrice: null,
-        size: selectedSize,
-        color: selectedColor,
-        quantity,
-      });
-      label("detail-cart-status").textContent = `${match.name} (${selectedSize}, ${selectedColor}) added to your bag. Your bag now contains ${cart.reduce((total, item) => total + item.quantity, 0)} items. Pricing and inventory are not connected.`;
-    } catch (error) {
-      label("detail-cart-status").textContent = "Your browser could not save the bag. Please check local storage settings and try again.";
+    if (!detail || !/^\d+$/.test(productId)) {
+      showMissing("The product ID is invalid.");
+      return;
     }
-  });
+
+    try {
+      const endpoint = new URL("../app/controllers/admin-products.php", window.location.href);
+      endpoint.searchParams.set("id", productId);
+      const response = await fetch(endpoint, { headers: { Accept: "application/json" } });
+      const result = await response.json();
+      if (!response.ok || !result.success || !result.data) throw new Error(result.message || "Product not found.");
+      renderProduct(result.data);
+    } catch (error) {
+      showMissing(error.message || "We could not load this product. Please try again later.");
+    }
+  }
+
+  function renderProduct(product) {
+    if (!product || !detail) return showMissing();
+    const name = product.product_name || "Product";
+    const images = Array.isArray(product.images) ? product.images : [];
+    const primary = images.find((item) => Number(item.is_primary) === 1) || images[0];
+    const variants = Array.isArray(product.variants) ? product.variants : [];
+    const availableVariants = variants.filter((variant) => Number(variant.stock_quantity) > 0);
+    const hasColorVariants = availableVariants.some((variant) => variant.color);
+    const currency = new Intl.NumberFormat(undefined, { style: "currency", currency: "JOD" });
+
+    detail.hidden = false;
+    byId("detail-name").textContent = name;
+    byId("detail-description").textContent = product.description || "";
+    byId("detail-price").textContent = product.price == null ? "Price available on request" : currency.format(Number(product.price));
+    byId("detail-category").textContent = "Élan Bridal Collection";
+    byId("detail-breadcrumb-name").textContent = name;
+    document.title = `${name} | ÉLAN BRIDAL`;
+
+    const mainImage = byId("detail-primary-image");
+    mainImage.src = imageUrl(primary && primary.image_url);
+    mainImage.alt = `${name} product photograph`;
+    const galleryButtons = [...document.querySelectorAll("[data-gallery-view]")];
+    const thumbs = [...document.querySelectorAll("[data-thumb-image]")];
+    galleryButtons.forEach((button, index) => {
+      const item = images[index] || primary;
+      const src = imageUrl(item && item.image_url);
+      button.hidden = !item;
+      if (thumbs[index]) {
+        thumbs[index].src = src;
+        thumbs[index].alt = "";
+      }
+      button.onclick = () => {
+        if (!item) return;
+        mainImage.src = src;
+        mainImage.alt = `${name} product photograph ${index + 1}`;
+        byId("detail-image-label").textContent = index === 0 ? "Primary image" : `Image ${index + 1}`;
+        galleryButtons.forEach((other) => {
+          const active = other === button;
+          other.classList.toggle("is-selected", active);
+          other.setAttribute("aria-pressed", String(active));
+        });
+      };
+    });
+
+    const sizeContainer = byId("size-options");
+    const colorContainer = byId("color-options");
+    sizeContainer.replaceChildren();
+    colorContainer.replaceChildren();
+    let selectedVariant = null;
+    let quantity = 1;
+    const sizes = [...new Set(availableVariants.map((variant) => variant.size).filter(Boolean))];
+    sizes.forEach((size) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "detail-size-button";
+      button.textContent = size;
+      button.setAttribute("aria-pressed", "false");
+      button.addEventListener("click", () => {
+        const candidates = availableVariants.filter((variant) => variant.size === size);
+        selectedVariant = candidates.find((variant) => !hasColorVariants || variant.color === selectedVariant?.color) || candidates[0];
+        sizeContainer.querySelectorAll("button").forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
+        syncQuantityLimit();
+        byId("size-error").textContent = "";
+        byId("detail-form-error").textContent = "";
+      });
+      sizeContainer.append(button);
+    });
+
+    const colors = [...new Set(availableVariants.map((variant) => variant.color).filter(Boolean))];
+    colors.forEach((color) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "detail-color-button";
+      button.setAttribute("aria-label", color);
+      button.setAttribute("aria-pressed", "false");
+      button.style.setProperty("--swatch", color);
+      const swatch = document.createElement("span");
+      swatch.className = "detail-color-button__swatch";
+      swatch.setAttribute("aria-hidden", "true");
+      const label = document.createElement("span");
+      label.className = "detail-color-button__name";
+      label.textContent = color;
+      button.append(swatch, label);
+      button.addEventListener("click", () => {
+        const currentSize = selectedVariant && selectedVariant.size;
+        selectedVariant = availableVariants.find((variant) => variant.color === color && (!currentSize || variant.size === currentSize)) || availableVariants.find((variant) => variant.color === color);
+        colorContainer.querySelectorAll("button").forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
+        byId("selected-color-label").textContent = color;
+        syncQuantityLimit();
+        byId("color-error").textContent = "";
+        byId("detail-form-error").textContent = "";
+      });
+      colorContainer.append(button);
+    });
+
+    const colorField = colorContainer.closest(".detail-option");
+    colorField.hidden = !hasColorVariants;
+    byId("selected-color-label").textContent = hasColorVariants ? "Choose a colour" : "";
+    if (!sizes.length) {
+      sizeContainer.innerHTML = "<span>Currently unavailable</span>";
+    }
+
+    const quantityValue = byId("quantity-value");
+    function syncQuantityLimit() {
+      const stock = selectedVariant ? Number(selectedVariant.stock_quantity) : Number(product.stock_quantity || 0);
+      quantity = Math.min(quantity, Math.max(1, stock));
+      quantityValue.textContent = String(quantity);
+      byId("quantity-plus").disabled = quantity >= stock;
+    }
+    syncQuantityLimit();
+    byId("quantity-minus").onclick = () => {
+      quantity = Math.max(1, quantity - 1);
+      syncQuantityLimit();
+    };
+    byId("quantity-plus").onclick = () => {
+      const stock = selectedVariant ? Number(selectedVariant.stock_quantity) : Number(product.stock_quantity || 0);
+      if (quantity < stock) quantity += 1;
+      syncQuantityLimit();
+    };
+
+    byId("detail-form").onsubmit = async (event) => {
+      event.preventDefault();
+      const hasSize = Boolean(selectedVariant);
+      const hasColor = !hasColorVariants || Boolean(selectedVariant && selectedVariant.color);
+      byId("size-error").textContent = hasSize ? "" : "Please select an available size.";
+      byId("color-error").textContent = hasColor ? "" : "Please select a colour.";
+      if (!hasSize || !hasColor) {
+        byId("detail-form-error").textContent = "Choose the available options before adding this product to your bag.";
+        return;
+      }
+      try {
+        const cartEndpoint = new URL("../app/controllers/cart.php", window.location.href);
+        const cartResponse = await fetch(cartEndpoint, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ user_id: 9001 }),
+        });
+        const cartResult = await cartResponse.json();
+        if (!cartResponse.ok || !cartResult.success || !cartResult.data?.id) {
+          throw new Error("Could not create or load your cart.");
+        }
+
+        const itemEndpoint = new URL("../app/controllers/cart-item.php", window.location.href);
+        const itemResponse = await fetch(itemEndpoint, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            cart_id: Number(cartResult.data.id),
+            product_id: Number(product.product_id),
+            variant_id: Number(selectedVariant.variant_id),
+            quantity,
+          }),
+        });
+        const itemResult = await itemResponse.json();
+        if (!itemResponse.ok || !itemResult.success) {
+          throw new Error(itemResult.message || "Could not add this product to your cart.");
+        }
+
+        const cart = window.ElanCart.add({
+          productId: String(product.product_id),
+          productName: name,
+          category: "products",
+          image: mainImage.src,
+          unitPrice: product.price,
+          size: selectedVariant.size,
+          color: selectedVariant.color || "",
+          quantity,
+        });
+        byId("detail-form-error").textContent = "";
+        byId("detail-cart-status").textContent = `${name} (${selectedVariant.size}) added to your bag. Your bag now contains ${cart.reduce((total, item) => total + item.quantity, 0)} items.`;
+      } catch (error) {
+        byId("detail-cart-status").textContent = error.message || "Could not add this product to your bag. Please try again.";
+      }
+    };
+  }
+
+  loadProduct();
 })();
