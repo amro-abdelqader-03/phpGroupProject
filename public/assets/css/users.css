@@ -225,3 +225,85 @@
     height: 56px;
     font-size: 1.1rem;
 }
+
+/* ===== Add / Edit User popups (admin/includes/user-popup.php) =====
+   A popup is hidden until the URL ends with its id, e.g. users.php#add-user.
+   :target is the element whose id is in the URL after the #, so no JavaScript is needed. */
+.user-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1060;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.user-popup:target {
+    display: flex;
+}
+
+/* The dark see-through background behind the box (clicking it closes the popup) */
+.user-popup__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    cursor: default;
+}
+
+/* The white box in the middle */
+.user-popup__box {
+    position: relative;   /* sits on top of the background */
+    width: 100%;
+    max-width: 640px;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;     /* scroll inside the box on small screens */
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+    padding: 1.5rem;
+}
+
+.user-popup__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.user-popup__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.user-popup__subtitle {
+    color: var(--text-muted);
+    margin: 0.25rem 0 0;
+}
+
+.user-popup__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.user-popup__close:hover {
+    background: #f1f5f9;
+    color: var(--text-dark);
+}
+
+.user-popup .form-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #334155;
+}
