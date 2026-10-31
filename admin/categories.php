@@ -39,12 +39,12 @@
             <div class="nav-label">NAVIGATION</div>
 
             <nav class="side-nav">
-                <a href="#">
+                <a href="dashboard.php">
                     <i class="bi bi-grid-1x2"></i>
                     <span>Dashboard</span>
                 </a>
 
-                <a href="#">
+                <a href="users.php">
                     <i class="bi bi-people"></i>
                     <span>Users</span>
                 </a>
@@ -54,12 +54,12 @@
                     <span>Categories</span>
                 </a>
 
-                <a href="#">
+                <a href="products.php">
                     <i class="bi bi-box-seam"></i>
                     <span>Products</span>
                 </a>
 
-                <a href="#">
+                <a href="orders.php">
                     <i class="bi bi-receipt"></i>
                     <span>Orders</span>
                 </a>

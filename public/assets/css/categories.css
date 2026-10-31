@@ -189,7 +189,7 @@ body {
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 1rem;
     padding: 0 1.5rem;
     position: sticky;
@@ -223,13 +223,15 @@ body {
 }
 
 .breadcrumbs {
-    display: flex;
+ display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
     color: var(--text-muted);
     font-weight: 500;
     white-space: nowrap;
+
+    
 }
 
 .breadcrumbs i {
