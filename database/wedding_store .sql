@@ -196,50 +196,50 @@ INSERT INTO `products` (`id`, `subcategory_id`, `product_name`, `description`, `
 (10, 13, 'Slim Fit Suit 01', 'Slim Fit men\'s wedding suit for the groom and special occasions.', 95.00, 169.00, '/Data/men/suits/slim%20fit/01/primary.png', 8, '2026-10-29 12:25:42'),
 (11, 14, 'Tuxedo Suit 01', 'Tuxedo men\'s wedding suit for the groom and special occasions.', 95.00, 169.00, '/Data/men/suits/tuxedo/01/primary.jpg', 8, '2026-10-29 12:25:42'),
 (12, 21, 'The Classic Black Bow Tie', 'A timeless black-tie finish with a crisp, symmetrical knot.', 8.00, 19.00, 'assets/images/accessories/suits/bow-ties/classic-black.jpg', 15, '2026-10-29 12:25:42'),
-(13, 21, 'The Midnight Bow Tie', 'Deep midnight tone, tied by hand for a considered finish.', 8.00, 19.00, 'assets/images/accessories/suits/bow-ties/midnight.jpg', 15, '2026-10-29 12:25:42'),
-(14, 21, 'The Ivory Ceremony Bow Tie', 'A soft ivory bow tie for daytime ceremonies and garden celebrations.', 8.00, 19.00, 'assets/images/accessories/suits/bow-ties/ivory-ceremony.jpg', 15, '2026-10-29 12:25:42'),
-(15, 21, 'The Crimson Bow Tie', 'A rich red accent for grooms who prefer a little colour.', 8.00, 19.00, 'assets/images/accessories/suits/bow-ties/crimson.jpg', 15, '2026-10-29 12:25:42'),
-(16, 22, 'The Striped Silk Tie', 'Fine diagonal stripes for a quietly traditional wedding look.', 8.00, 19.00, 'assets/images/accessories/suits/neck-ties/striped.jpg', 15, '2026-10-29 12:25:42'),
-(17, 22, 'The Polka Dot Silk Tie', 'A classic spotted pattern that adds character without noise.', 8.00, 19.00, 'assets/images/accessories/suits/neck-ties/pokadot.jpg', 15, '2026-10-29 12:25:42'),
-(18, 22, 'The Crimson Silk Tie', 'A confident crimson tie with a clean, modern drape.', 8.00, 19.00, 'assets/images/accessories/suits/neck-ties/silk.jpg', 15, '2026-10-29 12:25:42'),
-(19, 23, 'The Ivory Silk Square', 'A clean ivory fold that lets the tailoring lead.', 8.00, 19.00, 'assets/images/accessories/suits/pocket-squares/ivory-silk.jpg', 15, '2026-10-29 12:25:42'),
-(20, 23, 'The Folded Silk Square', 'A soft neutral square, folded for an understated finish.', 8.00, 19.00, 'assets/images/accessories/suits/pocket-squares/folded-silk.jpg', 15, '2026-10-29 12:25:42'),
+(13, 21, 'The Midnight Bow Tie', 'Deep midnight tone, tied by hand for a considered finish.', 8.00, 20.00, 'assets/images/accessories/suits/bow-ties/midnight.jpg', 15, '2026-10-29 12:25:42'),
+(14, 21, 'The Ivory Ceremony Bow Tie', 'A soft ivory bow tie for daytime ceremonies and garden celebrations.', 8.00, 18.00, 'assets/images/accessories/suits/bow-ties/ivory-ceremony.jpg', 15, '2026-10-29 12:25:42'),
+(15, 21, 'The Crimson Bow Tie', 'A rich red accent for grooms who prefer a little colour.', 8.00, 25.00, 'assets/images/accessories/suits/bow-ties/crimson.jpg', 15, '2026-10-29 12:25:42'),
+(16, 22, 'The Striped Silk Tie', 'Fine diagonal stripes for a quietly traditional wedding look.', 8.00, 59.00, 'assets/images/accessories/suits/neck-ties/striped.jpg', 15, '2026-10-29 12:25:42'),
+(17, 22, 'The Polka Dot Silk Tie', 'A classic spotted pattern that adds character without noise.', 8.00, 45.00, 'assets/images/accessories/suits/neck-ties/pokadot.jpg', 15, '2026-10-29 12:25:42'),
+(18, 22, 'The Crimson Silk Tie', 'A confident crimson tie with a clean, modern drape.', 8.00, 55.00, 'assets/images/accessories/suits/neck-ties/silk.jpg', 15, '2026-10-29 12:25:42'),
+(19, 23, 'The Ivory Silk Square', 'A clean ivory fold that lets the tailoring lead.', 8.00, 59.00, 'assets/images/accessories/suits/pocket-squares/ivory-silk.jpg', 15, '2026-10-29 12:25:42'),
+(20, 23, 'The Folded Silk Square', 'A soft neutral square, folded for an understated finish.', 8.00, 65.00, 'assets/images/accessories/suits/pocket-squares/folded-silk.jpg', 15, '2026-10-29 12:25:42'),
 (21, 23, 'The Floral Signature Square', 'A printed floral square for celebrations with a softer edge.', 8.00, 19.00, 'assets/images/accessories/suits/pocket-squares/floral-signature.jpg', 15, '2026-10-29 12:25:42'),
-(22, 15, 'The Heritage Derby', 'A burnished leather Derby with open lacing and a softly rounded toe.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/derby-heritage.jpg', 12, '2026-10-29 12:25:42'),
-(23, 15, 'Derby 2', 'Derby footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/derbyyy.jpg', 12, '2026-10-29 12:25:42'),
-(24, 15, 'Derby 3', 'Derby footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/derby3.jpg', 12, '2026-10-29 12:25:42'),
-(25, 16, 'The Cognac Loafer', 'A clean, laceless profile in warm cognac leather.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/cognac.jpg', 12, '2026-10-29 12:25:42'),
-(26, 16, 'Loafers 2', 'Loarfers footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/loafers2.jpg', 12, '2026-10-29 12:25:42'),
-(27, 16, 'Loafers 3', 'Loarfers footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/loafers3.jpg', 12, '2026-10-29 12:25:42'),
-(28, 17, 'The Signature Monk Strap', 'A single-buckle monk strap with a hand-finished patina.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/monk4.jpg', 12, '2026-10-29 12:25:42'),
-(29, 17, 'Monk Strap 2', 'Monk Strap footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/monk3.jpg', 12, '2026-10-29 12:25:42'),
-(30, 17, 'Monk Strap 3', 'Monk Strap footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/monk5.jpg', 12, '2026-10-29 12:25:42'),
-(31, 18, 'The Black Oxford', 'The formal standard: closed lacing, a sleek toe, and a mirror polish.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/oxford-black.jpg', 12, '2026-10-29 12:25:42'),
-(32, 18, 'Oxford 2', 'Oxford footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/oxford2.jpg', 12, '2026-10-29 12:25:42'),
+(22, 15, 'The Heritage Derby', 'A burnished leather Derby with open lacing and a softly rounded toe.', 25.00, 110.00, 'assets/images/accessories/suits/shoes/derby-heritage.jpg', 12, '2026-10-29 12:25:42'),
+(23, 15, 'Derby 2', 'Derby footwear suitable for weddings and formal occasions.', 25.00, 120.00, 'assets/images/accessories/suits/shoes/derbyyy.jpg', 12, '2026-10-29 12:25:42'),
+(24, 15, 'Derby 3', 'Derby footwear suitable for weddings and formal occasions.', 25.00, 99.00, 'assets/images/accessories/suits/shoes/derby3.jpg', 12, '2026-10-29 12:25:42'),
+(25, 16, 'The Cognac Loafer', 'A clean, laceless profile in warm cognac leather.', 25.00, 95.00, 'assets/images/accessories/suits/shoes/cognac.jpg', 12, '2026-10-29 12:25:42'),
+(26, 16, 'Loafers 2', 'Loarfers footwear suitable for weddings and formal occasions.', 25.00, 130.00, 'assets/images/accessories/suits/shoes/loafers2.jpg', 12, '2026-10-29 12:25:42'),
+(27, 16, 'Loafers 3', 'Loarfers footwear suitable for weddings and formal occasions.', 25.00, 139.00, 'assets/images/accessories/suits/shoes/loafers3.jpg', 12, '2026-10-29 12:25:42'),
+(28, 17, 'The Signature Monk Strap', 'A single-buckle monk strap with a hand-finished patina.', 25.00, 95.00, 'assets/images/accessories/suits/shoes/monk4.jpg', 12, '2026-10-29 12:25:42'),
+(29, 17, 'Monk Strap 2', 'Monk Strap footwear suitable for weddings and formal occasions.', 25.00, 145.00, 'assets/images/accessories/suits/shoes/monk3.jpg', 12, '2026-10-29 12:25:42'),
+(30, 17, 'Monk Strap 3', 'Monk Strap footwear suitable for weddings and formal occasions.', 25.00, 95.00, 'assets/images/accessories/suits/shoes/monk5.jpg', 12, '2026-10-29 12:25:42'),
+(31, 18, 'The Black Oxford', 'The formal standard: closed lacing, a sleek toe, and a mirror polish.', 25.00, 85.00, 'assets/images/accessories/suits/shoes/oxford-black.jpg', 12, '2026-10-29 12:25:42'),
+(32, 18, 'Oxford 2', 'Oxford footwear suitable for weddings and formal occasions.', 25.00, 99.00, 'assets/images/accessories/suits/shoes/oxford2.jpg', 12, '2026-10-29 12:25:42'),
 (33, 18, 'Oxford 3', 'Oxford footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/suits/shoes/oxford3.jpg', 12, '2026-10-29 12:25:42'),
-(34, 6, 'The Classic Satin Glove', 'A short satin glove with a smooth, ceremonial finish.', 8.00, 19.00, 'assets/images/accessories/dresses/gloves/classic-satin.jpg', 15, '2026-10-29 12:25:42'),
-(35, 6, 'The Evening Satin Glove', 'An evening-length glove for a formal, romantic gesture.', 8.00, 19.00, 'assets/images/accessories/dresses/gloves/evening-satin.jpg', 15, '2026-10-29 12:25:42'),
-(36, 6, 'The Sheer Lace Glove', 'Sheer lace for a bride who loves vintage detail.', 8.00, 19.00, 'assets/images/accessories/dresses/gloves/sheer-lace.jpg', 15, '2026-10-29 12:25:42'),
-(37, 7, 'The Fine Gold Necklace', 'A delicate gold chain made for a low, elegant neckline.', 8.00, 19.00, 'assets/images/accessories/dresses/jewelry/gold-necklace.jpg', 15, '2026-10-29 12:25:42'),
-(38, 7, 'The Pearl Drop Earrings', 'Pearl drops with a soft lustre and a timeless line.', 8.00, 19.00, 'assets/images/accessories/dresses/jewelry/pearl-earrings.jpg', 15, '2026-10-29 12:25:42'),
-(39, 7, 'The Gold Bangle', 'A polished bangle to layer with heirloom pieces.', 8.00, 19.00, 'assets/images/accessories/dresses/jewelry/gold-bangle.jpg', 15, '2026-10-29 12:25:42'),
-(40, 8, 'The Crystal Tiara', 'A fine crystal tiara with a light, soaring profile.', 8.00, 19.00, 'assets/images/accessories/dresses/tiaras-crowns/crystal-tiara.jpg', 15, '2026-10-29 12:25:42'),
-(41, 8, 'The Silver Pearl Tiara', 'Silver filigree finished with pearls for a classical touch.', 8.00, 19.00, 'assets/images/accessories/dresses/tiaras-crowns/silver-pearl-tiara.jpg', 15, '2026-10-29 12:25:42'),
+(34, 6, 'The Classic Satin Glove', 'A short satin glove with a smooth, ceremonial finish.', 8.00, 35.00, 'assets/images/accessories/dresses/gloves/gloves.jpg', 15, '2026-10-29 12:25:42'),
+(35, 6, 'The Evening Satin Glove', 'An evening-length glove for a formal, romantic gesture.', 8.00, 19.00, 'assets/images/accessories/dresses/gloves/gloves3.webp', 15, '2026-10-29 12:25:42'),
+(36, 6, 'The Sheer Lace Glove', 'Sheer lace for a bride who loves vintage detail.', 8.00, 19.00, 'assets/images/accessories/dresses/gloves/gloves4.webp', 15, '2026-10-29 12:25:42'),
+(37, 7, 'The Fine Gold Necklace', 'A delicate gold chain made for a low, elegant neckline.', 8.00, 45.00, 'assets/images/accessories/dresses/jewelry/gold-necklace.jpg', 15, '2026-10-29 12:25:42'),
+(38, 7, 'The Pearl Drop Earrings', 'Pearl drops with a soft lustre and a timeless line.', 8.00, 50.00, 'assets/images/accessories/dresses/jewelry/pearl-earrings.jpg', 15, '2026-10-29 12:25:42'),
+(39, 7, 'The Gold Bangle', 'A polished bangle to layer with heirloom pieces.', 8.00, 60.00, 'assets/images/accessories/dresses/jewelry/gold-bangle.jpg', 15, '2026-10-29 12:25:42'),
+(40, 8, 'The Crystal Tiara', 'A fine crystal tiara with a light, soaring profile.', 8.00, 19.00, 'assets/images/accessories/dresses/tiaras-crowns/tiaras1.jpg', 15, '2026-10-29 12:25:42'),
+(41, 8, 'The Silver Pearl Tiara', 'Silver filigree finished with pearls for a classical touch.', 8.00, 19.00, 'assets/images/accessories/dresses/tiaras-crowns/tiaras2.jpg', 15, '2026-10-29 12:25:42'),
 (42, 8, 'The Gold Heirloom Tiara', 'A warm gold headpiece with an antique, treasured feel.', 8.00, 19.00, 'assets/images/accessories/dresses/tiaras-crowns/gold-tiara.jpg', 15, '2026-10-29 12:25:42'),
-(43, 9, 'The Fingertip Veil', 'A light fingertip veil that frames the face without hiding it.', 8.00, 19.00, 'assets/images/accessories/dresses/veils/fingertip-veil.jpg', 15, '2026-10-29 12:25:42'),
-(44, 9, 'The Chapel-Length Veil', 'A graceful chapel length made for a measured walk down the aisle.', 8.00, 19.00, 'assets/images/accessories/dresses/veils/chapel-veil.jpg', 15, '2026-10-29 12:25:42'),
-(45, 9, 'The Cathedral Veil', 'A dramatic sweep of tulle for the grandest entrances.', 8.00, 19.00, 'assets/images/accessories/dresses/veils/cathedral-veil.jpg', 15, '2026-10-29 12:25:42'),
-(46, 19, 'The Marble Block Heel', 'A white block heel with a stable stride and a sculptural finish.', 25.00, 49.00, 'assets/images/accessories/dresses/shoes/block-heel-marble.jpg', 12, '2026-10-29 12:25:42'),
-(47, 19, 'Block Heels 2', 'Block Heels footwear suitable for weddings and formal occasions.', 25.00, 49.00, '/Data/women/shoes/bloch%20heels/Screenshot%202026-10-29%20145406.png', 12, '2026-10-29 12:25:42'),
-(48, 19, 'Block Heels 3', 'Block Heels footwear suitable for weddings and formal occasions.', 25.00, 49.00, '/Data/women/shoes/bloch%20heels/Screenshot%202026-10-29%20145413.png', 12, '2026-10-29 12:25:42'),
-(49, 24, 'The Silver Bridal Sandal', 'Fine silver straps that catch the light with every step.', 25.00, 49.00, 'assets/images/accessories/dresses/shoes/silver-sandal.jpg', 12, '2026-10-29 12:25:42'),
-(50, 24, 'The Beaded Bridal Mule', 'A beaded mule with an easy slip-on shape for the reception.', 25.00, 49.00, 'assets/images/accessories/dresses/shoes/beaded-mule.jpg', 12, '2026-10-29 12:25:42'),
-(51, 24, 'Bridal Sandal 3', 'Bridal Sandal footwear suitable for weddings and formal occasions.', 25.00, 49.00, '/Data/women/shoes/bridal%20sandal/Screenshot%202026-10-29%20145546.png', 12, '2026-10-29 12:25:42'),
-(52, 25, 'Flats 1', 'Flats footwear suitable for weddings and formal occasions.', 25.00, 49.00, '/Data/women/shoes/flats/Screenshot%202026-10-29%20145821.png', 12, '2026-10-29 12:25:42'),
-(53, 25, 'Flats 2', 'Flats footwear suitable for weddings and formal occasions.', 25.00, 49.00, '/Data/women/shoes/flats/Screenshot%202026-10-29%20145855.png', 12, '2026-10-29 12:25:42'),
+(43, 9, 'The Fingertip Veil', 'A light fingertip veil that frames the face without hiding it.', 8.00, 69.00, 'assets/images/accessories/dresses/veils/veil3.webp', 15, '2026-10-29 12:25:42'),
+(44, 9, 'The Chapel-Length Veil', 'A graceful chapel length made for a measured walk down the aisle.', 8.00, 79.00, 'assets/images/accessories/dresses/veils/veil2.jpg', 15, '2026-10-29 12:25:42'),
+(45, 9, 'The Cathedral Veil', 'A dramatic sweep of tulle for the grandest entrances.', 8.00, 55.00, 'assets/images/accessories/dresses/veils/veil.jpg', 15, '2026-10-29 12:25:42'),
+(46, 19, 'The Marble Block Heel', 'A white block heel with a stable stride and a sculptural finish.', 25.00, 59.00, 'assets/images/accessories/dresses/shoes/block-heel-marble.jpg', 12, '2026-10-29 12:25:42'),
+(47, 19, 'Block Heels 2', 'Block Heels footwear suitable for weddings and formal occasions.', 25.00, 39.00, 'assets/images/accessories/dresses/shoes/blockHeels2.jpg', 12, '2026-10-29 12:25:42'),
+(48, 19, 'Block Heels 3', 'Block Heels footwear suitable for weddings and formal occasions.', 25.00, 45.00, 'assets/images/accessories/dresses/shoes/blockHeels3.jpg', 12, '2026-10-29 12:25:42'),
+(49, 24, 'The Silver Bridal Sandal', 'Fine silver straps that catch the light with every step.', 25.00, 70.00, 'assets/images/accessories/dresses/shoes/silver-sandal.jpg', 12, '2026-10-29 12:25:42'),
+(50, 24, 'The Beaded Bridal Mule', 'A beaded mule with an easy slip-on shape for the reception.', 25.00, 55.00, 'assets/images/accessories/dresses/shoes/beaded-mule.jpg', 12, '2026-10-29 12:25:42'),
+(51, 24, 'Bridal Sandal 3', 'Bridal Sandal footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/dresses/shoes/sandal.jpg', 12, '2026-10-29 12:25:42'),
+(52, 25, 'Flats 1', 'Flats footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/dresses/shoes/flat1.jpg', 12, '2026-10-29 12:25:42'),
+(53, 25, 'Flats 2', 'Flats footwear suitable for weddings and formal occasions.', 25.00, 49.00, 'assets/images/accessories/dresses/shoes/flat2.jpg', 12, '2026-10-29 12:25:42'),
 (54, 20, 'The Ribbon Bow Heel', 'Romantic ribbon ties and a refined bridal heel.', 25.00, 49.00, 'assets/images/accessories/dresses/shoes/ribbon-bow-heel.jpg', 12, '2026-10-29 12:25:42'),
-(55, 20, 'High Heels 2', 'High Heels footwear suitable for weddings and formal occasions.', 25.00, 49.00, '/Data/women/shoes/high%20heels/Screenshot%202026-10-29%20150010.png', 12, '2026-10-29 12:25:42'),
-(56, 20, 'High Heels 3', 'High Heels footwear suitable for weddings and formal occasions.', 25.00, 49.00, '/Data/women/shoes/high%20heels/Screenshot%202026-10-29%20150021.png', 12, '2026-10-29 12:25:42'),
+(55, 20, 'High Heels 2', 'High Heels footwear suitable for weddings and formal occasions.', 25.00, 69.00, 'assets/images/accessories/dresses/shoes/highHeels2.jpg', 12, '2026-10-29 12:25:42'),
+(56, 20, 'High Heels 3', 'High Heels footwear suitable for weddings and formal occasions.', 25.00, 45.00, 'assets/images/accessories/dresses/shoes/highHeels3.jpg', 12, '2026-10-29 12:25:42'),
 (57, 26, 'The Classic Silver Cuff Links', 'Polished silver cuff links for a timeless finish.', 0.00, 25.00, 'assets/images/accessories/suits/cuff-links/silver.jpg', 15, '2026-10-31 06:48:01'),
 (58, 26, 'The Classic gold and black Cuff Links', 'Polished gold and black cuff links for a classic finish.', 0.00, 25.00, 'assets/images/accessories/suits/cuff-links/gold.jpg', 15, '2026-10-31 06:50:11'),
 (59, 26, 'THE initials cuff links', 'Extraordinary initials cuff links.', 0.00, 29.00, 'assets/images/accessories/suits/cuff-links/initials.jpg', 15, '2026-10-31 06:51:55'),
@@ -1098,206 +1098,3 @@ COMMIT;
 -- =====================================================
 -- END OF DASHBOARD DUMMY DATA
 -- =====================================================
-
-
-
-
-
-
-
-
-
---DANA DUMMY DATA --
-
-
-
--- =====================================================
--- DASHBOARD DUMMY DATA
--- For testing charts and statistics only
--- =====================================================
-
--- IMPORTANT:
--- Run this section after creating the tables,
--- indexes, AUTO_INCREMENT and foreign keys.
-
-START TRANSACTION;
-
--- =====================================================
--- 1. TEST CUSTOMERS
--- =====================================================
-
-INSERT INTO users
-(id, full_name, email, password_hash, phone, is_active, created_at)
-VALUES
-(9001, 'Sara Ahmad', 'dashboard.sara@example.com',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
- '0791111111', 1, '2026-01-10 10:00:00'),
-
-(9002, 'Lina Khaled', 'dashboard.lina@example.com',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
- '0792222222', 1, '2026-02-15 11:00:00'),
-
-(9003, 'Omar Ali', 'dashboard.omar@example.com',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
- '0793333333', 1, '2026-03-20 12:00:00'),
-
-(9004, 'Dana Mohammad', 'dashboard.dana@example.com',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
- '0794444444', 1, '2026-04-12 13:00:00'),
-
-(9005, 'Rama Hasan', 'dashboard.rama@example.com',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
- '0795555555', 1, '2026-05-18 14:00:00');
-
-
--- =====================================================
--- 2. TEST ORDERS
--- Orders distributed across months and countries
--- =====================================================
-
-INSERT INTO orders
-(id, user_id, order_date, total_amount, order_status,
- full_name, phone, country, city, area,
- shipping_address, building_details, shipping_cost, revenue)
-VALUES
-
-(9001, 9001, '2026-01-15 10:00:00', 304.00, 'Delivered',
- 'Sara Ahmad', '0791111111', 'Jordan', 'Amman', 'Khalda',
- 'Khalda Street', 'Building 12', 5.00, 299.00),
-
-(9002, 9002, '2026-02-18 11:00:00', 174.00, 'Delivered',
- 'Lina Khaled', '0792222222', 'Jordan', 'Irbid', 'University Street',
- 'University Street', 'Building 8', 5.00, 169.00),
-
-(9003, 9003, '2026-03-22 12:00:00', 318.00, 'Delivered',
- 'Omar Ali', '0793333333', 'United States', 'New York', 'Manhattan',
- 'Broadway Street', 'Apartment 5', 0.00, 318.00),
-
-(9004, 9004, '2026-04-14 13:00:00', 348.00, 'Delivered',
- 'Dana Mohammad', '0794444444', 'Germany', 'Berlin', 'Mitte',
- 'Berlin Street', 'Apartment 10', 0.00, 348.00),
-
-(9005, 9005, '2026-05-20 14:00:00', 299.00, 'Delivered',
- 'Rama Hasan', '0795555555', 'United Kingdom', 'London', 'Central',
- 'Oxford Street', 'Apartment 3', 0.00, 299.00),
-
-(9006, 9001, '2026-06-10 10:30:00', 207.00, 'Delivered',
- 'Sara Ahmad', '0791111111', 'Jordan', 'Amman', 'Sweifieh',
- 'Sweifieh Street', 'Building 7', 0.00, 207.00),
-
-(9007, 9002, '2026-07-12 11:30:00', 318.00, 'Delivered',
- 'Lina Khaled', '0792222222', 'France', 'Paris', 'Central',
- 'Paris Street', 'Apartment 4', 0.00, 318.00),
-
-(9008, 9003, '2026-08-16 12:30:00', 169.00, 'Delivered',
- 'Omar Ali', '0793333333', 'Canada', 'Toronto', 'Downtown',
- 'King Street', 'Apartment 9', 0.00, 169.00),
-
-(9009, 9004, '2026-09-08 13:30:00', 598.00, 'Delivered',
- 'Dana Mohammad', '0794444444', 'Jordan', 'Amman', 'Abdoun',
- 'Abdoun Street', 'Building 15', 0.00, 598.00),
-
-(9010, 9005, '2026-10-05 14:30:00', 188.00, 'Delivered',
- 'Rama Hasan', '0795555555', 'Germany', 'Munich', 'Central',
- 'Munich Street', 'Apartment 6', 0.00, 188.00),
-
-(9011, 9001, '2026-10-12 10:00:00', 318.00, 'Confirmed',
- 'Sara Ahmad', '0791111111', 'United States', 'Chicago', 'Central',
- 'Lake Street', 'Apartment 2', 0.00, 318.00),
-
-(9012, 9002, '2026-10-18 11:00:00', 299.00, 'Shipped',
- 'Lina Khaled', '0792222222', 'Jordan', 'Amman', 'Jubeiha',
- 'Jubeiha Street', 'Building 20', 0.00, 299.00),
-
-(9013, 9003, '2026-10-21 12:00:00', 49.00, 'Pending',
- 'Omar Ali', '0793333333', 'United Kingdom', 'London', 'Central',
- 'Baker Street', 'Apartment 1', 0.00, 49.00),
-
-(9014, 9004, '2026-10-24 13:00:00', 169.00, 'Cancelled',
- 'Dana Mohammad', '0794444444', 'France', 'Paris', 'Central',
- 'Paris Street', 'Apartment 11', 0.00, 0.00),
-
-(9015, 9005, '2026-10-28 14:00:00', 337.00, 'Delivered',
- 'Rama Hasan', '0795555555', 'Jordan', 'Zarqa', 'New Zarqa',
- 'Main Street', 'Building 3', 0.00, 337.00);
-
-
--- =====================================================
--- 3. ORDER ITEMS
--- Product IDs are from the existing products table
--- =====================================================
-
-INSERT INTO order_items
-(order_id, product_id, variant_id, quantity, unit_price)
-VALUES
-
-(9001, 1, NULL, 1, 299.00),
-
-(9002, 6, NULL, 1, 169.00),
-
-(9003, 2, NULL, 1, 299.00),
-(9003, 12, NULL, 1, 19.00),
-
-(9004, 3, NULL, 1, 299.00),
-(9004, 22, NULL, 1, 49.00),
-
-(9005, 4, NULL, 1, 299.00),
-
-(9006, 6, NULL, 1, 169.00),
-(9006, 12, NULL, 2, 19.00),
-
-(9007, 2, NULL, 1, 299.00),
-(9007, 13, NULL, 1, 19.00),
-
-(9008, 7, NULL, 1, 169.00),
-
-(9009, 1, NULL, 2, 299.00),
-
-(9010, 6, NULL, 1, 169.00),
-(9010, 15, NULL, 1, 19.00),
-
-(9011, 2, NULL, 1, 299.00),
-(9011, 12, NULL, 1, 19.00),
-
-(9012, 5, NULL, 1, 299.00),
-
-(9013, 22, NULL, 1, 49.00),
-
-(9014, 8, NULL, 1, 169.00),
-
-(9015, 3, NULL, 1, 299.00),
-(9015, 14, NULL, 2, 19.00);
-
-
--- =====================================================
--- 4. TEST PAYMENTS
--- =====================================================
-
-INSERT INTO payments
-(order_id, payment_method, amount, payment_status,
- transaction_reference, paid_at)
-VALUES
-
-(9001, 'Credit Card', 304.00, 'Paid', 'DEMO-PAY-9001', '2026-01-15 10:05:00'),
-(9002, 'Credit Card', 174.00, 'Paid', 'DEMO-PAY-9002', '2026-02-18 11:05:00'),
-(9003, 'Credit Card', 318.00, 'Paid', 'DEMO-PAY-9003', '2026-03-22 12:05:00'),
-(9004, 'Credit Card', 348.00, 'Paid', 'DEMO-PAY-9004', '2026-04-14 13:05:00'),
-(9005, 'Credit Card', 299.00, 'Paid', 'DEMO-PAY-9005', '2026-05-20 14:05:00'),
-(9006, 'Cash on Delivery', 207.00, 'Paid', 'DEMO-PAY-9006', '2026-06-10 10:35:00'),
-(9007, 'Credit Card', 318.00, 'Paid', 'DEMO-PAY-9007', '2026-07-12 11:35:00'),
-(9008, 'Credit Card', 169.00, 'Paid', 'DEMO-PAY-9008', '2026-08-16 12:35:00'),
-(9009, 'Credit Card', 598.00, 'Paid', 'DEMO-PAY-9009', '2026-09-08 13:35:00'),
-(9010, 'Cash on Delivery', 188.00, 'Paid', 'DEMO-PAY-9010', '2026-10-05 14:35:00'),
-(9011, 'Credit Card', 318.00, 'Pending', 'DEMO-PAY-9011', NULL),
-(9012, 'Cash on Delivery', 299.00, 'Pending', 'DEMO-PAY-9012', NULL),
-(9013, 'Cash on Delivery', 49.00, 'Pending', 'DEMO-PAY-9013', NULL),
-(9014, 'Credit Card', 169.00, 'Failed', 'DEMO-PAY-9014', NULL),
-(9015, 'Credit Card', 337.00, 'Paid', 'DEMO-PAY-9015', '2026-10-28 14:05:00');
-
-COMMIT;
-
--- =====================================================
--- END OF DASHBOARD DUMMY DATA
--- =====================================================
-
-
