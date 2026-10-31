@@ -146,14 +146,30 @@ function printProductCards($productList, $sectionId)
                 </div>
                 <p class="acc-product__desc"><?php echo safe($product["description"]); ?></p>
                 <p class="acc-product__price"><?php echo $price; ?></p>
-                <a class="text-link text-link--sm acc-product__link"
-                   href="#<?php echo $sectionId; ?>"
-                   data-placeholder="<?php echo safe($product["product_name"]); ?>"
-                   data-dialog="<?php echo safe($dialog); ?>"
-                   data-dialog-cta="Keep exploring"
-                   data-dialog-target="#<?php echo $sectionId; ?>">
-                    View details <?php echo arrowIcon(); ?>
-                </a>
+
+                <div class="acc-product__actions">
+                    <a class="text-link text-link--sm acc-product__link"
+                       href="#<?php echo $sectionId; ?>"
+                       data-placeholder="<?php echo safe($product["product_name"]); ?>"
+                       data-dialog="<?php echo safe($dialog); ?>"
+                       data-dialog-cta="Keep exploring"
+                       data-dialog-target="#<?php echo $sectionId; ?>">
+                        View details <?php echo arrowIcon(); ?>
+                    </a>
+
+                    <!-- Add to Bag: accessories.js reads the data-... values and puts the product in the bag -->
+                    <?php if ($product["stock_quantity"] > 0) { ?>
+                        <button type="button" class="acc-add-btn" data-add-to-bag
+                                data-id="<?php echo $product["id"]; ?>"
+                                data-name="<?php echo safe($product["product_name"]); ?>"
+                                data-price="<?php echo $product["price"]; ?>"
+                                data-image="<?php echo safe($image); ?>">
+                            Add to Bag
+                        </button>
+                    <?php } else { ?>
+                        <button type="button" class="acc-add-btn" disabled>Sold Out</button>
+                    <?php } ?>
+                </div>
             </div>
         </article>
         <?php
@@ -190,7 +206,7 @@ function printProductCards($productList, $sectionId)
 
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/accessories.css?v=<?php echo filemtime(__DIR__ . '/assets/css/accessories.css'); ?>">
-  <script src="assets/js/accessories.js" defer></script>
+  <script src="assets/js/accessories.js?v=<?php echo filemtime(__DIR__ . '/assets/js/accessories.js'); ?>" defer></script>
   <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
   <script src="assets/js/cart.js" defer></script>
 </head>
@@ -293,6 +309,8 @@ function printProductCards($productList, $sectionId)
   </header>
 
   <main id="main" class="collection-main acc-main" tabindex="-1">
+    <!-- Screen readers read this after "Add to Bag" (filled by accessories.js) -->
+    <p class="visually-hidden" id="acc-bag-status" role="status" aria-live="polite"></p>
     <section class="acc-intro" id="accessories" aria-labelledby="accessories-title">
       <div class="container acc-intro__inner">
         <p class="eyebrow">

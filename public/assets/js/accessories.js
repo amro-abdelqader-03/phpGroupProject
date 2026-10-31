@@ -90,11 +90,59 @@
   }
 
   /* ----------------------------------------------------------------------
+     Add to Bag buttons
+     ----------------------------------------------------------------------
+     Each button has the product's details in data-... attributes (printed by
+     PHP). Clicking it puts the product in the bag with ElanCart.add() from
+     cart.js, the same bag the Bag page shows.
+     ---------------------------------------------------------------------- */
+  function initAddToBag() {
+    const status = $("#acc-bag-status");
+
+    $$("[data-add-to-bag]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!window.ElanCart) return;
+
+        const name = button.dataset.name;
+        const cart = window.ElanCart.add({
+          productId: button.dataset.id,
+          productName: name,
+          category: "accessories",
+          // a full link, so the photo also works on the Bag page
+          image: button.dataset.image ? new URL(button.dataset.image, window.location.href).href : "",
+          unitPrice: Number(button.dataset.price),
+          size: "",
+          color: "",
+          quantity: 1,
+        });
+
+        // Show "Added" on the button for 2 seconds
+        button.textContent = "Added ✓";
+        button.classList.add("is-added");
+        clearTimeout(button.resetTimer);
+        button.resetTimer = setTimeout(() => {
+          button.textContent = "Add to Bag";
+          button.classList.remove("is-added");
+        }, 2000);
+
+        // Screen readers read this message out loud
+        const count = cart.reduce((total, item) => total + Number(item.quantity), 0);
+        if (status) status.textContent = `${name} added to your bag. Your bag now has ${count} ${count === 1 ? "item" : "items"}.`;
+      });
+    });
+  }
+
+  /* ----------------------------------------------------------------------
      Boot
      ---------------------------------------------------------------------- */
-  if (doc.readyState === "loading") {
-    doc.addEventListener("DOMContentLoaded", initAccessoryNav);
-  } else {
+  function init() {
     initAccessoryNav();
+    initAddToBag();
+  }
+
+  if (doc.readyState === "loading") {
+    doc.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
   }
 })();

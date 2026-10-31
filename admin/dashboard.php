@@ -76,6 +76,9 @@ $monthlyRevenue = $controller->getMonthlyRevenue();
     <link rel="stylesheet" href="../public/assets/css/adminDashboard.css">
 
 
+    <link rel="stylesheet" href="../public/assets/css/admin.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/admin.css'); ?>">
+    <link rel="stylesheet" href="../public/assets/css/users.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/users.css'); ?>">
+
     
 
 <!-- Leaflet Map CSS -->
@@ -104,54 +107,6 @@ $monthlyRevenue = $controller->getMonthlyRevenue();
             </div>
 
         </div>
-
-        <div class="navbar-center">
-
-            <div class="search-box">
-                <i class="bi bi-search"></i>
-                <input type="search"
-                       placeholder="Search orders, products, users..."
-                       aria-label="Search">
-            </div>
-
-        </div>
-
-        <div class="navbar-right">
-
-            <button class="nav-icon-btn" type="button"
-                    aria-label="Notifications">
-                <i class="bi bi-bell"></i>
-                <span class="notification-dot"></span>
-            </button>
-
-            <button class="nav-icon-btn" type="button"
-                    aria-label="Messages">
-                <i class="bi bi-envelope"></i>
-            </button>
-
-            <div class="admin-profile">
-
-                <div class="admin-avatar">
-                    <i class="bi bi-person-fill"></i>
-                </div>
-
-                <div class="admin-info">
-                    <strong>
-                        <?= htmlspecialchars(
-                            $_SESSION['admin_name'] ?? 'Admin',
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>
-                    </strong>
-                    <span>Store Admin</span>
-                </div>
-
-                <i class="bi bi-chevron-down"></i>
-
-            </div>
-
-        </div>
-
     </nav>
 
     <!-- Sidebar -->
@@ -162,8 +117,7 @@ $monthlyRevenue = $controller->getMonthlyRevenue();
                 <i class="bi bi-layers-fill"></i>
             </div>
             <div>
-                <strong>CoreUI</strong>
-                <span>CoreAdmin</span>
+                <strong>CoreAdmin</strong>
             </div>
         </div>
 
@@ -176,12 +130,12 @@ $monthlyRevenue = $controller->getMonthlyRevenue();
                 <span>Dashboard</span>
             </a>
 
-            <a href="#" class="sidebar-link">
+            <a href="users.php" class="sidebar-link">
                 <i class="bi bi-people"></i>
                 <span>Users</span>
             </a>
 
-            <a href="#" class="sidebar-link">
+            <a href="categories.php" class="sidebar-link">
                 <i class="bi bi-tags"></i>
                 <span>Categories</span>
             </a>
@@ -191,7 +145,7 @@ $monthlyRevenue = $controller->getMonthlyRevenue();
                 <span>Products</span>
             </a>
 
-            <a href="#" class="sidebar-link">
+            <a href="orders.php" class="sidebar-link">
                 <i class="bi bi-bag-check"></i>
                 <span>Orders</span>
             </a>

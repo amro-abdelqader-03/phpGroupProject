@@ -17,8 +17,6 @@ class categories
 
     public function get_Allcategory(): array
     {
-
-
        $sql = "SELECT
             c.id,
             c.name,
