@@ -1,8 +1,9 @@
 /* ==========================================================================
-   ÉLAN BRIDAL — Accessories page
-   The product cards are now printed by PHP from the database
-   (see public/accessories.php). This file only highlights the right link
-   in the "All / Suit / Dress Accessories" menu while the page scrolls.
+   ÉLAN BRIDAL — Accessories page and one accessory page
+   The product cards are printed by PHP from the database
+   (see public/accessories.php and public/accessory.php). This file
+   highlights the right link in the "All / Suit / Dress Accessories" menu
+   while the page scrolls, and runs the Add to Bag buttons.
    ========================================================================== */
 (() => {
   "use strict";
@@ -99,11 +100,34 @@
   function initAddToBag() {
     const status = $("#acc-bag-status");
 
+    // Hide the "Please choose a size" message as soon as a size is picked
+    $$("[data-size-options]").forEach((sizeBox) => {
+      sizeBox.addEventListener("change", () => {
+        $("[data-size-error]", sizeBox).textContent = "";
+      });
+    });
+
     $$("[data-add-to-bag]").forEach((button) => {
       button.addEventListener("click", () => {
         if (!window.ElanCart) return;
 
         const name = button.dataset.name;
+
+        // Shoes have size buttons on their page (accessory.php): a size must be chosen first
+        const product = button.closest("[data-product]");
+        const sizeBox = product ? $("[data-size-options]", product) : null;
+        let size = "";
+
+        if (sizeBox) {
+          const checked = $("input[name='size']:checked", sizeBox);
+          if (!checked) {
+            $("[data-size-error]", sizeBox).textContent = "Please choose a size.";
+            const firstSize = $("input[name='size']:not(:disabled)", sizeBox);
+            if (firstSize) firstSize.focus();
+            return;
+          }
+          size = checked.value;
+        }
         const cart = window.ElanCart.add({
           productId: button.dataset.id,
           productName: name,
@@ -111,7 +135,7 @@
           // a full link, so the photo also works on the Bag page
           image: button.dataset.image ? new URL(button.dataset.image, window.location.href).href : "",
           unitPrice: Number(button.dataset.price),
-          size: "",
+          size: size,
           color: "",
           quantity: 1,
         });
@@ -127,7 +151,8 @@
 
         // Screen readers read this message out loud
         const count = cart.reduce((total, item) => total + Number(item.quantity), 0);
-        if (status) status.textContent = `${name} added to your bag. Your bag now has ${count} ${count === 1 ? "item" : "items"}.`;
+        const sizeText = size ? ` (size ${size})` : "";
+        if (status) status.textContent = `${name}${sizeText} added to your bag. Your bag now has ${count} ${count === 1 ? "item" : "items"}.`;
       });
     });
   }

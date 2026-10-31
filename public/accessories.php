@@ -47,6 +47,28 @@ $groomShoeTypes = $accessoriesModel->getSubcategories([15, 16, 17, 18]);
 $bridalShoeTypes = $accessoriesModel->getSubcategories([19, 20, 24, 25]);
 
 
+// STEP 6: Get the sizes of the products (only the shoes have sizes)
+// Collect every product id first, then ask the database for all sizes at once
+$productIds = [];
+foreach ($products as $productList) {
+    foreach ($productList as $product) {
+        $productIds[] = $product["id"];
+    }
+}
+
+$sizes = $accessoriesModel->getSizes($productIds);
+
+// Put the sizes inside each product, so $product["sizes"] can be used in the cards
+// (& means we change the real product, not a copy of it)
+foreach ($products as $sectionId => &$productList) {
+    foreach ($productList as &$product) {
+        $product["sizes"] = $sizes[$product["id"]] ?? [];
+    }
+    unset($product);
+}
+unset($productList);
+
+
 // =====================================================
 // Helper functions (small functions we use in the HTML)
 // =====================================================
@@ -126,39 +148,41 @@ function printProductCards($productList, $sectionId)
         $image = productImage($product["image_url"]);
         $price = number_format($product["price"], 2) . " JOD";
 
-        // The "View details" message (product pages are not built yet)
-        $dialog = $product["product_name"] . " is part of the Élan Bridal accessories collection. "
-                . "Product detail pages are coming soon.";
+        // The product's own page (photo, details and sizes)
+        $productLink = "accessory.php?id=" . $product["id"];
         ?>
-        <article class="acc-product" data-reveal>
-            <figure class="acc-product__visual">
+        <article class="acc-product" data-reveal data-product>
+            <!-- Clicking the photo or the name opens the product's page -->
+            <a class="acc-product__visual" href="<?php echo $productLink; ?>" tabindex="-1" aria-hidden="true">
                 <?php if ($image !== "") { ?>
                     <img class="acc-product__image" src="<?php echo safe($image); ?>"
-                         alt="<?php echo safe($product["product_name"]); ?>" loading="lazy" decoding="async">
+                         alt="" loading="lazy" decoding="async">
                 <?php } else { ?>
                     <span class="acc-no-photo">Photo coming soon</span>
                 <?php } ?>
-            </figure>
+            </a>
             <div class="acc-product__body">
                 <div class="acc-product__heading">
-                    <h4 class="acc-product__name"><?php echo safe($product["product_name"]); ?></h4>
+                    <h4 class="acc-product__name">
+                        <a class="acc-product__name-link" href="<?php echo $productLink; ?>"><?php echo safe($product["product_name"]); ?></a>
+                    </h4>
                     <span class="acc-product__index" aria-hidden="true"><?php echo str_pad($number, 2, "0", STR_PAD_LEFT); ?></span>
                 </div>
                 <p class="acc-product__desc"><?php echo safe($product["description"]); ?></p>
                 <p class="acc-product__price"><?php echo $price; ?></p>
 
                 <div class="acc-product__actions">
-                    <a class="text-link text-link--sm acc-product__link"
-                       href="#<?php echo $sectionId; ?>"
-                       data-placeholder="<?php echo safe($product["product_name"]); ?>"
-                       data-dialog="<?php echo safe($dialog); ?>"
-                       data-dialog-cta="Keep exploring"
-                       data-dialog-target="#<?php echo $sectionId; ?>">
+                    <a class="text-link text-link--sm acc-product__link" href="<?php echo $productLink; ?>">
                         View details <?php echo arrowIcon(); ?>
                     </a>
 
-                    <!-- Add to Bag: accessories.js reads the data-... values and puts the product in the bag -->
-                    <?php if ($product["stock_quantity"] > 0) { ?>
+                    <?php if ($product["stock_quantity"] <= 0) { ?>
+                        <button type="button" class="acc-add-btn" disabled>Sold Out</button>
+                    <?php } elseif (count($product["sizes"]) > 0) { ?>
+                        <!-- Shoes: the size is chosen on the product's page -->
+                        <a class="acc-add-btn" href="<?php echo $productLink; ?>">Choose Size</a>
+                    <?php } else { ?>
+                        <!-- Add to Bag: accessories.js reads the data-... values and puts the product in the bag -->
                         <button type="button" class="acc-add-btn" data-add-to-bag
                                 data-id="<?php echo $product["id"]; ?>"
                                 data-name="<?php echo safe($product["product_name"]); ?>"
@@ -166,8 +190,6 @@ function printProductCards($productList, $sectionId)
                                 data-image="<?php echo safe($image); ?>">
                             Add to Bag
                         </button>
-                    <?php } else { ?>
-                        <button type="button" class="acc-add-btn" disabled>Sold Out</button>
                     <?php } ?>
                 </div>
             </div>

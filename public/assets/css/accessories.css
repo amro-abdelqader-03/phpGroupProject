@@ -77,3 +77,77 @@
     background: transparent;
     color: var(--ink);
 }
+
+
+/* "Choose Size" is a link that looks like the Add to Bag button */
+a.acc-add-btn {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+/* The photo and the name on each card are links to the product's page */
+a.acc-product__visual {
+    display: block;
+}
+
+.acc-product__name-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* ===== One accessory page (accessory.php) ===== */
+
+/* Size buttons: a hidden radio button + a label that looks like a button */
+.acc-size-radio {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+
+.acc-size-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* The chosen size */
+.acc-size-radio:checked + .acc-size-label {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--ivory);
+}
+
+.acc-size-radio:focus-visible + .acc-size-label {
+    outline: 2px solid var(--bronze-deep);
+    outline-offset: 2px;
+}
+
+/* Sold out sizes are crossed out and can't be chosen */
+.acc-size-radio:disabled + .acc-size-label {
+    opacity: 0.4;
+    text-decoration: line-through;
+    cursor: not-allowed;
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+}
+
+/* The page's Add to Bag button takes the full width of the info column */
+.detail-form[data-product] .detail-add-button {
+    width: 100%;
+}
+
+.detail-add-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Shown inside the photo box when there's no photo */
+.detail-gallery__main .acc-no-photo {
+    position: absolute;
+}
