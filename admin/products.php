@@ -119,7 +119,7 @@ require_once __DIR__ . '/includes/header.php';
 
         <div class="modal-content category-modal">
 
-            <form id="addForm">
+            <form id="addForm" enctype="multipart/form-data">
 
                 <div class="modal-header">
 
@@ -156,6 +156,26 @@ require_once __DIR__ . '/includes/header.php';
                     <textarea class="form-control mb-3"
                         id="prodDescription" rows="3"
                         placeholder="Brief description"></textarea>
+
+                    <label class="form-label" for="prodPrimaryImage">Primary image</label>
+                    <input type="file" class="form-control mb-3" id="prodPrimaryImage"
+                        accept="image/*" required>
+
+                    <label class="form-label" for="extraImage1">Additional image 1</label>
+                    <input type="file" class="form-control mb-3 additional-image" id="extraImage1"
+                        name="extra_image_1" accept="image/*" required>
+
+                    <label class="form-label" for="extraImage2">Additional image 2</label>
+                    <input type="file" class="form-control mb-3 additional-image" id="extraImage2"
+                        name="extra_image_2" accept="image/*" required>
+
+                    <label class="form-label" for="extraImage3">Additional image 3 (optional)</label>
+                    <input type="file" class="form-control mb-3 additional-image" id="extraImage3"
+                        name="extra_image_3" accept="image/*">
+
+                    <label class="form-label" for="extraImage4">Additional image 4 (optional)</label>
+                    <input type="file" class="form-control mb-3 additional-image" id="extraImage4"
+                        name="extra_image_4" accept="image/*">
 
                     <div class="row">
                         <div class="col-md-6">
@@ -226,7 +246,9 @@ require_once __DIR__ . '/includes/header.php';
         let currentPage = 1;
         const rowsPerPage = 10;
 
-        const apiUrl = "http://localhost/phpGroupProject/app/controllers/admin-products.php";
+        const apiUrl = "../app/controllers/admin-products.php";
+        const primaryImageInput = document.getElementById('prodPrimaryImage');
+        const extraImagesInputs = [...document.querySelectorAll('.additional-image')];
 
         function notify(message) {
             document.getElementById('toastText').textContent = message;
@@ -253,7 +275,7 @@ require_once __DIR__ . '/includes/header.php';
                 .replace(/^-|-$/g, '');
         }
 
-        function makeRow(id, productName, subcategoryId, price, costPrice, description) {
+        function makeRow(id, productName, subcategoryId, price, costPrice, description, imageUrl) {
             const numPrice = Number(price) || 0;
             const numCostPrice = Number(costPrice) || 0;
             const revenue = numPrice - numCostPrice;
@@ -266,6 +288,7 @@ require_once __DIR__ . '/includes/header.php';
             row.dataset.subcategory = subcategoryId;
             row.dataset.price = numPrice;
             row.dataset.costPrice = numCostPrice;
+            row.dataset.image = imageUrl || '';
             row.dataset.revenue = revenue;
 
             row.innerHTML = `
@@ -481,21 +504,44 @@ require_once __DIR__ . '/includes/header.php';
 
             const isEditing = editingProductId !== null;
 
+            if (!isEditing && primaryImageInput.files.length !== 1) {
+                notify('Choose one primary image.');
+                submitButton.disabled = false;
+                return;
+            }
+            if (!isEditing && extraImagesInputs.slice(0, 2).some(input => input.files.length !== 1)) {
+                notify('Choose the two required additional images.');
+                submitButton.disabled = false;
+                return;
+            }
+
             try {
+                const formData = new FormData();
+                formData.append('product_name', productName);
+                formData.append('subcategory_id', subcategoryId);
+                formData.append('description', description);
+                formData.append('price', price);
+                formData.append('cost_price', costPrice);
+                if (!isEditing) {
+                    formData.append('primary_image', primaryImageInput.files[0]);
+                    extraImagesInputs.forEach((input, index) => {
+                        if (input.files.length) formData.append(`extra_image_${index + 1}`, input.files[0]);
+                    });
+                }
                 const response = await fetch(
                     isEditing
                         ? `${apiUrl}?id=${encodeURIComponent(editingProductId)}`
                         : apiUrl,
                     {
                         method: isEditing ? 'PUT' : 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
+                        headers: isEditing ? { 'Content-Type': 'application/json' } : undefined,
+                        body: isEditing ? JSON.stringify({
                             product_name: productName,
                             subcategory_id: Number(subcategoryId),
-                            description: description,
+                            description,
                             price: Number(price),
                             cost_price: Number(costPrice)
-                        })
+                        }) : formData
                     }
                 );
 
@@ -527,6 +573,8 @@ require_once __DIR__ . '/includes/header.php';
 
         document.getElementById('addModal').addEventListener('hidden.bs.modal', () => {
             editingProductId = null;
+            primaryImageInput.required = true;
+            extraImagesInputs.forEach((input, index) => input.required = index < 2);
 
             const modal = document.getElementById('addModal');
 
@@ -588,6 +636,8 @@ require_once __DIR__ . '/includes/header.php';
             const row = editButton.closest('tr');
 
             editingProductId = row.dataset.id;
+            primaryImageInput.required = false;
+            extraImagesInputs.forEach(input => input.required = false);
 
             document.getElementById('prodName').value =
                 row.querySelector('.category-name-text b').textContent;
@@ -689,7 +739,8 @@ require_once __DIR__ . '/includes/header.php';
                         product.subcategory_id,
                         product.price,
                         product.cost_price,
-                        product.description
+                        product.description,
+                        product.image_url
                     );
 
                     row.classList.add('stagger-item');
