@@ -253,7 +253,7 @@ require_once __DIR__ . '/includes/header.php';
     let editingCategoryId = null;
 
     const apiUrl =
-        "/phpGroupProject/app/controllers/admin-categories.php";
+        "../app/controllers/admin-categories.php";   // relative to admin/, works in any project folder
 
 
     // 2. Show toast notification

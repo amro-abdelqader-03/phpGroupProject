@@ -631,7 +631,7 @@
   const $ = (selector, context = doc) => context.querySelector(selector);
   const $$ = (selector, context = doc) => Array.from(context.querySelectorAll(selector));
 
-  const SUITS_API = "/phpGroupProject/app/controllers/suits.php";
+  const SUITS_API = "../app/controllers/suits.php";   // relative to the page (public/), works in any project folder
 
   // وظيفتها تحويل الرموز الخاصة إلى HTML entities قبل إدخال البيانات إلى HTML.
   const escapeHtml = (value) =>
