@@ -70,7 +70,7 @@
       });
       quantity.append(decrease, count, increase);
       info.append(quantity);
-      const price = item.unitPrice == null ? "Price available on request" : new Intl.NumberFormat("en-JO", { style: "currency", currency: "JOD" }).format(item.unitPrice);
+      const price = item.unitPrice == null ? "Price available on request" : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(item.unitPrice);
       info.append(element("p", "cart-item__price", price));
       const remove = element("button", "cart-item__remove", "Remove");
       remove.type = "button";
@@ -80,7 +80,7 @@
         window.ElanCart.remove(item.productId, item.size, item.color);
       });
       info.append(remove);
-      const subtotal = item.subtotal == null ? "—" : new Intl.NumberFormat("en-JO", { style: "currency", currency: "JOD" }).format(item.subtotal);
+      const subtotal = item.subtotal == null ? "—" : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(item.subtotal);
       const subtotalEl = element("p", "cart-item__subtotal", subtotal);
       subtotalEl.setAttribute("aria-label", `Subtotal ${subtotal}`);
       row.append(image, info, subtotalEl);

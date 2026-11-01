@@ -13,7 +13,7 @@
   const fitNote = document.getElementById("ai-recommendation-fit-note");
   const endpoint = new URL("../app/controllers/ai-recommendations.php", window.location.href);
   const submitLabel = submitButton ? submitButton.textContent.trim() : "Get AI Recommendations";
-  const currency = new Intl.NumberFormat(undefined, { style: "currency", currency: "JOD" });
+  const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
   let submitting = false;
 

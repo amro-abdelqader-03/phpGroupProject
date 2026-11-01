@@ -110,7 +110,7 @@ function printDressCards(array $dressList): void
 
                 <p class="look-card__desc"><?= $description ?></p>
 
-                <p class="look-card__desc"><?= $price ?> JOD</p>
+                <p class="look-card__desc">$<?= $price ?></p>
 
                 <div class="look-card__actions">
 

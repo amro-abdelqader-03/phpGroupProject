@@ -97,7 +97,7 @@ const primary = images[0] || null;
     const variants = Array.isArray(product.variants) ? product.variants : [];
     const availableVariants = variants.filter((variant) => Number(variant.stock_quantity) > 0);
     const hasColorVariants = availableVariants.some((variant) => variant.color);
-    const currency = new Intl.NumberFormat(undefined, { style: "currency", currency: "JOD" });
+    const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
     detail.hidden = false;
     byId("detail-name").textContent = name;

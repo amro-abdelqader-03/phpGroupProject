@@ -115,11 +115,11 @@ try {
         foreach ($order['items'] as $item) {
             $lineItems[] = [
                 'price_data' => [
-                    'currency'     => 'jod',
+                    'currency'     => 'usd',
                     'product_data' => [
                         'name' => $item['product_name'],
                     ],
-                    'unit_amount'  => (int) round((float) $item['price'] * 1000),
+                    'unit_amount'  => (int) round((float) $item['price'] * 100),
                 ],
                 'quantity'   => (int) $item['quantity'],
             ];
@@ -127,11 +127,11 @@ try {
 
         $lineItems[] = [
             'price_data' => [
-                'currency'     => 'jod',
+                'currency'     => 'usd',
                 'product_data' => [
                     'name' => 'Delivery',
                 ],
-                'unit_amount'  => (int) round($order['shipping'] * 1000),
+                'unit_amount'  => (int) round($order['shipping'] * 100),
             ],
             'quantity'   => 1,
         ];
@@ -184,6 +184,9 @@ try {
 } catch (Throwable $e) {
     error_log($e->getMessage());
     http_response_code(500);
-    echo json_encode(["success" => false, "message" => "We could not complete your order. Please try again."]);
+    echo json_encode([
+        "success" => false, 
+        "message" => "Error: " . $e->getMessage() . " in " . basename($e->getFile()) . " on line " . $e->getLine()
+    ]);
     exit();
 }

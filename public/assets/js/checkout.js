@@ -5,9 +5,9 @@
   const itemHost = document.getElementById("checkout-items");
   if (!form || !itemHost || !window.ElanCart) return;
 
-  const money = (amount) => new Intl.NumberFormat("en-JO", {
+  const money = (amount) => new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "JOD",
+    currency: "USD",
     minimumFractionDigits: 3,
     maximumFractionDigits: 3,
   }).format(amount);

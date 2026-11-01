@@ -311,7 +311,7 @@
 
 //           ${
 //             config.kind === "suit"
-//               ? `<p class="look-card__price">${escapeHtml(product.price)} JOD</p>`
+//               ? `<p class="look-card__price">$${escapeHtml(product.price)}</p>`
 //               : (
 //                   ready
 //                     ? ""
@@ -931,7 +931,7 @@
 
           ${
             config.kind === "suit"
-              ? `<p class="look-card__price">${escapeHtml(product.price)} JOD</p>`
+              ? `<p class="look-card__price">$${escapeHtml(product.price)}</p>`
               : (
                   ready
                     ? ""
