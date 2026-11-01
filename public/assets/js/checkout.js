@@ -46,7 +46,7 @@
       info.append(make("p", "checkout-item__category", item.category === "dresses" ? "Dress" : "Suit"));
       info.append(make("h3", "checkout-item__name", item.productName));
       info.append(make("p", "checkout-item__variant", `Size ${item.size} · ${item.color}`));
-      info.append(make("p", "checkout-item__price", unitPrice === null ? "Unit price: To be confirmed" : `Unit price: ${money(unitPrice)}`));
+      info.append(make("p", "checkout-item__price", unitPrice === null ? "Unit price unavailable" : `Unit price: ${money(unitPrice)}`));
 
       const quantity = make("div", "checkout-item__quantity");
       quantity.setAttribute("role", "group");
@@ -55,18 +55,36 @@
       decrease.type = "button";
       decrease.setAttribute("aria-label", `Decrease ${item.productName} quantity`);
       decrease.disabled = Number(item.quantity) <= 1;
-      decrease.addEventListener("click", () => window.ElanCart.setQuantity(item.productId, item.size, item.color, Number(item.quantity) - 1));
+      decrease.addEventListener("click", async () => {
+        const nextQuantity = Number(item.quantity) - 1;
+        try {
+          await window.ElanCart.syncQuantity(item, nextQuantity);
+          window.ElanCart.setQuantity(item.productId, item.size, item.color, nextQuantity);
+        } catch (error) {
+          document.getElementById("checkout-result").textContent = error.message;
+          document.getElementById("checkout-result").classList.add("is-error");
+        }
+      });
       const count = make("output", "checkout-item__count", String(item.quantity));
       count.setAttribute("aria-live", "polite");
       const increase = make("button", "checkout-qty-button", "+");
       increase.type = "button";
       increase.setAttribute("aria-label", `Increase ${item.productName} quantity`);
-      increase.addEventListener("click", () => window.ElanCart.setQuantity(item.productId, item.size, item.color, Number(item.quantity) + 1));
+      increase.addEventListener("click", async () => {
+        const nextQuantity = Number(item.quantity) + 1;
+        try {
+          await window.ElanCart.syncQuantity(item, nextQuantity);
+          window.ElanCart.setQuantity(item.productId, item.size, item.color, nextQuantity);
+        } catch (error) {
+          document.getElementById("checkout-result").textContent = error.message;
+          document.getElementById("checkout-result").classList.add("is-error");
+        }
+      });
       quantity.append(decrease, count, increase);
       info.append(quantity);
 
-      const amount = make("p", "checkout-item__subtotal", itemSubtotal === null ? "To be confirmed" : money(itemSubtotal));
-      amount.setAttribute("aria-label", `Item subtotal ${itemSubtotal === null ? "to be confirmed" : money(itemSubtotal)}`);
+      const amount = make("p", "checkout-item__subtotal", itemSubtotal === null ? "Unavailable" : money(itemSubtotal));
+      amount.setAttribute("aria-label", `Item subtotal ${itemSubtotal === null ? "unavailable" : money(itemSubtotal)}`);
       row.append(image, info, amount);
       itemHost.append(row);
     });
@@ -74,9 +92,9 @@
     const shippingCost = 5.00; // Fixed shipping cost matching backend
     const totalAmount = subtotal + shippingCost;
 
-    document.getElementById("checkout-subtotal").textContent = allPricesKnown ? money(subtotal) : "To be confirmed";
-    document.getElementById("checkout-delivery").textContent = allPricesKnown ? money(shippingCost) : "To be confirmed";
-    document.getElementById("checkout-total").textContent = allPricesKnown ? money(totalAmount) : "To be confirmed";
+    document.getElementById("checkout-subtotal").textContent = allPricesKnown ? money(subtotal) : "Unavailable";
+    document.getElementById("checkout-delivery").textContent = allPricesKnown ? money(shippingCost) : "Unavailable";
+    document.getElementById("checkout-total").textContent = allPricesKnown ? money(totalAmount) : "Unavailable";
   }
 
   const requiredFields = [
@@ -123,6 +141,10 @@
 
   const paymentError = document.getElementById("payment-error");
   const visaPlaceholder = document.getElementById("visa-placeholder");
+  if (new URLSearchParams(window.location.search).get("payment") === "cancelled") {
+    const result = document.getElementById("checkout-result");
+    result.textContent = "Payment was canceled. Your card was not charged; review your order and try again when ready.";
+  }
   form.querySelectorAll('input[name="payment"]').forEach((radio) => {
     radio.addEventListener("change", () => {
       paymentError.textContent = "";

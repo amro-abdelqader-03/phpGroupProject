@@ -1,20 +1,16 @@
 # ÉLAN BRIDAL — Wedding Fashion Site
 
-A premium, editorial wedding-fashion site for a fictional atelier: a cinematic landing page plus three dedicated collection pages for men's wedding suits, wedding dresses, and wedding accessories. Built with semantic HTML5, custom CSS3, and vanilla JavaScript — no frameworks, build step, or backend required.
+A wedding-fashion storefront with PHP, MySQL, semantic HTML, custom CSS, and vanilla JavaScript. Product, cart, checkout, AI recommendation, and customer review features use the PHP backend.
 
 ## Run locally
 
-Open `index.php` directly in a browser, or serve the folder with any static server:
+Run the project through XAMPP/Apache with MySQL enabled. Configure the `wedding_store` database, copy the root `.env.example` to `.env`, and replace `STRIPE_SECRET_KEY` with a test secret from Stripe Dashboard > Developers > API keys. Set `APP_BASE_URL` to the public URL of this project. Restart Apache after setting a server environment variable instead of using `.env`.
 
 ```bash
-# Option 1 — Node (no install required)
-npx serve .
-
-# Option 2 — VS Code
-# Install the "Live Server" extension and choose "Open with Live Server"
+http://localhost/phpGroupProject/public/
 ```
 
-Then visit the URL printed by the server (or open `index.php` directly). The collection pages are at `suits.php`, `dresses.php`, and `accessories.php`.
+Apply `database/product_reviews.sql` once to enable product reviews. Stripe Checkout remains unavailable until a valid secret key is configured; use Stripe test keys locally.
 
 > Google Fonts are loaded from the network. Without a connection, the pages fall back to Georgia and the system UI font; all layout and interactions still work.
 
@@ -26,8 +22,8 @@ suits.php                  Men's wedding suits collection, five categories
 dresses.php                Wedding dress collection, five silhouettes
 accessories.php            Wedding accessories for the groom and bride, nine categories
 product.php                Shared detail page for suit and dress products
-cart.php                   Frontend-only shopping bag
-checkout.php               Delivery and payment method checkout preview
+cart.php                   Shopping bag with database-backed quantity controls
+checkout.php               Validated delivery, cash-on-delivery, and Stripe Checkout
 js/product-details.js       Product lookup, gallery, variant selection, quantity, and cart actions
 js/cart.js                  Local browser cart with per-variant merging and navigation count
 js/cart-page.js             Shopping bag renderer
@@ -36,7 +32,7 @@ register.php               Frontend-only account registration form
 login.php                  Frontend-only account login form
 css/style.css               Design system, landing sections, collection lookbooks, accessories, responsive + reduced motion
 js/main.js                  Navigation, hero film, scroll reveals, dialog, newsletter validation, active nav
-js/auth.js                  Account form validation and demo responses; credentials are not stored or sent
+js/auth.js                  Account form validation and backend authentication
 js/collections.js           Suit/dress product data, shared look-card renderer, view toggles, category scroll-spy
 js/accessories.js           Accessories data, category/product card renderers, accessories category scroll-spy
 assets/videos/              Optimized hero campaign film (desktop + mobile crops)
@@ -166,15 +162,15 @@ All 36 accessory records and 8 subcategory cards live in `js/accessories.js`. Pr
 
 `js/accessories.js` must load before `js/main.js`; it renders the cards first, then `main.js` attaches scroll reveals and dialog handling. `js/collections.js` is not loaded on this page, so its lookbook scroll-spy cannot conflict with the accessory category bar.
 
-### `register.php` and `login.php` — account form demonstrations
+### `register.php` and `login.php` — customer accounts
 
-These responsive pages reuse the Élan navigation, palette, display and body fonts, and locally hosted editorial photography. The forms validate fields in the browser, but there is no account service, database, or API connected. Submitting valid details shows an explicit demonstration message; no credentials or form values are stored or transmitted. Password reset is unavailable until an authentication service is added.
+These responsive pages reuse the Élan navigation, palette, display and body fonts, and locally hosted editorial photography. Authentication is backed by the users table. The navigation hides registration and login links after sign-in and displays a CSRF-protected Log Out button.
 
-### `product.php`, `cart.php`, and `checkout.php` — product, bag, and checkout demonstrations
+### `product.php`, `cart.php`, and `checkout.php` — product, bag, and checkout
 
-Suit and dress lookbook cards link to one shared product page using `category` and `slug` query parameters. The page reads the existing records in `js/collections.js`. The catalog has no prices, verified size or colour variants, or inventory, so price is shown as available on request and selection choices are marked as preview options. The cart is frontend-only and persists non-sensitive item selections in local storage.
+Product detail pages load catalog prices, stock, and variants from the database. Cart mutations require an authenticated session and validate ownership and available stock on the server. Reviews are limited to customers with a completed purchase.
 
-The checkout reads and updates the same cart, validates a manually entered delivery address, and offers Cash on Delivery and Visa as selections. There is no order API or payment gateway: placing an order returns an explicit not-connected message, preserves the cart, and never collects card details. Prices and delivery rates are missing, so totals remain to be confirmed; JOD is the display currency when numeric prices are supplied.
+Checkout validates delivery details server-side and calculates totals from the database cart. Card payments use Stripe-hosted Checkout in JOD; card data is never handled by this application. The success page verifies the Stripe session, amount, order owner, and stored transaction reference before setting the payment to Paid and the order to Confirmed. Customers see the persisted order details and current status for card and cash-on-delivery orders.
 
 ## Interactions
 

@@ -4,6 +4,7 @@
 require_once __DIR__ . "/../config/Database.php";
 require_once __DIR__ . "/../models/mensuits.php";
 require_once __DIR__ . "/../../core/Response.php";
+require_once __DIR__ . '/../../public/session.php';
 
 header("Content-Type: application/json; charset=UTF-8");
 

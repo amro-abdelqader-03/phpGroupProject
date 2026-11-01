@@ -7,7 +7,7 @@
 require_once __DIR__ . '/../app/config/Database.php';  
 require_once __DIR__ . '/../app/models/user.php';       // the User model ( CRUD methods)
 require_once __DIR__ . '/includes/helpers.php';         // safe(), getInitials(), usersLink()...
-
+require_once 'session.php';
 
 // STEP 2: Connect to the database and create the User model
 $database = new Database();

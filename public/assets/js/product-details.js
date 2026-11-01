@@ -106,7 +106,6 @@ const primary = images[0] || null;
     byId("detail-category").textContent = "Élan Bridal Collection";
     byId("detail-breadcrumb-name").textContent = name;
     document.title = `${name} | ÉLAN BRIDAL`;
-
     const mainImage = byId("detail-primary-image");
     mainImage.src = imageUrl(primary && primary.image_url);
     mainImage.alt = `${name} product photograph`;
@@ -223,12 +222,13 @@ const item = images[index];
         return;
       }
       try {
+        await window.ElanCart.ready;
         const cartEndpoint = new URL("../app/controllers/cart.php", window.location.href);
         const cartResponse = await fetch(cartEndpoint, {
           method: "POST",
           credentials: "same-origin",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ user_id: 2 }),
+          body: JSON.stringify({}),
         });
         const cartResult = await cartResponse.json();
         if (!cartResponse.ok || !cartResult.success || !cartResult.data?.id) {
@@ -260,6 +260,8 @@ const item = images[index];
           unitPrice: product.price,
           size: selectedVariant.size,
           color: selectedVariant.color || "",
+          variantId: Number(selectedVariant.variant_id),
+          cartItemId: Number(itemResult.data.id),
           quantity,
         });
         byId("detail-form-error").textContent = "";
@@ -268,6 +270,107 @@ const item = images[index];
         byId("detail-cart-status").textContent = error.message || "Could not add this product to your bag. Please try again.";
       }
     };
+
+    renderReviews(Number(product.product_id));
+  }
+
+  async function renderReviews(productId) {
+    const section = document.createElement("section");
+    section.className = "product-reviews";
+    section.setAttribute("aria-labelledby", "product-reviews-title");
+    const heading = document.createElement("h2");
+    heading.id = "product-reviews-title";
+    heading.textContent = "Customer reviews";
+    const summary = document.createElement("p");
+    summary.className = "product-reviews__summary";
+    const list = document.createElement("div");
+    list.className = "product-reviews__list";
+    list.setAttribute("aria-live", "polite");
+    const status = document.createElement("p");
+    status.className = "product-reviews__status";
+    status.setAttribute("role", "status");
+    const form = document.createElement("form");
+    form.className = "product-reviews__form";
+    form.innerHTML = '<label for="review-rating">Your rating</label><select id="review-rating" name="rating" required><option value="">Choose a rating</option><option value="5">5 - Excellent</option><option value="4">4 - Very good</option><option value="3">3 - Good</option><option value="2">2 - Fair</option><option value="1">1 - Poor</option></select><label for="review-text">Your review</label><textarea id="review-text" name="review_text" rows="4" maxlength="1200" required></textarea><button class="btn" type="submit">Submit review</button>';
+    section.append(heading, summary, list, status, form);
+    detail.append(section);
+
+    const endpoint = new URL("../app/controllers/product-reviews.php", window.location.href);
+    endpoint.searchParams.set("product_id", String(productId));
+    const authEndpoint = new URL("auth-status.php", window.location.href);
+    let csrfToken = "";
+    try {
+      const authResponse = await fetch(authEndpoint, { credentials: "same-origin", cache: "no-store" });
+      const auth = await authResponse.json();
+      csrfToken = auth.csrf_token || "";
+      if (!auth.logged_in) {
+        const login = document.createElement("a");
+        login.href = "login.php";
+        login.textContent = "Sign in to leave a review";
+        form.replaceWith(login);
+      }
+    } catch (error) {
+      status.textContent = "Review options are temporarily unavailable.";
+    }
+
+    async function loadReviews() {
+      const response = await fetch(endpoint, { headers: { Accept: "application/json" } });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Reviews could not be loaded.");
+      summary.textContent = data.count ? `${Number(data.average).toFixed(1)} out of 5 · ${data.count} ${data.count === 1 ? "review" : "reviews"}` : "No reviews yet.";
+      list.replaceChildren();
+      data.reviews.forEach((review) => {
+        const article = document.createElement("article");
+        article.className = "product-review";
+        const rating = document.createElement("p");
+        rating.className = "product-review__rating";
+        rating.textContent = `${"★".repeat(Number(review.rating))}${"☆".repeat(5 - Number(review.rating))} ${review.rating}/5`;
+        const author = document.createElement("p");
+        author.className = "product-review__author";
+        author.textContent = `${review.full_name} · ${review.created_at}`;
+        const copy = document.createElement("p");
+        copy.textContent = review.review_text;
+        article.append(rating, author, copy);
+        list.append(article);
+      });
+    }
+
+    try {
+      await loadReviews();
+    } catch (error) {
+      status.textContent = error.message || "Reviews could not be loaded.";
+    }
+
+    if (form.isConnected) {
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        status.textContent = "";
+        const submit = form.querySelector('button[type="submit"]');
+        submit.disabled = true;
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({
+              csrf_token: csrfToken,
+              product_id: productId,
+              rating: form.elements.rating.value,
+              review_text: form.elements.review_text.value,
+            }),
+          });
+          const data = await response.json();
+          if (!response.ok || !data.success) throw new Error(data.message || "Your review could not be saved.");
+          form.reset();
+          status.textContent = "Thank you. Your review has been published.";
+          await loadReviews();
+        } catch (error) {
+          status.textContent = error.message || "Your review could not be saved.";
+        } finally {
+          submit.disabled = false;
+        }
+      });
+    }
   }
 
   loadProduct();

@@ -1,6 +1,7 @@
 /* ÉLAN BRIDAL account form demonstration. */
 (() => {
   "use strict";
+  const authEndpoint = new URL("../app/controllers/auth.php", window.location.href);
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -87,7 +88,7 @@
 
       const phoneValue = phoneInput ? phoneInput.value.trim() : "";
 
-      fetch('/phpGroupProject/app/controllers/auth.php', {
+      fetch(authEndpoint, {
         method: 'POST',
         cache: 'no-store',
         headers: {
@@ -158,7 +159,7 @@
       status.className = "auth-status";
       status.textContent = "";
 
-      fetch('/phpGroupProject/app/controllers/auth.php', {
+      fetch(authEndpoint, {
         method: 'POST',
         cache: 'no-store',
         headers: {
