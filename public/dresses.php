@@ -32,9 +32,10 @@ function dressImage($imageUrl): string
         return '';
     }
 
-    // Images are stored in project_3/Data
+    // Images are stored in the project's Data folder, one level above public/
+    // (a relative path works wherever the project folder is placed)
     if (str_starts_with($imageUrl, '/Data/')) {
-        return '/phpGroupProject' . $imageUrl;
+        return '..' . $imageUrl;
     }
 
     return $imageUrl;

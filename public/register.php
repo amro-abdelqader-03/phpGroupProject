@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=<?php echo filemtime(__DIR__ . '/assets/css/style.css'); ?>">
   <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
   <script src="assets/js/auth.js" defer></script>
   <script src="assets/js/cart.js?v=<?php echo filemtime(__DIR__ . '/assets/js/cart.js'); ?>" defer></script>
@@ -37,7 +37,7 @@
   </header>
   <main id="main" class="auth-main" tabindex="-1">
     <section class="auth-layout" aria-labelledby="auth-title">
-      <div class="auth-editorial" role="img" aria-label="A bride and groom together in a sunlit garden"><div class="auth-editorial__caption"><span>Élan Bridal</span><span>The Art of Your Forever</span></div></div>
+      <div class="auth-editorial auth-editorial--register" role="img" aria-label="A bride in a floral lace gown and pearl earrings in a garden with white arches"><div class="auth-editorial__caption"><span>Élan Bridal</span><span>The Art of Your Forever</span></div></div>
       <div class="auth-panel"><div class="auth-panel__inner">
         <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>Your Élan account</p>
         <h1 class="auth-title" id="auth-title">Create Your<br><em>Account</em></h1>

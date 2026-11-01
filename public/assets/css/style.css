@@ -5646,3 +5646,16 @@ body.dialog-open {
     grid-template-columns: 1fr;
   }
 }
+
+/* Register page: its own photo (the login page keeps the default one) */
+.auth-editorial--register {
+  background-image: url("../images/registerr.jpg");
+  background-position: center 20%;
+}
+
+@media (max-width: 767px) {
+  /* On phones the photo is a short strip: show the top so the face stays in view */
+  .auth-editorial--register {
+    background-position: center 12%;
+  }
+}
