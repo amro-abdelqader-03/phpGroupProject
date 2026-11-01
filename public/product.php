@@ -1,9 +1,7 @@
 
- 
 
 
 <?php
- require_once 'session.php';
 require_once __DIR__ . '/../app/config/Database.php';
 require_once __DIR__ . '/../app/models/Dress.php';
 
@@ -11,20 +9,18 @@ $dress = null;
 $dressImages = [];
 
 if (
-    ($_GET['category'] ?? '') === 'dresses'
-    && isset($_GET['id'])
-    && ctype_digit((string) $_GET['id'])
+  ($_GET['category'] ?? '') === 'dresses'
+  && isset($_GET['id'])
+  && ctype_digit((string) $_GET['id'])
 ) {
-    $database = new Database();
-    $db = $database->connect();
+  $database = new Database();
+  $db = $database->connect();
 
-    $dressModel = new Dress($db);
-
-    $dress = $dressModel->getById((int) $_GET['id']);
-
-    if ($dress) {
-        $dressImages = $dressModel->getImages((int) $dress['id']);
-    }
+  $dressModel = new Dress($db);
+  $dress = $dressModel->getById((int) $_GET['id']);
+  if ($dress) {
+    $dressImages = $dressModel->getImages((int) $dress['id']);
+  }
 }
 ?>
 
@@ -54,7 +50,7 @@ if (
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/collections.js" defer></script>
   <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
-  <script src="assets/js/cart.js" defer></script>
+  <script src="assets/js/cart.js?v=<?php echo filemtime(__DIR__ . '/assets/js/cart.js'); ?>" defer></script>
   <?php if ($dress): ?>
 <script>
     window.ELAN_DB_DRESS = <?= json_encode(
@@ -68,9 +64,9 @@ if (
         ],
         JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
     ) ?>;
-</script>
-<?php endif; ?>
-  <script src="assets/js/product-details.js" defer></script>
+ </script>
+ <?php endif; ?>
+  <script src="assets/js/product-details.js?v=<?php echo filemtime(__DIR__ . '/assets/js/product-details.js'); ?>" defer></script>
   <script src="assets/js/ai-recommendations.js" defer></script>
 </head>
 
@@ -151,8 +147,6 @@ if (
           <h1 class="detail-name" id="detail-name"></h1>
           <p class="detail-price" id="detail-price">Price available on request</p>
           <p class="detail-description" id="detail-description"></p>
-          <p class="detail-data-note">Sizing and colour choices are sample selections for this frontend preview; fit,
-            inventory, and pricing have not been supplied.</p>
           <form class="detail-form" id="detail-form" novalidate>
             <fieldset class="detail-option">
               <legend>Size <span>*</span></legend>

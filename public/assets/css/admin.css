@@ -693,4 +693,42 @@ body {
     .content-area {
         padding: 1.5rem;
     }
-} */
+} *//* =========================
+   Sidebar Logout Button
+========================= */
+
+.sidebar-footer {
+    padding: 15px;
+    margin-top: auto;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+
+    color: #dc3545;
+    background-color: #fff5f5;
+
+    border: 1px solid #ffe0e0;
+    border-radius: 10px;
+
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: all 0.25s ease;
+}
+
+.logout-btn i {
+    font-size: 18px;
+}
+
+.logout-btn:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+    border-color: #dc3545;
+    transform: translateY(-2px);
+}

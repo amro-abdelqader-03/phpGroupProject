@@ -62,6 +62,7 @@ function validateProductsFields(array $data): array
     $subcategory_id = $data["subcategory_id"] ?? null;
     $cost_price = $data["cost_price"] ?? null;
     $price = $data["price"] ?? null;
+    $image_url = $data["image_url"] ?? "";
 
     if (!is_string($product_name) || !is_string($description)) {
         Response::json(422, [
@@ -73,11 +74,19 @@ function validateProductsFields(array $data): array
     $product_name = trim($product_name);
     $description = trim($description);
 
-    if ($product_name === "" || $description === "") {
+    if ($product_name === "") {
         Response::json(422, [
             "success" => false,
-            "message" => "Name and description are required"
+            "message" => "Product name is required"
         ]);
+    }
+
+    $subcategory_id = filter_var($subcategory_id, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]);
+    if ($subcategory_id === false || !is_numeric($price) || !is_numeric($cost_price) || (float)$price < 0 || (float)$cost_price < 0) {
+        Response::json(422, ["success" => false, "message" => "Enter a valid subcategory and non-negative prices"]);
+    }
+    if (!is_string($image_url) || strlen($image_url) > 500 || ($image_url !== "" && filter_var($image_url, FILTER_VALIDATE_URL) === false && !str_starts_with($image_url, "/"))) {
+        Response::json(422, ["success" => false, "message" => "Enter a valid image URL or site path"]);
     }
 
     return [
@@ -85,8 +94,36 @@ function validateProductsFields(array $data): array
         "description" => $description,
         "subcategory_id" => $subcategory_id,
         "cost_price" => $cost_price,
-        "price" => $price
+        "price" => (float)$price,
+        "image_url" => $image_url
     ];
+}
+
+function saveUploadedImage(array $file): string
+{
+    if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        Response::json(422, ["success" => false, "message" => "An image could not be uploaded"]);
+    }
+    if (($file['size'] ?? 0) > 8 * 1024 * 1024 || !is_uploaded_file($file['tmp_name'] ?? '')) {
+        Response::json(422, ["success" => false, "message" => "Images must be smaller than 8 MB"]);
+    }
+
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']);
+    $extensions = ["image/jpeg" => "jpg", "image/png" => "png", "image/webp" => "webp", "image/gif" => "gif"];
+    if (!isset($extensions[$mime])) {
+        Response::json(422, ["success" => false, "message" => "Use a JPG, PNG, WEBP, or GIF image"]);
+    }
+
+    $relativeDirectory = "Data/uploads/products";
+    $directory = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR, $relativeDirectory);
+    if (!is_dir($directory) && !mkdir($directory, 0755, true) && !is_dir($directory)) {
+        throw new RuntimeException("Could not create product image directory");
+    }
+    $filename = bin2hex(random_bytes(16)) . "." . $extensions[$mime];
+    if (!move_uploaded_file($file['tmp_name'], $directory . DIRECTORY_SEPARATOR . $filename)) {
+        throw new RuntimeException("Could not store product image");
+    }
+    return "/" . $relativeDirectory . "/" . $filename;
 }
 
 // Read HTTP method
@@ -131,24 +168,41 @@ try {
 
         // POST: Create product
         case "POST":
-
-            $body = getJsonBody();
+            $body = $_POST;
             $data = validateProductsFields($body);
-
-            // $newId = $ProductsModel->create(
-            //     $data["name"],
-            //     $data["description"],
-            //     $data["status"]
-            // );
+            if (!isset($_FILES['primary_image'], $_FILES['extra_image_1'], $_FILES['extra_image_2'])) {
+                Response::json(422, ["success" => false, "message" => "Choose a primary image and the two required additional images"]);
+            }
+            $images = [["url" => saveUploadedImage($_FILES['primary_image'])]];
+            for ($i = 1; $i <= 4; $i++) {
+                if (!isset($_FILES["extra_image_$i"])) {
+                    if ($i <= 2) {
+                        Response::json(422, ["success" => false, "message" => "Choose the two required additional images"]);
+                    }
+                    continue;
+                }
+                $images[] = ["url" => saveUploadedImage($_FILES["extra_image_$i"])];
+            }
+            $newId = $ProductsModel->create(
+                $data["product_name"],
+                $data["description"],
+                $data["subcategory_id"],
+                $data["price"],
+                (float)$data["cost_price"],
+                $images
+            );
 
             Response::json(201, [
                 "success" => true,
                 "message" => "product created successfully",
                 "data" => [
                     "id" => $newId,
-                    "name" => $data["name"],
+                    "product_name" => $data["product_name"],
                     "description" => $data["description"],
-                    "status" => $data["status"]
+                    "subcategory_id" => $data["subcategory_id"],
+                    "price" => $data["price"],
+                    "cost_price" => $data["cost_price"],
+                    "image_url" => $images[0]["url"]
                 ]
             ]);
 
