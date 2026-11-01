@@ -34,7 +34,7 @@ function dressImage($imageUrl): string
 
     // Images are stored in project_3/Data
     if (str_starts_with($imageUrl, '/Data/')) {
-        return '/project_3' . $imageUrl;
+        return '/phpGroupProject' . $imageUrl;
     }
 
     return $imageUrl;
