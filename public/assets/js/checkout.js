@@ -1,4 +1,4 @@
-/* Local checkout preview; no address, order, or payment data leaves this page. */
+/* Local checkout preview with backend integration via Fetch */
 (() => {
   "use strict";
   const form = document.getElementById("checkout-form");
@@ -46,7 +46,7 @@
       info.append(make("p", "checkout-item__category", item.category === "dresses" ? "Dress" : "Suit"));
       info.append(make("h3", "checkout-item__name", item.productName));
       info.append(make("p", "checkout-item__variant", `Size ${item.size} · ${item.color}`));
-      info.append(make("p", "checkout-item__price", unitPrice === null ? "Unit price: To be confirmed" : `Unit price: ${money(unitPrice)}`));
+      info.append(make("p", "checkout-item__price", unitPrice === null ? "Unit price unavailable" : `Unit price: ${money(unitPrice)}`));
 
       const quantity = make("div", "checkout-item__quantity");
       quantity.setAttribute("role", "group");
@@ -55,26 +55,46 @@
       decrease.type = "button";
       decrease.setAttribute("aria-label", `Decrease ${item.productName} quantity`);
       decrease.disabled = Number(item.quantity) <= 1;
-      decrease.addEventListener("click", () => window.ElanCart.setQuantity(item.productId, item.size, item.color, Number(item.quantity) - 1));
+      decrease.addEventListener("click", async () => {
+        const nextQuantity = Number(item.quantity) - 1;
+        try {
+          await window.ElanCart.syncQuantity(item, nextQuantity);
+          window.ElanCart.setQuantity(item.productId, item.size, item.color, nextQuantity);
+        } catch (error) {
+          document.getElementById("checkout-result").textContent = error.message;
+          document.getElementById("checkout-result").classList.add("is-error");
+        }
+      });
       const count = make("output", "checkout-item__count", String(item.quantity));
       count.setAttribute("aria-live", "polite");
       const increase = make("button", "checkout-qty-button", "+");
       increase.type = "button";
       increase.setAttribute("aria-label", `Increase ${item.productName} quantity`);
-      increase.addEventListener("click", () => window.ElanCart.setQuantity(item.productId, item.size, item.color, Number(item.quantity) + 1));
+      increase.addEventListener("click", async () => {
+        const nextQuantity = Number(item.quantity) + 1;
+        try {
+          await window.ElanCart.syncQuantity(item, nextQuantity);
+          window.ElanCart.setQuantity(item.productId, item.size, item.color, nextQuantity);
+        } catch (error) {
+          document.getElementById("checkout-result").textContent = error.message;
+          document.getElementById("checkout-result").classList.add("is-error");
+        }
+      });
       quantity.append(decrease, count, increase);
       info.append(quantity);
 
-      const amount = make("p", "checkout-item__subtotal", itemSubtotal === null ? "To be confirmed" : money(itemSubtotal));
-      amount.setAttribute("aria-label", `Item subtotal ${itemSubtotal === null ? "to be confirmed" : money(itemSubtotal)}`);
+      const amount = make("p", "checkout-item__subtotal", itemSubtotal === null ? "Unavailable" : money(itemSubtotal));
+      amount.setAttribute("aria-label", `Item subtotal ${itemSubtotal === null ? "unavailable" : money(itemSubtotal)}`);
       row.append(image, info, amount);
       itemHost.append(row);
     });
 
-    document.getElementById("checkout-subtotal").textContent = allPricesKnown ? money(subtotal) : "To be confirmed";
-    // No delivery-rate table exists yet, so delivery fee and total are never fabricated.
-    document.getElementById("checkout-delivery").textContent = "To be confirmed";
-    document.getElementById("checkout-total").textContent = "To be confirmed";
+    const shippingCost = 5.00; // Fixed shipping cost matching backend
+    const totalAmount = subtotal + shippingCost;
+
+    document.getElementById("checkout-subtotal").textContent = allPricesKnown ? money(subtotal) : "Unavailable";
+    document.getElementById("checkout-delivery").textContent = allPricesKnown ? money(shippingCost) : "Unavailable";
+    document.getElementById("checkout-total").textContent = allPricesKnown ? money(totalAmount) : "Unavailable";
   }
 
   const requiredFields = [
@@ -121,6 +141,10 @@
 
   const paymentError = document.getElementById("payment-error");
   const visaPlaceholder = document.getElementById("visa-placeholder");
+  if (new URLSearchParams(window.location.search).get("payment") === "cancelled") {
+    const result = document.getElementById("checkout-result");
+    result.textContent = "Payment was canceled. Your card was not charged; review your order and try again when ready.";
+  }
   form.querySelectorAll('input[name="payment"]').forEach((radio) => {
     radio.addEventListener("change", () => {
       paymentError.textContent = "";
@@ -130,36 +154,68 @@
   });
 
   let submitting = false;
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (submitting) return;
-    document.getElementById("checkout-result").textContent = "";
+
+    const result = document.getElementById("checkout-result");
+    result.textContent = "";
+    result.classList.remove("is-error");
+
     const addressValid = validateAddress();
     const cart = window.ElanCart.read();
     if (!cart.length) {
-      document.getElementById("checkout-result").textContent = "Your bag is empty. Add a look before continuing.";
+      result.textContent = "Your bag is empty. Add a look before continuing.";
+      result.classList.add("is-error");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       document.getElementById("checkout-empty").scrollIntoView({ block: "center", behavior: reducedMotion ? "auto" : "smooth" });
       return;
     }
+
     const payment = form.querySelector('input[name="payment"]:checked');
-    if (!payment) paymentError.textContent = "Please choose a payment method.";
-    if (!addressValid || !payment) return;
+    if (!payment) {
+      paymentError.textContent = "Please choose a payment method.";
+      return;
+    }
+    if (!addressValid) return;
 
     submitting = true;
-    const submit = document.getElementById("place-order");
-    submit.disabled = true;
-    const result = document.getElementById("checkout-result");
-    result.classList.add("is-error");
-    if (payment.value === "visa") {
-      result.textContent = "Order not placed: secure Visa payments are unavailable until a payment gateway is integrated. Your bag is unchanged.";
-    } else {
-      result.textContent = "Order not placed: no order service is connected. Your delivery details remain on this page and your bag is unchanged.";
-    }
-    submit.disabled = false;
-    submitting = false;
-  });
+    const submitBtn = document.getElementById("place-order");
+    submitBtn.disabled = true;
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Processing order...";
 
+    try {
+      const formData = new FormData(form);
+
+      const response = await fetch("../app/controllers/process-order.php", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        window.location.href = data.redirect_url;
+      } else {
+        result.classList.add("is-error");
+        result.textContent = data.message || "An error occurred while processing your order.";
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        submitting = false;
+      }
+    } catch (error) {
+      console.error("Network Error:", error);
+      result.classList.add("is-error");
+      result.textContent = "A network error occurred. Please try again.";
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+      submitting = false;
+    }
+  });
   window.addEventListener("elan:cart-updated", renderSummary);
   window.addEventListener("storage", (event) => {
     if (event.key === window.ElanCart.key) renderSummary();

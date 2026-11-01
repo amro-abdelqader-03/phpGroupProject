@@ -41,12 +41,42 @@
       info.append(element("p", "cart-item__category", item.category === "dresses" ? "Wedding Dresses" : "Suits"));
       info.append(element("h2", "cart-item__name", item.productName));
       info.append(element("p", "cart-item__choice", `Size ${item.size} · ${item.color}`));
-      info.append(element("p", "cart-item__quantity", `Quantity: ${item.quantity}`));
+      const quantity = element("div", "cart-item__quantity-control");
+      quantity.setAttribute("role", "group");
+      quantity.setAttribute("aria-label", `Quantity for ${item.productName}`);
+      const decrease = element("button", "cart-qty-button", "−");
+      decrease.type = "button";
+      decrease.disabled = Number(item.quantity) <= 1;
+      decrease.setAttribute("aria-label", `Decrease ${item.productName} quantity`);
+      decrease.addEventListener("click", async () => {
+        const nextQuantity = Number(item.quantity) - 1;
+        try {
+          await window.ElanCart.syncQuantity(item, nextQuantity);
+          window.ElanCart.setQuantity(item.productId, item.size, item.color, nextQuantity);
+        }
+        catch (error) { window.dispatchEvent(new CustomEvent("elan:cart-sync-error", { detail: error.message })); }
+      });
+      const count = element("output", "cart-qty-count", String(item.quantity));
+      const increase = element("button", "cart-qty-button", "+");
+      increase.type = "button";
+      increase.setAttribute("aria-label", `Increase ${item.productName} quantity`);
+      increase.addEventListener("click", async () => {
+        const nextQuantity = Number(item.quantity) + 1;
+        try {
+          await window.ElanCart.syncQuantity(item, nextQuantity);
+          window.ElanCart.setQuantity(item.productId, item.size, item.color, nextQuantity);
+        }
+        catch (error) { window.dispatchEvent(new CustomEvent("elan:cart-sync-error", { detail: error.message })); }
+      });
+      quantity.append(decrease, count, increase);
+      info.append(quantity);
       const price = item.unitPrice == null ? "Price available on request" : new Intl.NumberFormat("en-JO", { style: "currency", currency: "JOD" }).format(item.unitPrice);
       info.append(element("p", "cart-item__price", price));
       const remove = element("button", "cart-item__remove", "Remove");
       remove.type = "button";
-      remove.addEventListener("click", () => {
+      remove.addEventListener("click", async () => {
+        try { await window.ElanCart.deleteSavedItem(item); }
+        catch (error) { window.dispatchEvent(new CustomEvent("elan:cart-sync-error", { detail: error.message })); return; }
         window.ElanCart.remove(item.productId, item.size, item.color);
       });
       info.append(remove);
@@ -58,12 +88,17 @@
     });
     host.append(list);
     const actions = element("div", "cart-actions");
-    const checkout = element("a", "btn cart-checkout-link", "Proceed to Checkout");
-    checkout.href = "checkout.php";
+    const checkout = element("button", "btn cart-checkout-link", "Proceed to Checkout");
+    checkout.type = "button";
+    checkout.addEventListener("click", () => { window.location.href = "checkout.php"; });
     actions.append(checkout);
     host.append(actions);
   }
 
   render();
+  window.addEventListener("elan:cart-sync-error", (event) => {
+    const error = document.getElementById("cart-error");
+    if (error) error.textContent = event.detail || "Your bag could not be synchronized. Please try again.";
+  });
   window.addEventListener("elan:cart-updated", render);
 })();

@@ -6,15 +6,12 @@ class Accessories{
         $this->db = $db;
      }
 
-     //(read) Get the products of subcategories
      public function getBySubcategories(array $subcategoryIds):array{
         
-     //if no ids given: nothing to look for 
      if(count($subcategoryIds)==0){
         return [];
      }
      
-     // Make one ? for each id: [15, 16, 17] -> "?, ?, ?"
      $placeholders=implode(",",array_fill(0,count($subcategoryIds),"?"));
 
         $sql = "SELECT p.id, p.product_name, p.description, p.price,
@@ -31,15 +28,13 @@ class Accessories{
         return $stmt->fetchAll();
      }
 
-         // (read) Get subcategories by id, for the category cards
-    // Example: getSubcategories([15, 16, 17, 18]) -> Derby, Loafers, Monk Strap, Oxford
     public function getSubcategories(array $subcategoryIds): array
     {
         if (count($subcategoryIds) === 0) {
             return [];
         }
 
-        $subcategoryIds = array_map("intval", $subcategoryIds);   // make sure they are numbers
+        $subcategoryIds = array_map("intval", $subcategoryIds);
 
         $placeholders = implode(", ", array_fill(0, count($subcategoryIds), "?"));
 
@@ -54,8 +49,6 @@ class Accessories{
         return $stmt->fetchAll();
     }
 
-    // (read) Get one product by its id, for the product page (accessory.php?id=22)
-    // Returns null if there is no product with this id
     public function getById(int $id): ?array
     {
         $sql = "SELECT p.id, p.product_name, p.description, p.price,
@@ -90,7 +83,7 @@ class Accessories{
 
         $placeholders = implode(", ", array_fill(0, count($productIds), "?"));
 
-        $sql = "SELECT product_id, size, stock_quantity
+        $sql = "SELECT id AS variant_id, product_id, size, stock_quantity
                 FROM product_variants
                 WHERE product_id IN ($placeholders)
                   AND size IS NOT NULL AND size <> ''
@@ -99,10 +92,10 @@ class Accessories{
         $stmt = $this->db->prepare($sql);
         $stmt->execute($productIds);
 
-        // Group the rows by product id
         $sizes = [];
         foreach ($stmt->fetchAll() as $row) {
             $sizes[$row["product_id"]][] = [
+                "variant_id" => $row["variant_id"],
                 "size" => $row["size"],
                 "stock_quantity" => $row["stock_quantity"],
             ];

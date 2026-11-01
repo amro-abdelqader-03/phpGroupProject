@@ -12,11 +12,13 @@ class CartItem
     public function getByCartID(int $cartId): array
     {
         $sql = "SELECT ci.id, ci.cart_id, ci.product_id, ci.variant_id, ci.quantity,
-                       p.image_url AS main_image, pi.image_url AS extra_image
+                   p.product_name, p.price, p.image_url AS main_image,
+                   pv.size, pv.color
                 FROM cart_items AS ci
                 INNER JOIN products AS p ON ci.product_id = p.id
-                LEFT JOIN product_images AS pi ON p.id = pi.product_id
-                WHERE ci.cart_id = ?";
+            LEFT JOIN product_variants AS pv ON pv.id = ci.variant_id AND pv.product_id = p.id
+            WHERE ci.cart_id = ?
+            ORDER BY ci.id";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$cartId]);
@@ -26,10 +28,11 @@ class CartItem
     public function getByID(int $id): ?array
     {
         $sql = "SELECT ci.id, ci.cart_id, ci.product_id, ci.variant_id, ci.quantity,
-                       p.image_url AS main_image, pi.image_url AS extra_image
+                   p.product_name, p.price, p.image_url AS main_image,
+                   pv.size, pv.color
                 FROM cart_items AS ci
                 INNER JOIN products AS p ON ci.product_id = p.id
-                LEFT JOIN product_images AS pi ON p.id = pi.product_id
+            LEFT JOIN product_variants AS pv ON pv.id = ci.variant_id AND pv.product_id = p.id
                 WHERE ci.id = ?";
 
         $stmt = $this->db->prepare($sql);
@@ -40,6 +43,40 @@ class CartItem
 
     public function addToCart(int $cartId, int $productId, ?int $variantId, int $quantity): int
     {
+        $stockStmt = $this->db->prepare(
+            'SELECT p.stock_quantity, pv.stock_quantity AS variant_stock
+             FROM products p
+             LEFT JOIN product_variants pv ON pv.id = ? AND pv.product_id = p.id
+             WHERE p.id = ?'
+        );
+        $stockStmt->execute([$variantId, $productId]);
+        $stock = $stockStmt->fetch();
+        if (!$stock) {
+            throw new DomainException('This product is no longer available.');
+        }
+        $available = $variantId === null ? $stock['stock_quantity'] : $stock['variant_stock'];
+        if ($available === null) {
+            throw new DomainException('The selected product option is unavailable.');
+        }
+
+        $existingStmt = $this->db->prepare(
+            'SELECT id, quantity FROM cart_items WHERE cart_id = ? AND product_id = ? AND variant_id <=> ? FOR UPDATE'
+        );
+        $existingStmt->execute([$cartId, $productId, $variantId]);
+        $existing = $existingStmt->fetch();
+        if ($existing) {
+            $nextQuantity = (int) $existing['quantity'] + $quantity;
+            if ($nextQuantity > min(99, (int) $available)) {
+                throw new DomainException('The requested quantity exceeds available stock.');
+            }
+            $updateStmt = $this->db->prepare('UPDATE cart_items SET quantity = ? WHERE id = ?');
+            $updateStmt->execute([$nextQuantity, $existing['id']]);
+            return (int) $existing['id'];
+        }
+        if ($quantity > min(99, (int) $available)) {
+            throw new DomainException('The requested quantity exceeds available stock.');
+        }
+
         $sql = "INSERT INTO cart_items (cart_id, product_id, variant_id, quantity)
                 VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
@@ -49,6 +86,23 @@ class CartItem
 
     public function update(int $id, ?int $variantId, int $quantity): bool
     {
+        $stockStmt = $this->db->prepare(
+            'SELECT ci.product_id, p.stock_quantity, pv.stock_quantity AS variant_stock
+             FROM cart_items ci
+             JOIN products p ON p.id = ci.product_id
+             LEFT JOIN product_variants pv ON pv.id = ? AND pv.product_id = p.id
+             WHERE ci.id = ?'
+        );
+        $stockStmt->execute([$variantId, $id]);
+        $stock = $stockStmt->fetch();
+        if (!$stock) {
+            return false;
+        }
+        $available = $variantId === null ? $stock['stock_quantity'] : $stock['variant_stock'];
+        if ($available === null || $quantity > min(99, (int) $available)) {
+            throw new DomainException('The requested quantity exceeds available stock or uses an invalid option.');
+        }
+
         $sql = "UPDATE cart_items
                 SET variant_id = ?, quantity = ?
                 WHERE id = ?";

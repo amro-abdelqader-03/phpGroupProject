@@ -582,10 +582,73 @@
     if (year) year.textContent = String(new Date().getFullYear());
   }
 
+  async function initAccountNavigation() {
+    const icon = (path) => {
+      const svg = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("class", "nav-action-icon");
+      svg.setAttribute("aria-hidden", "true");
+      const shape = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+      shape.setAttribute("d", path);
+      shape.setAttribute("fill", "none");
+      shape.setAttribute("stroke", "currentColor");
+      shape.setAttribute("stroke-width", "1.6");
+      shape.setAttribute("stroke-linecap", "round");
+      shape.setAttribute("stroke-linejoin", "round");
+      svg.append(shape);
+      return svg;
+    };
+
+    $$('a[href="cart.php"]').forEach((link) => {
+      if (!$(".nav-action-icon", link)) link.prepend(icon("M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 1.9-1.4L21 9H7M10 21h.01M18 21h.01"));
+    });
+    $$('a[href="login.php"]').forEach((link) => {
+      if (!$(".nav-action-icon", link)) link.prepend(icon("M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"));
+    });
+
+    try {
+      const response = await fetch("auth-status.php", { credentials: "same-origin", headers: { Accept: "application/json" }, cache: "no-store" });
+      if (!response.ok) return;
+      const account = await response.json();
+      if (!account.logged_in) return;
+
+      $$('a[href="register.php"], a[href="login.php"]').forEach((link) => {
+        const listItem = link.closest("li");
+        if (listItem) listItem.remove();
+        else link.remove();
+      });
+      $$('ul.primary-nav__list, ul.mobile-menu__list').forEach((list) => {
+        const item = doc.createElement("li");
+        const form = doc.createElement("form");
+        form.action = "logout.php";
+        form.method = "post";
+        const token = doc.createElement("input");
+        token.type = "hidden";
+        token.name = "csrf_token";
+        token.value = account.csrf_token;
+        const button = doc.createElement("button");
+        button.type = "submit";
+        button.className = list.classList.contains("mobile-menu__list") ? "mobile-menu__link" : "primary-nav__link";
+        button.append(icon("M10 17l5-5-5-5M15 12H3M21 19V5a2 2 0 0 0-2-2h-6"));
+        button.append(doc.createTextNode("Log Out"));
+        form.append(token, button);
+        item.append(form);
+        list.append(item);
+      });
+
+      if (["login.php", "register.php"].includes(window.location.pathname.split("/").pop())) {
+        window.location.replace("index.php");
+      }
+    } catch (error) {
+      console.error("Account navigation could not be loaded.", error);
+    }
+  }
+
   /* ----------------------------------------------------------------------
      Boot
      ---------------------------------------------------------------------- */
   function init() {
+    initAccountNavigation();
     initMobileMenu();
     initSmoothScroll();
     initHeroVideo();

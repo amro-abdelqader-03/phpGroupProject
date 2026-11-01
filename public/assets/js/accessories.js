@@ -107,52 +107,83 @@
       });
     });
 
-    $$("[data-add-to-bag]").forEach((button) => {
-      button.addEventListener("click", () => {
+    $$('[data-add-to-bag]').forEach((button) => {
+      button.addEventListener("click", async () => {
         if (!window.ElanCart) return;
 
         const name = button.dataset.name;
-
-        // Shoes have size buttons on their page (accessory.php): a size must be chosen first
         const product = button.closest("[data-product]");
         const sizeBox = product ? $("[data-size-options]", product) : null;
-        let size = "";
+        const selectedSize = sizeBox ? $("input[name='size']:checked", sizeBox) : null;
+        const size = selectedSize ? selectedSize.value : "";
 
-        if (sizeBox) {
-          const checked = $("input[name='size']:checked", sizeBox);
-          if (!checked) {
-            $("[data-size-error]", sizeBox).textContent = "Please choose a size.";
-            const firstSize = $("input[name='size']:not(:disabled)", sizeBox);
-            if (firstSize) firstSize.focus();
-            return;
-          }
-          size = checked.value;
+        if (sizeBox && !selectedSize) {
+          $("[data-size-error]", sizeBox).textContent = "Please choose a size.";
+          const firstSize = $("input[name='size']:not(:disabled)", sizeBox);
+          if (firstSize) firstSize.focus();
+          return;
         }
-        const cart = window.ElanCart.add({
-          productId: button.dataset.id,
-          productName: name,
-          category: "accessories",
-          // a full link, so the photo also works on the Bag page
-          image: button.dataset.image ? new URL(button.dataset.image, window.location.href).href : "",
-          unitPrice: Number(button.dataset.price),
-          size: size,
-          color: "",
-          quantity: 1,
-        });
 
-        // Show "Added" on the button for 2 seconds
-        button.textContent = "Added ✓";
-        button.classList.add("is-added");
-        clearTimeout(button.resetTimer);
-        button.resetTimer = setTimeout(() => {
-          button.textContent = "Add to Bag";
-          button.classList.remove("is-added");
-        }, 2000);
+        const originalLabel = button.textContent;
+        button.disabled = true;
+        try {
+          await window.ElanCart.ready;
+          const cartResponse = await fetch("../app/controllers/cart.php", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({}),
+          });
+          const cartResult = await cartResponse.json();
+          if (!cartResponse.ok || !cartResult.success || !cartResult.data?.id) {
+            throw new Error(cartResult.message || "Sign in to save items to your bag.");
+          }
 
-        // Screen readers read this message out loud
-        const count = cart.reduce((total, item) => total + Number(item.quantity), 0);
-        const sizeText = size ? ` (size ${size})` : "";
-        if (status) status.textContent = `${name}${sizeText} added to your bag. Your bag now has ${count} ${count === 1 ? "item" : "items"}.`;
+          const itemResponse = await fetch("../app/controllers/cart-item.php", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({
+              cart_id: Number(cartResult.data.id),
+              product_id: Number(button.dataset.id),
+              variant_id: selectedSize ? Number(selectedSize.dataset.variantId) : null,
+              quantity: 1,
+            }),
+          });
+          const itemResult = await itemResponse.json();
+          if (!itemResponse.ok || !itemResult.success || !itemResult.data?.id) {
+            throw new Error(itemResult.message || "This item could not be saved to your bag.");
+          }
+
+          const cart = window.ElanCart.add({
+            productId: button.dataset.id,
+            productName: name,
+            category: "products",
+            image: button.dataset.image ? new URL(button.dataset.image, window.location.href).href : "",
+            unitPrice: Number(button.dataset.price),
+            size,
+            color: "",
+            variantId: selectedSize ? Number(selectedSize.dataset.variantId) : null,
+            cartItemId: Number(itemResult.data.id),
+            quantity: 1,
+          });
+
+          button.textContent = "Added";
+          button.classList.add("is-added");
+          clearTimeout(button.resetTimer);
+          button.resetTimer = setTimeout(() => {
+            button.textContent = originalLabel;
+            button.classList.remove("is-added");
+          }, 2000);
+
+          const count = cart.reduce((total, item) => total + Number(item.quantity), 0);
+          const sizeText = size ? ` (size ${size})` : "";
+          if (status) status.textContent = `${name}${sizeText} added to your saved bag. Your bag now has ${count} ${count === 1 ? "item" : "items"}.`;
+        } catch (error) {
+          if (status) status.textContent = error.message || "Could not save this item. Please try again.";
+        } finally {
+          button.disabled = false;
+        }
       });
     });
   }

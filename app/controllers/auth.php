@@ -3,6 +3,8 @@
 require_once __DIR__ . "/../config/Database.php";
 require_once __DIR__ . "/../models/User.php";
 require_once __DIR__ . "/../../core/Response.php";
+require_once __DIR__ . '/../../public/session.php';
+
 header("Content-Type: application/json; charset=UTF-8");
 
 $id = null;
@@ -85,6 +87,8 @@ try {
                         session_start();
                     }
 
+                    session_regenerate_id(true);
+                    unset($_SESSION['cart_id']);
                     $_SESSION['user_id'] = $userData["id"];
                     $_SESSION['user_name'] = $userData["full_name"];
                     $_SESSION['user_email'] = $userData["email"];

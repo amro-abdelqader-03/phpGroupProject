@@ -11,6 +11,7 @@ require_once __DIR__ . '/../app/models/user.php';
 require_once __DIR__ . '/includes/helpers.php';
 
 
+
 // STEP 2: Connect to the database and create the User model
 $database = new Database();
 $db = $database->connect();
