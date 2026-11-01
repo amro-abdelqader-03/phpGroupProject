@@ -34,6 +34,13 @@
     const existing = cart.find((item) => item.productId === productId && item.size === selection.size && item.color === selection.color);
     if (existing) {
       existing.quantity = Number(existing.quantity) + amount;
+      existing.productName = selection.productName || existing.productName;
+      existing.image = selection.image || existing.image;
+      existing.size = selection.size || existing.size;
+      existing.color = selection.color || existing.color;
+      existing.requiresSize = selection.requiresSize == null
+        ? existing.requiresSize
+        : Boolean(selection.requiresSize);
       existing.variantId = selection.variantId == null ? existing.variantId : Number(selection.variantId);
       existing.cartItemId = selection.cartItemId == null ? existing.cartItemId : Number(selection.cartItemId);
       existing.subtotal = existing.unitPrice == null ? null : existing.unitPrice * existing.quantity;
@@ -46,6 +53,9 @@
         unitPrice: selection.unitPrice == null ? null : Number(selection.unitPrice),
         size: selection.size,
         color: selection.color,
+        requiresSize: selection.requiresSize == null
+          ? Boolean(selection.size)
+          : Boolean(selection.requiresSize),
         variantId: selection.variantId == null ? null : Number(selection.variantId),
         cartItemId: selection.cartItemId == null ? null : Number(selection.cartItemId),
         quantity: amount,
@@ -138,10 +148,11 @@
         productId: `products:${item.product_id}`,
         productName: item.product_name,
         category: "products",
-        image: item.main_image || "",
+        image: item.main_image || item.image_url || "",
         unitPrice: Number(item.price),
-        size: item.size || "",
-        color: item.color || "",
+        size: item.size || item.variant_size || "",
+        color: item.color || item.variant_color || "",
+        requiresSize: Boolean(Number(item.requires_size)),
         variantId: item.variant_id == null ? null : Number(item.variant_id),
         cartItemId: Number(item.id),
         quantity: Number(item.quantity),

@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
   <script src="assets/js/cart.js?v=<?php echo filemtime(__DIR__ . '/assets/js/cart.js'); ?>" defer></script>
-  <script src="assets/js/cart-page.js" defer></script>
+  <script src="assets/js/cart-page.js?v=<?php echo filemtime(__DIR__ . '/assets/js/cart-page.js'); ?>" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
