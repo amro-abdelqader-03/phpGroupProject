@@ -1,6 +1,161 @@
-<?php require_once 'session.php'; ?>
 
 !DOCTYPE html>
+
+
+<?php
+ require_once 'session.php';
+require_once __DIR__ . '/../app/config/Database.php';
+require_once __DIR__ . '/../app/models/Dress.php';
+
+$database = new Database();
+$db = $database->connect();
+
+$dressModel = new Dress($db);
+
+// Dress subcategory IDs from wedding_store database
+$princessDresses = $dressModel->getBySubcategory(3);
+$mermaidDresses  = $dressModel->getBySubcategory(2);
+$royalDresses    = $dressModel->getBySubcategory(4);
+$aLineDresses    = $dressModel->getBySubcategory(1);
+$sheathDresses   = $dressModel->getBySubcategory(5);
+
+
+
+// Make text safe before showing it in HTML
+function dressSafe($text): string
+{
+    return htmlspecialchars((string) ($text ?? ''), ENT_QUOTES, 'UTF-8');
+}
+
+// Convert database image path to a browser URL
+function dressImage($imageUrl): string
+{
+    if (empty($imageUrl)) {
+        return '';
+    }
+
+    // Images are stored in project_3/Data
+    if (str_starts_with($imageUrl, '/Data/')) {
+        return '/project_3' . $imageUrl;
+    }
+
+    return $imageUrl;
+}
+
+
+// Print dresses using the original look-card design
+function printDressCards(array $dressList): void
+{
+    if (empty($dressList)) {
+        echo '<p>No dresses available yet.</p>';
+        return;
+    }
+
+    foreach ($dressList as $index => $dress) {
+
+        $id = (int) $dress['id'];
+        $name = dressSafe($dress['product_name']);
+        $description = dressSafe($dress['description']);
+        $front = dressSafe(dressImage($dress['image_url']));
+        $price = number_format((float) $dress['price'], 2);
+
+        // Get alternate images for the same dress
+        $model = $GLOBALS['dressModel'];
+        $images = $model->getImages($id);
+
+        $back = $front;
+
+        foreach ($images as $photo) {
+            if ($photo['image_url'] !== $dress['image_url']) {
+                $back = dressSafe(dressImage($photo['image_url']));
+                break;
+            }
+        }
+
+        $detailsUrl = 'product.php?category=dresses&id=' . $id;
+        ?>
+
+        <article class="look-card look-card--dress"
+                 data-look-card data-reveal data-view="primary">
+
+            <a class="look-card__visual look-card__visual-link"
+               href="<?= $detailsUrl ?>"
+               aria-label="View details for <?= $name ?>">
+
+                <img class="look-card__image look-card__image--primary"
+                     src="<?= $front ?>"
+                     alt="<?= $name ?> front view"
+                     width="900" height="1200" loading="lazy">
+
+                <img class="look-card__image look-card__image--secondary"
+                     src="<?= $back ?>"
+                     alt="<?= $name ?> alternate view"
+                     width="900" height="1200" loading="lazy">
+
+                <span class="look-card__veil" aria-hidden="true"></span>
+            </a>
+
+            <div class="look-card__body">
+
+                <div class="look-card__heading">
+                    <h3 class="look-card__name">
+                        <a class="look-card__product-link"
+                           href="<?= $detailsUrl ?>">
+                            <?= $name ?>
+                        </a>
+                    </h3>
+
+                    <span class="look-card__index" aria-hidden="true">
+                        <?= str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) ?>
+                    </span>
+                </div>
+
+                <p class="look-card__desc"><?= $description ?></p>
+
+                <p class="look-card__desc"><?= $price ?> JOD</p>
+
+                <div class="look-card__actions">
+
+                    <a class="text-link text-link--sm look-card__link"
+                       href="<?= $detailsUrl ?>">
+                        View details
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#icon-arrow"></use>
+                        </svg>
+                    </a>
+
+                    <button class="look-card__toggle"
+                            type="button"
+                            aria-pressed="false"
+                            aria-label="View back for <?= $name ?>"
+                            data-look-toggle
+                            data-label-on="View back"
+                            data-label-off="View front"
+                            data-product="<?= $name ?>">
+
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#icon-plus"></use>
+                        </svg>
+
+                        <span data-toggle-label>View back</span>
+                    </button>
+
+                </div>
+            </div>
+        </article>
+
+        <?php
+    }
+}
+
+?>
+
+
+
+
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -30,7 +185,7 @@
   <link rel="preload" as="image" href="assets/images/dress-celeste.jpg" type="image/jpeg" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/collections.js" defer></script>
-  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
   <script src="assets/js/cart.js" defer></script>
 </head>
 <body>
@@ -84,8 +239,8 @@
         <nav class="primary-nav" aria-label="Primary">
           <ul class="primary-nav__list">
             <li><a class="primary-nav__link" href="index.php">Home</a></li>
-            <li><a class="primary-nav__link" href="suits.php">Suits</a></li>
             <li><a class="primary-nav__link is-active" href="dresses.php" aria-current="page">Dress</a></li>
+            <li><a class="primary-nav__link" href="suits.php">Suits</a></li>
             <li><a class="primary-nav__link" href="accessories.php">Accessories</a></li>
             <li><a class="primary-nav__link" href="index.php#about">About Us</a></li>
             <li><a class="primary-nav__link" href="register.php">Register</a></li>
@@ -105,8 +260,8 @@
         <p class="mobile-menu__eyebrow">Explore Élan Bridal</p>
         <ul class="mobile-menu__list">
           <li><a class="mobile-menu__link" href="index.php"><span>01</span>Home</a></li>
-          <li><a class="mobile-menu__link" href="suits.php"><span>02</span>Suits</a></li>
-          <li><a class="mobile-menu__link is-active" href="dresses.php" aria-current="page"><span>03</span>Dress</a></li>
+          <li><a class="mobile-menu__link is-active" href="dresses.php" aria-current="page"><span>02</span>Dress</a></li>
+          <li><a class="mobile-menu__link" href="suits.php"><span>03</span>Suits</a></li>
           <li><a class="mobile-menu__link" href="accessories.php"><span>04</span>Accessories</a></li>
           <li><a class="mobile-menu__link" href="index.php#about"><span>05</span>About Us</a></li>
           <li><a class="mobile-menu__link" href="register.php"><span>06</span>Register</a></li>
@@ -181,7 +336,13 @@
           </div>
         </div>
 
-        <div class="look-grid" data-collection-grid data-collection="dresses" data-category="princess"></div>
+        
+        
+        <!-- <div class="look-grid data-collection-grid data-collection="dresses" data-category="princess"></div> -->
+        <div class="look-grid">
+    <?php printDressCards($princessDresses); ?>
+</div>
+        
         <noscript>
           <ul class="nojs-list">
             <li><a href="assets/images/dresses/princess-aurora-front.jpg">The Aurora Princess Gown</a></li>
@@ -205,7 +366,13 @@
           </div>
         </div>
 
-        <div class="look-grid" data-collection-grid data-collection="dresses" data-category="mermaid"></div>
+        <!-- <div class="look-grid" data-collection-grid data-collection="dresses" data-category="mermaid"></div> -->
+
+
+<div class="look-grid">
+    <?php printDressCards($mermaidDresses); ?>
+</div>
+
         <noscript>
           <ul class="nojs-list">
             <li><a href="assets/images/dresses/mermaid-seraphina-front.jpg">The Seraphina Mermaid Gown</a></li>
@@ -229,8 +396,14 @@
           </div>
         </div>
 
-        <div class="look-grid" data-collection-grid data-collection="dresses" data-category="royal"></div>
+        <!-- <div class="look-grid" data-collection-grid data-collection="dresses" data-category="royal"></div> -->
+    
+    
+    <div class="look-grid">
+    <?php printDressCards($royalDresses); ?>
+</div>
         <noscript>
+    
           <ul class="nojs-list">
             <li><a href="assets/images/dresses/royal-heritage-front.jpg">The Royal Heritage Gown</a></li>
             <li><a href="assets/images/dresses/royal-imperial-front.jpg">The Imperial Lace Dress</a></li>
@@ -253,10 +426,14 @@
           </div>
         </div>
 
-        <div class="look-grid" data-collection-grid data-collection="dresses" data-category="a-line"></div>
+        <!-- <div class="look-grid" data-collection-grid data-collection="dresses" data-category="a-line"></div> -->
+
+<div class="look-grid">
+    <?php printDressCards($aLineDresses); ?>
+</div>
         <noscript>
           <ul class="nojs-list">
-            <li><a href="assets/images/dresses/aline-amara-front.jpg">The Amara A-Line Gown</a></li>
+            <li><a href="/Data/women/dress/a_line/primary.png">The Amara A-Line Gown</a></li>
             <li><a href="assets/images/dresses/aline-florence-front.jpg">The Florence Bridal Dress</a></li>
             <li><a href="assets/images/dresses/aline-lily-front.jpg">The Lily Signature Gown</a></li>
             <li><a href="assets/images/dresses/aline-timeless-front.jpg">The Timeless A-Line Dress</a></li>
@@ -277,7 +454,11 @@
           </div>
         </div>
 
-        <div class="look-grid" data-collection-grid data-collection="dresses" data-category="sheath"></div>
+        <!-- <div class="look-grid" data-collection-grid data-collection="dresses" data-category="sheath"></div> -->
+<div class="look-grid">
+    <?php printDressCards($sheathDresses); ?>
+</div>
+
         <noscript>
           <ul class="nojs-list">
             <li><a href="assets/images/dresses/sheath-sophia-front.jpg">The Sophia Sheath Gown</a></li>

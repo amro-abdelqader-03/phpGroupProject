@@ -16,7 +16,98 @@ $db = $database->connect();
 $userModel = new User($db);
 
 
-// STEP 3: Read the filters from the URL
+// STEP 3: The Add User and Edit User popups send their form (POST) to this page
+// If there is a mistake, the page comes back with the same popup open and the errors in it.
+$formErrors = [];     // the mistakes to show in the popup
+$formValues = [];     // what the admin typed, so they don't have to type it again
+$editId = 0;          // the user whose Edit popup must be on the page (0 = none)
+
+// The Edit button on the View page links to users.php?edit=5#edit-user-5
+if (isset($_GET["edit"])) {
+    $editId = (int) $_GET["edit"];
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    // Which popup sent the form: "add" or "edit"
+    $formName = $_POST["form"] ?? "";
+
+    // Read the form fields
+    // ?? "" means: if the field is missing, use "" instead
+    // trim() removes spaces at the start and end
+    $formValues = [
+        "full_name" => trim($_POST["full_name"] ?? ""),
+        "email"     => trim($_POST["email"] ?? ""),
+        "phone"     => trim($_POST["phone"] ?? ""),
+    ];
+
+    // Check name, email and phone (see validateUserForm in includes/helpers.php)
+    $formErrors = validateUserForm($formValues["full_name"], $formValues["email"], $formValues["phone"]);
+
+    // An empty phone is saved as NULL (no phone)
+    $phoneToSave = $formValues["phone"];
+    if ($phoneToSave === "") {
+        $phoneToSave = null;
+    }
+
+    // ----- Add User -----
+    if ($formName === "add") {
+        $password = $_POST["password"] ?? "";
+        $confirmPassword = $_POST["confirm_password"] ?? "";
+
+        // Check the password
+        if (strlen($password) < 8) {
+            $formErrors[] = "Password must be at least 8 characters.";
+        } elseif ($password !== $confirmPassword) {
+            $formErrors[] = "The two passwords do not match.";
+        }
+
+        // Check the email is not already used by another user
+        if (count($formErrors) === 0 && $userModel->findByEmail($formValues["email"]) !== null) {
+            $formErrors[] = "This email is already registered.";
+        }
+
+        // No errors: save the user and show the list again
+        // (#users-top: go to the top of the page, and close the popup)
+        if (count($formErrors) === 0) {
+            $userModel->create($formValues["full_name"], $formValues["email"], $password, $phoneToSave);
+
+            header("Location: users.php?success=added#users-top");
+            exit;
+        }
+    }
+
+    // ----- Edit User -----
+    if ($formName === "edit") {
+        $editId = (int) ($_POST["id"] ?? 0);
+
+        if ($userModel->getById($editId) === null) {
+            header("Location: users.php?error=notfound#users-top");
+            exit;
+        }
+
+        // Check the email is not used by a DIFFERENT user (keeping your own email is fine)
+        if (count($formErrors) === 0) {
+            $userWithEmail = $userModel->findByEmail($formValues["email"]);
+
+            if ($userWithEmail !== null && (int) $userWithEmail["id"] !== $editId) {
+                $formErrors[] = "This email is already used by another user.";
+            }
+        }
+
+        // No errors: save the changes and show the list again
+        // update() returns false when nothing changed, which is not an error
+        if (count($formErrors) === 0) {
+            $userModel->update($editId, $formValues["full_name"], $formValues["email"], $phoneToSave);
+
+            header("Location: users.php?success=updated#users-top");
+            exit;
+        }
+    }
+}
+
+
+// STEP 4: Read the filters from the URL
 // If a filter is not in the URL, we use an empty value ("").
 
 $search = "";
@@ -36,7 +127,7 @@ if (isset($_GET["status"])) {
 }
 
 
-// STEP 4: Work out the pages
+// STEP 5: Work out the pages
 // Example: 8 users, 5 per page -> 2 pages
 $usersPerPage = 5;
 
@@ -65,16 +156,39 @@ if ($currentPage > $totalPages) {
 $offset = ($currentPage - 1) * $usersPerPage;
 
 
-// STEP 5: Get the data from the database using the model
+// STEP 6: Get the data from the database using the model
 $users = $userModel->getAll($search, $status, $country, $usersPerPage, $offset);   // the users for this page
 $countries = $userModel->getCountries();                                          // the list for "All Locations"
+
+// The users that get an Edit popup: everyone in the table on this page...
+$editUsers = $users;
+
+// ...plus the user from users.php?edit=5 (or from a form with a mistake), if they are on another page
+if ($editId > 0) {
+    $alreadyInTable = false;
+    foreach ($users as $user) {
+        if ((int) $user["id"] === $editId) {
+            $alreadyInTable = true;
+        }
+    }
+
+    if (!$alreadyInTable) {
+        $extraUser = $userModel->getById($editId);
+        if ($extraUser !== null) {
+            $editUsers[] = $extraUser;
+        }
+    }
+}
+
+// The link the popup forms are sent to: this same list, with the same filters and page
+$formLink = usersLink($currentPage, $search, $status, $country);
 
 // For the footer text "Showing 6–8 of 8"
 $firstShown = $offset + 1;
 $lastShown = $offset + count($users);
 
 
-// STEP 6: Message to show after Add / Edit / Status change
+// STEP 7: Message to show after Add / Edit / Status change
 // The other pages send us back here with e.g. users.php?success=added
 $message = "";
 $messageType = "success";
@@ -95,14 +209,15 @@ if (isset($_GET["error"]) && $_GET["error"] === "notfound") {
 }
 
 
-// STEP 7: Show the page
+// STEP 8: Show the page
 $pageTitle = "Users Management";
 $breadcrumb = "Users";
+$activePage = "users";
 require __DIR__ . '/includes/header.php';   // <head>, sidebar and top bar
 ?>
 
                 <!-- Page Header Title Area -->
-                <div class="page-header">
+                <div class="page-header" id="users-top">
                     <div>
                         <h1 class="page-title">Users</h1>
                         <p class="page-subtitle">Manage and monitor your registered users across all locations.</p>
@@ -112,7 +227,8 @@ require __DIR__ . '/includes/header.php';   // <head>, sidebar and top bar
                         <a href="<?php echo safe(exportLink($search, $status, $country)); ?>" class="btn btn-outline-custom">
                             <i class="bi bi-download me-1"></i> Export CSV
                         </a>
-                        <a href="user-add.php" class="btn btn-brand">
+                        <!-- Opens the Add User popup (see the bottom of this page) -->
+                        <a href="#add-user" class="btn btn-brand">
                             <i class="bi bi-person-plus me-1"></i> Add User
                         </a>
                     </div>
@@ -124,7 +240,7 @@ require __DIR__ . '/includes/header.php';   // <head>, sidebar and top bar
                 <?php } ?>
 
                 <!-- ============ FILTERS ============ -->
-                <!-- method="get" puts the filters in the URL, so PHP can read them with $_GET (STEP 3) -->
+                <!-- method="get" puts the filters in the URL, so PHP can read them with $_GET (STEP 4) -->
                 <form method="get" action="users.php" class="filter-card">
                     <div class="row g-3">
 
@@ -309,11 +425,11 @@ require __DIR__ . '/includes/header.php';   // <head>, sidebar and top bar
                                             <?php } ?>
                                         </td>
 
-                                        <!-- View and Edit: normal links with the user's id in the URL -->
+                                        <!-- View opens the user's page, Edit opens this user's popup -->
                                         <td>
                                             <div class="action-icons">
                                                 <a href="user-view.php?id=<?php echo $user["id"]; ?>" class="action-btn" title="View"><i class="bi bi-eye"></i></a>
-                                                <a href="user-edit.php?id=<?php echo $user["id"]; ?>" class="action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+                                                <a href="#edit-user-<?php echo $user["id"]; ?>" class="action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -382,5 +498,44 @@ require __DIR__ . '/includes/header.php';   // <head>, sidebar and top bar
                         </ul>
                     </div>
                 </div>
+
+                <!-- ============ POPUPS (hidden until their link is clicked) ============ -->
+
+                <!-- Add User popup -->
+                <?php
+                $popupId = "add-user";
+                $editUser = null;
+
+                // Empty fields, or what was typed if this form had a mistake
+                $values = ["full_name" => "", "email" => "", "phone" => ""];
+                $errors = [];
+                if (($_POST["form"] ?? "") === "add") {
+                    $values = $formValues;
+                    $errors = $formErrors;
+                }
+
+                require __DIR__ . '/includes/user-popup.php';
+                ?>
+
+                <!-- One Edit User popup for each user -->
+                <?php foreach ($editUsers as $editUser) { ?>
+                    <?php
+                    $popupId = "edit-user-" . $editUser["id"];
+
+                    // The user's current details, or what was typed if this form had a mistake
+                    $values = [
+                        "full_name" => $editUser["full_name"],
+                        "email"     => $editUser["email"],
+                        "phone"     => $editUser["phone"] ?? "",
+                    ];
+                    $errors = [];
+                    if (($_POST["form"] ?? "") === "edit" && (int) $editUser["id"] === $editId) {
+                        $values = $formValues;
+                        $errors = $formErrors;
+                    }
+
+                    require __DIR__ . '/includes/user-popup.php';
+                    ?>
+                <?php } ?>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

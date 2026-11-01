@@ -371,9 +371,11 @@
     /* Two landing sections now live on their own collection pages, so their
        navigation links point at those pages rather than in-page anchors. */
     const pageLinks = {
+      home: "index.php",
       dress: "dresses.php",
       suits: "suits.php",
       accessories: "accessories.php",
+      about: "index.php#about",
     };
 
     return function updateActiveNav() {
@@ -388,9 +390,11 @@
       links.forEach((link) => {
         const href = link.getAttribute("href");
         const pageLink = pageLinks[currentId];
-        const active =
+        // Always true or false: toggle() with undefined would flip the link on and off
+        const active = Boolean(
           href === `#${currentId}` ||
-          (pageLink && (href === pageLink || href.endsWith(`/${pageLink}`)));
+          (pageLink && (href === pageLink || href.endsWith(`/${pageLink}`)))
+        );
         link.classList.toggle("is-active", active);
         if (active) link.setAttribute("aria-current", "location");
         else link.removeAttribute("aria-current");

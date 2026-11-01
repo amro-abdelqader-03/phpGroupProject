@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
-  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
   <script src="assets/js/cart.js" defer></script>
   <script src="assets/js/checkout.js" defer></script>
 </head>
@@ -25,12 +25,12 @@
     <div class="navbar"><div class="navbar__inner container">
       <a class="brand" href="index.php" aria-label="Élan Bridal — home"><span class="brand__primary">Élan</span><span class="brand__secondary">Bridal</span></a>
       <nav class="primary-nav" aria-label="Primary"><ul class="primary-nav__list">
-        <li><a class="primary-nav__link" href="index.php">Home</a></li><li><a class="primary-nav__link" href="suits.php">Suits</a></li><li><a class="primary-nav__link" href="dresses.php">Dress</a></li><li><a class="primary-nav__link" href="accessories.php">Accessories</a></li><li><a class="primary-nav__link" href="register.php">Register</a></li><li><a class="primary-nav__link" href="login.php">Log In</a></li><li><a class="primary-nav__link" href="cart.php">Bag <span data-cart-count>0</span></a></li>
+        <li><a class="primary-nav__link" href="index.php">Home</a></li><li><a class="primary-nav__link" href="dresses.php">Dress</a></li><li><a class="primary-nav__link" href="suits.php">Suits</a></li><li><a class="primary-nav__link" href="accessories.php">Accessories</a></li><li><a class="primary-nav__link" href="register.php">Register</a></li><li><a class="primary-nav__link" href="login.php">Log In</a></li><li><a class="primary-nav__link" href="cart.php">Bag <span data-cart-count>0</span></a></li>
       </ul></nav>
       <button class="menu-toggle" type="button" id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu"><span class="menu-toggle__bars" aria-hidden="true"><span></span><span></span></span></button>
     </div></div>
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true" inert><nav class="mobile-menu__inner container" aria-label="Mobile"><p class="mobile-menu__eyebrow">Explore Élan Bridal</p><ul class="mobile-menu__list">
-      <li><a class="mobile-menu__link" href="index.php"><span>01</span>Home</a></li><li><a class="mobile-menu__link" href="suits.php"><span>02</span>Suits</a></li><li><a class="mobile-menu__link" href="dresses.php"><span>03</span>Dress</a></li><li><a class="mobile-menu__link" href="accessories.php"><span>04</span>Accessories</a></li><li><a class="mobile-menu__link" href="register.php"><span>05</span>Register</a></li><li><a class="mobile-menu__link" href="login.php"><span>06</span>Log In</a></li><li><a class="mobile-menu__link" href="cart.php"><span>07</span>Bag <span data-cart-count>0</span></a></li>
+      <li><a class="mobile-menu__link" href="index.php"><span>01</span>Home</a></li><li><a class="mobile-menu__link" href="dresses.php"><span>02</span>Dress</a></li><li><a class="mobile-menu__link" href="suits.php"><span>03</span>Suits</a></li><li><a class="mobile-menu__link" href="accessories.php"><span>04</span>Accessories</a></li><li><a class="mobile-menu__link" href="register.php"><span>05</span>Register</a></li><li><a class="mobile-menu__link" href="login.php"><span>06</span>Log In</a></li><li><a class="mobile-menu__link" href="cart.php"><span>07</span>Bag <span data-cart-count>0</span></a></li>
     </ul><div class="mobile-menu__footer"><p>The Art of Forever &mdash; Collection 2026</p></div></nav></div>
   </header>
   <main id="main" class="checkout-main" tabindex="-1">
