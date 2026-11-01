@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/cart.php';
 require_once __DIR__ . '/../../core/Response.php';
+require_once __DIR__ . '/../../public/session.php';
 
 header('Content-Type: application/json; charset=UTF-8');
 if (session_status() === PHP_SESSION_NONE) {
@@ -17,12 +18,9 @@ if (isset($_GET['id'])) {
     }
 }
 
-$userId = null;
-if (isset($_GET['user_id'])) {
-    $userId = filter_var($_GET['user_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-    if ($userId === false) {
-        Response::json(400, ['success' => false, 'message' => 'Invalid user ID']);
-    }
+$userId = filter_var($_SESSION['user_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+if ($userId === false) {
+    Response::json(401, ['success' => false, 'message' => 'Please sign in to use your shopping bag.']);
 }
 
 function jsonBody(): array
@@ -60,15 +58,12 @@ try {
         case 'GET':
             if ($id !== null) {
                 $cart = $carts->getByID($id);
-                if ($cart === null) {
+                if ($cart === null || (int) $cart['user_id'] !== (int) $userId) {
                     Response::json(404, ['success' => false, 'message' => 'Cart not found']);
                 }
                 Response::json(200, ['success' => true, 'data' => $cart]);
             }
 
-            if ($userId === null) {
-                Response::json(400, ['success' => false, 'message' => 'Cart ID or user_id is required']);
-            }
             $cart = $carts->getByUserId($userId);
             if ($cart === null) {
                 Response::json(404, ['success' => false, 'message' => 'Cart not found']);
@@ -76,24 +71,27 @@ try {
             Response::json(200, ['success' => true, 'data' => $cart]);
 
         case 'POST':
-            $body = jsonBody();
-            $newUserId = cartPositiveInt($body['user_id'] ?? null, 'user_id');
-
             // Reuse this browser session's cart when one has already been created.
             if (isset($_SESSION['cart_id'])) {
                 $existingCart = $carts->getByID((int) $_SESSION['cart_id']);
-                if ($existingCart !== null) {
+                if ($existingCart !== null && (int) $existingCart['user_id'] === (int) $userId) {
                     Response::json(200, ['success' => true, 'message' => 'Cart already exists', 'data' => $existingCart]);
                 }
                 unset($_SESSION['cart_id']);
             }
 
-            $newId = $carts->create($newUserId);
+            $existingCart = $carts->getByUserId((int) $userId);
+            if ($existingCart !== null) {
+                $_SESSION['cart_id'] = (int) $existingCart['id'];
+                Response::json(200, ['success' => true, 'message' => 'Cart already exists', 'data' => $existingCart]);
+            }
+
+            $newId = $carts->create((int) $userId);
             $_SESSION['cart_id'] = $newId;
 
             Response::json(201, ['success' => true, 'message' => 'Cart created successfully', 'data' => [
                 'id' => $newId,
-                'user_id' => $newUserId,
+                'user_id' => (int) $userId,
             ]]);
 
 
@@ -101,7 +99,8 @@ try {
             if ($id === null) {
                 Response::json(400, ['success' => false, 'message' => 'Cart ID is required']);
             }
-            if ($carts->getByID($id) === null) {
+            $cart = $carts->getByID($id);
+            if ($cart === null || (int) $cart['user_id'] !== (int) $userId) {
                 Response::json(404, ['success' => false, 'message' => 'Cart not found']);
             }
             $carts->delete($id);

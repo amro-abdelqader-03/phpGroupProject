@@ -118,7 +118,7 @@ if ($found) {
   <link rel="stylesheet" href="assets/css/accessories.css?v=<?php echo filemtime(__DIR__ . '/assets/css/accessories.css'); ?>">
   <script src="assets/js/accessories.js?v=<?php echo filemtime(__DIR__ . '/assets/js/accessories.js'); ?>" defer></script>
   <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
-  <script src="assets/js/cart.js" defer></script>
+  <script src="assets/js/cart.js?v=<?php echo filemtime(__DIR__ . '/assets/js/cart.js'); ?>" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -175,6 +175,7 @@ if ($found) {
                       <?php $inputId = "size-" . safe($size["size"]); ?>
                       <input class="acc-size-radio" type="radio" name="size" id="<?php echo $inputId; ?>"
                              value="<?php echo safe($size["size"]); ?>"
+                         data-variant-id="<?php echo (int) $size["variant_id"]; ?>"
                              <?php if ($size["stock_quantity"] <= 0) { echo "disabled"; } ?>>
                       <label class="detail-size-button acc-size-label" for="<?php echo $inputId; ?>">
                         <?php echo safe($size["size"]); ?>

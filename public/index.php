@@ -30,7 +30,8 @@
   <link rel="preload" as="image" href="assets/images/hero-poster.jpg" type="image/jpeg" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
-  <script src="assets/js/cart.js" defer></script>
+  <script src="assets/js/cart.js?v=<?php echo filemtime(__DIR__ . '/assets/js/cart.js'); ?>" defer></script>
+  <script src="assets/js/ai-stylist.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -498,6 +499,36 @@
             </span>
           </a>
         </div>
+      </div>
+    </section>
+
+    <section class="ai-stylist" id="ai-stylist" aria-labelledby="ai-stylist-title">
+      <div class="container ai-stylist__layout">
+        <div class="ai-stylist__intro" data-reveal>
+          <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>Élan AI Stylist</p>
+          <h2 class="section-title" id="ai-stylist-title">A considered look, <em>chosen for you</em></h2>
+          <p>Share a few preferences to see in-stock pieces selected from the current catalogue.</p>
+        </div>
+        <form class="ai-stylist__form" id="ai-stylist-form">
+          <div class="ai-stylist__field"><label for="ai-product-type">Looking for</label>
+            <select id="ai-product-type" name="product_type" required>
+              <option value="dress">A wedding dress</option>
+              <option value="suit">A suit</option>
+            </select>
+          </div>
+          <div class="ai-stylist__field"><label for="ai-height">Height (cm)</label>
+            <input id="ai-height" name="height" type="number" min="100" max="250" step="0.1" required>
+          </div>
+          <div class="ai-stylist__field"><label for="ai-width">Width (cm)</label>
+            <input id="ai-width" name="width" type="number" min="30" max="200" step="0.1" required>
+          </div>
+          <div class="ai-stylist__field"><label for="ai-budget">Maximum budget (JOD)</label>
+            <input id="ai-budget" name="budget" type="number" min="0.01" max="1000000" step="0.001" required>
+          </div>
+          <button class="btn ai-stylist__submit" type="submit">Find my edit</button>
+          <p class="ai-stylist__status" id="ai-stylist-status" role="status" aria-live="polite"></p>
+        </form>
+        <div class="ai-stylist__results" id="ai-stylist-results" aria-live="polite"></div>
       </div>
     </section>
 

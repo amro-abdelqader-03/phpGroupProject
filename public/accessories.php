@@ -7,7 +7,7 @@
 // STEP 1: Load the files we need
 require_once __DIR__ . '/../app/config/Database.php';
 require_once __DIR__ . '/../app/models/accessories.php';
-
+require_once __DIR__ . '/session.php';
 
 // STEP 2: Connect to the database and create the model
 $database = new Database();
@@ -46,7 +46,6 @@ foreach ($sections as $sectionId => $subcategoryIds) {
 $groomShoeTypes = $accessoriesModel->getSubcategories([15, 16, 17, 18]);
 $bridalShoeTypes = $accessoriesModel->getSubcategories([19, 20, 24, 25]);
 
-
 // STEP 6: Get the sizes of the products (only the shoes have sizes)
 // Collect every product id first, then ask the database for all sizes at once
 $productIds = [];
@@ -67,7 +66,6 @@ foreach ($products as $sectionId => &$productList) {
     unset($product);
 }
 unset($productList);
-
 
 // =====================================================
 // Helper functions (small functions we use in the HTML)
@@ -230,7 +228,7 @@ function printProductCards($productList, $sectionId)
   <link rel="stylesheet" href="assets/css/accessories.css?v=<?php echo filemtime(__DIR__ . '/assets/css/accessories.css'); ?>">
   <script src="assets/js/accessories.js?v=<?php echo filemtime(__DIR__ . '/assets/js/accessories.js'); ?>" defer></script>
   <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
-  <script src="assets/js/cart.js" defer></script>
+  <script src="assets/js/cart.js?v=<?php echo filemtime(__DIR__ . '/assets/js/cart.js'); ?>" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>

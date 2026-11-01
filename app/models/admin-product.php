@@ -22,13 +22,8 @@ class Admin_product
     public function getByID(int $id): ?array
     {
         // Get product details
-        $sql = "SELECT
-                id AS product_id,
-                product_name,
-                price,
-                cost_price,
-                description,
-                stock_quantity
+        $sql = "SELECT id AS product_id, product_name, price, cost_price,
+                   description, stock_quantity
             FROM products
             WHERE id = ?";
 
