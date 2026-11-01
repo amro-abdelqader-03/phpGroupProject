@@ -7,7 +7,7 @@
   if (!form || !status || !results) return;
 
   const projectRoot = new URL("../", window.location.href);
-  const money = (amount) => new Intl.NumberFormat("en-JO", { style: "currency", currency: "JOD" }).format(amount);
+  const money = (amount) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();

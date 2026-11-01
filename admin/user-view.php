@@ -170,7 +170,7 @@ require __DIR__ . '/includes/header.php';
                                         <td>#<?php echo $order["id"]; ?></td>
                                         <td><?php echo date("d M Y", strtotime($order["order_date"])); ?></td>
                                         <td><span class="badge-category"><?php echo safe($order["order_status"]); ?></span></td>
-                                        <td class="text-end"><span class="price-text"><?php echo number_format($order["total_amount"], 2); ?> JOD</span></td>
+                                        <td class="text-end"><span class="price-text">$<?php echo number_format($order["total_amount"], 2); ?></span></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>

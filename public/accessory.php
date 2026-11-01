@@ -93,7 +93,7 @@ function productImage($imageUrl)
 
 if ($found) {
     $image = productImage($product["image_url"]);
-    $price = number_format($product["price"], 2) . " JOD";
+    $price = "$" . number_format($product["price"], 2);
     $pageTitle = $product["product_name"];
     $backLink = "accessories.php#" . $sectionId;
 } else {

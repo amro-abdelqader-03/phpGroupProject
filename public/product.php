@@ -300,7 +300,7 @@ if (
                   <input type="number" id="ai-budget" name="budget" min="0.01" max="1000000" step="0.01"
                     inputmode="decimal" placeholder="e.g. 250" required aria-describedby="ai-budget-hint">
 
-                  <span class="ai-input-unit">JOD</span>
+                  <span class="ai-input-unit">USD ($)</span>
                 </div>
 
                 <p class="ai-field__hint" id="ai-budget-hint">
