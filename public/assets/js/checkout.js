@@ -45,7 +45,14 @@
       const info = make("div", "checkout-item__info");
       info.append(make("p", "checkout-item__category", item.category === "dresses" ? "Dress" : "Suit"));
       info.append(make("h3", "checkout-item__name", item.productName));
-      info.append(make("p", "checkout-item__variant", `Size ${item.size} · ${item.color}`));
+      const options = [];
+      if (item.size) options.push(`Size ${item.size}`);
+      if (item.color) options.push(item.color);
+      info.append(make(
+        "p",
+        "checkout-item__variant",
+        options.length ? options.join(" · ") : item.requiresSize ? "Size not selected" : "No options selected",
+      ));
       info.append(make("p", "checkout-item__price", unitPrice === null ? "Unit price unavailable" : `Unit price: ${money(unitPrice)}`));
 
       const quantity = make("div", "checkout-item__quantity");
@@ -169,6 +176,11 @@
       result.classList.add("is-error");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       document.getElementById("checkout-empty").scrollIntoView({ block: "center", behavior: reducedMotion ? "auto" : "smooth" });
+      return;
+    }
+    if (cart.some((item) => item.requiresSize && !item.size)) {
+      result.textContent = "Choose a size for every clothing item. Return to your bag, remove items without a size, and add them again with your selection.";
+      result.classList.add("is-error");
       return;
     }
 

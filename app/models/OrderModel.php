@@ -12,10 +12,11 @@ class OrderModel {
         try {
             $cartQuery = "SELECT c.id AS cart_id, ci.product_id, ci.variant_id, ci.quantity,
                                  p.product_name, p.price, p.stock_quantity AS product_stock,
-                                 pv.stock_quantity AS variant_stock
+                                 s.category_id, pv.size AS variant_size, pv.stock_quantity AS variant_stock
                           FROM carts c
                           JOIN cart_items ci ON ci.cart_id = c.id
                           JOIN products p ON p.id = ci.product_id
+                          JOIN subcategories s ON s.id = p.subcategory_id
                           LEFT JOIN product_variants pv ON pv.id = ci.variant_id AND pv.product_id = p.id
                           WHERE c.user_id = :user_id
                           ORDER BY ci.id
@@ -33,6 +34,10 @@ class OrderModel {
                 $quantity = filter_var($item['quantity'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 99]]);
                 if ($quantity === false) {
                     throw new DomainException('An item in your bag has an invalid quantity.');
+                }
+
+                if (in_array((int) $item['category_id'], [1, 3, 4, 5, 7], true) && empty($item['variant_size'])) {
+                    throw new DomainException('Choose a size for every clothing item before checkout.');
                 }
 
                 $availableStock = $item['variant_id'] === null ? $item['product_stock'] : $item['variant_stock'];
@@ -201,10 +206,13 @@ class OrderModel {
         try {
             $pdo->beginTransaction();
 
-            $cartQuery = "SELECT c.id as cart_id, ci.product_id, ci.variant_id, ci.quantity, p.price, p.cost_price 
+            $cartQuery = "SELECT c.id as cart_id, ci.product_id, ci.variant_id, ci.quantity, p.price, p.cost_price,
+                                 s.category_id, pv.size AS variant_size
                           FROM carts c 
                           JOIN cart_items ci ON c.id = ci.cart_id 
                           JOIN products p ON ci.product_id = p.id 
+                          JOIN subcategories s ON s.id = p.subcategory_id
+                          LEFT JOIN product_variants pv ON pv.id = ci.variant_id AND pv.product_id = p.id
                           WHERE c.user_id = :user_id";
             
             $cartStmt = $pdo->prepare($cartQuery);
@@ -221,6 +229,10 @@ class OrderModel {
             $estimatedDelivery = self::estimatedDeliveryDate();
 
             foreach ($cartItems as $item) {
+                if (in_array((int) $item['category_id'], [1, 3, 4, 5, 7], true) && empty($item['variant_size'])) {
+                    throw new DomainException('Choose a size for every clothing item before checkout.');
+                }
+
                 $itemTotal = $item['price'] * $item['quantity'];
                 $itemCostTotal = $item['cost_price'] * $item['quantity'];
                 

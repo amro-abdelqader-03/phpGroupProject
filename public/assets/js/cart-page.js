@@ -11,6 +11,14 @@
     return node;
   }
 
+  function imageUrl(path) {
+    if (!path) return "";
+    if (/^(https?:)?\/\//i.test(path)) return path;
+
+    const projectRoot = new URL("../", window.location.href);
+    return new URL(path.replace(/^\/+/, ""), projectRoot).href;
+  }
+
   function render() {
     const cart = window.ElanCart.read();
     host.replaceChildren();
@@ -33,14 +41,30 @@
     cart.forEach((item) => {
       const row = element("article", "cart-item");
       const image = element("img", "cart-item__image");
-      image.src = item.image;
+      image.src = imageUrl(item.image || item.main_image || item.image_url);
       image.alt = item.productName;
       image.width = 120;
       image.height = 160;
+      image.loading = "lazy";
+      image.decoding = "async";
       const info = element("div", "cart-item__info");
       info.append(element("p", "cart-item__category", item.category === "dresses" ? "Wedding Dresses" : "Suits"));
       info.append(element("h2", "cart-item__name", item.productName));
-      info.append(element("p", "cart-item__choice", `Size ${item.size} · ${item.color}`));
+      const options = [];
+      if (item.size) options.push(`Size ${item.size}`);
+      if (item.color) options.push(item.color);
+      if (options.length) {
+        info.append(element("p", "cart-item__choice", options.join(" · ")));
+      } else if (item.requiresSize) {
+        const missingSize = element("p", "cart-item__choice", "Size not selected.");
+        const productId = /^products:(\d+)$/.exec(String(item.productId));
+        if (productId) {
+          const chooseSize = element("a", "", "Choose a size");
+          chooseSize.href = `product.php?id=${productId[1]}`;
+          missingSize.append(" ", chooseSize);
+        }
+        info.append(missingSize);
+      }
       const quantity = element("div", "cart-item__quantity-control");
       quantity.setAttribute("role", "group");
       quantity.setAttribute("aria-label", `Quantity for ${item.productName}`);

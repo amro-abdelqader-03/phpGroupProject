@@ -2,6 +2,8 @@
 
 class CartItem
 {
+    private const SIZE_REQUIRED_CATEGORIES = [1, 3, 4, 5, 7];
+
     private PDO $db;
 
     public function __construct(PDO $db)
@@ -12,10 +14,20 @@ class CartItem
     public function getByCartID(int $cartId): array
     {
         $sql = "SELECT ci.id, ci.cart_id, ci.product_id, ci.variant_id, ci.quantity,
-                   p.product_name, p.price, p.image_url AS main_image,
-                   pv.size, pv.color
+                   p.product_name, p.price,
+                   COALESCE(
+                       NULLIF(p.image_url, ''),
+                       (SELECT pi.image_url
+                        FROM product_images AS pi
+                        WHERE pi.product_id = p.id
+                        ORDER BY pi.is_primary DESC, pi.image_id ASC
+                        LIMIT 1)
+                   ) AS main_image,
+                   pv.size AS size, pv.color AS color,
+                   CASE WHEN s.category_id IN (1, 3, 4, 5, 7) THEN 1 ELSE 0 END AS requires_size
                 FROM cart_items AS ci
                 INNER JOIN products AS p ON ci.product_id = p.id
+                LEFT JOIN subcategories AS s ON s.id = p.subcategory_id
             LEFT JOIN product_variants AS pv ON pv.id = ci.variant_id AND pv.product_id = p.id
             WHERE ci.cart_id = ?
             ORDER BY ci.id";
@@ -28,10 +40,20 @@ class CartItem
     public function getByID(int $id): ?array
     {
         $sql = "SELECT ci.id, ci.cart_id, ci.product_id, ci.variant_id, ci.quantity,
-                   p.product_name, p.price, p.image_url AS main_image,
-                   pv.size, pv.color
+                   p.product_name, p.price,
+                   COALESCE(
+                       NULLIF(p.image_url, ''),
+                       (SELECT pi.image_url
+                        FROM product_images AS pi
+                        WHERE pi.product_id = p.id
+                        ORDER BY pi.is_primary DESC, pi.image_id ASC
+                        LIMIT 1)
+                   ) AS main_image,
+                   pv.size AS size, pv.color AS color,
+                   CASE WHEN s.category_id IN (1, 3, 4, 5, 7) THEN 1 ELSE 0 END AS requires_size
                 FROM cart_items AS ci
                 INNER JOIN products AS p ON ci.product_id = p.id
+                LEFT JOIN subcategories AS s ON s.id = p.subcategory_id
             LEFT JOIN product_variants AS pv ON pv.id = ci.variant_id AND pv.product_id = p.id
                 WHERE ci.id = ?";
 
@@ -44,8 +66,9 @@ class CartItem
     public function addToCart(int $cartId, int $productId, ?int $variantId, int $quantity): int
     {
         $stockStmt = $this->db->prepare(
-            'SELECT p.stock_quantity, pv.stock_quantity AS variant_stock
+            'SELECT p.stock_quantity, pv.stock_quantity AS variant_stock, pv.size AS variant_size, s.category_id
              FROM products p
+             JOIN subcategories s ON s.id = p.subcategory_id
              LEFT JOIN product_variants pv ON pv.id = ? AND pv.product_id = p.id
              WHERE p.id = ?'
         );
@@ -53,6 +76,9 @@ class CartItem
         $stock = $stockStmt->fetch();
         if (!$stock) {
             throw new DomainException('This product is no longer available.');
+        }
+        if (in_array((int) $stock['category_id'], self::SIZE_REQUIRED_CATEGORIES, true) && empty($stock['variant_size'])) {
+            throw new DomainException('Choose an available size before adding this item to your bag.');
         }
         $available = $variantId === null ? $stock['stock_quantity'] : $stock['variant_stock'];
         if ($available === null) {
@@ -87,9 +113,11 @@ class CartItem
     public function update(int $id, ?int $variantId, int $quantity): bool
     {
         $stockStmt = $this->db->prepare(
-            'SELECT ci.product_id, p.stock_quantity, pv.stock_quantity AS variant_stock
+            'SELECT ci.product_id, p.stock_quantity, pv.stock_quantity AS variant_stock,
+                    pv.size AS variant_size, s.category_id
              FROM cart_items ci
              JOIN products p ON p.id = ci.product_id
+             JOIN subcategories s ON s.id = p.subcategory_id
              LEFT JOIN product_variants pv ON pv.id = ? AND pv.product_id = p.id
              WHERE ci.id = ?'
         );
@@ -97,6 +125,9 @@ class CartItem
         $stock = $stockStmt->fetch();
         if (!$stock) {
             return false;
+        }
+        if (in_array((int) $stock['category_id'], self::SIZE_REQUIRED_CATEGORIES, true) && empty($stock['variant_size'])) {
+            throw new DomainException('Choose an available size before updating this item in your bag.');
         }
         $available = $variantId === null ? $stock['stock_quantity'] : $stock['variant_stock'];
         if ($available === null || $quantity > min(99, (int) $available)) {

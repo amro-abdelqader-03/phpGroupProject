@@ -140,6 +140,8 @@ const item = images[index];
     sizeContainer.replaceChildren();
     colorContainer.replaceChildren();
     let selectedVariant = null;
+    let selectedSize = "";
+    let selectedColor = "";
     let quantity = 1;
     const sizes = [...new Set(availableVariants.map((variant) => variant.size).filter(Boolean))];
     sizes.forEach((size) => {
@@ -149,8 +151,16 @@ const item = images[index];
       button.textContent = size;
       button.setAttribute("aria-pressed", "false");
       button.addEventListener("click", () => {
-        const candidates = availableVariants.filter((variant) => variant.size === size);
-        selectedVariant = candidates.find((variant) => !hasColorVariants || variant.color === selectedVariant?.color) || candidates[0];
+        selectedSize = size;
+        selectedVariant = availableVariants.find((variant) =>
+          variant.size === selectedSize
+          && (!hasColorVariants || variant.color === selectedColor)
+        ) || null;
+        if (hasColorVariants && selectedColor && !selectedVariant) {
+          selectedColor = "";
+          byId("selected-color-label").textContent = "Choose a colour";
+          colorContainer.querySelectorAll("button").forEach((option) => option.setAttribute("aria-pressed", "false"));
+        }
         sizeContainer.querySelectorAll("button").forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
         syncQuantityLimit();
         byId("size-error").textContent = "";
@@ -175,8 +185,11 @@ const item = images[index];
       label.textContent = color;
       button.append(swatch, label);
       button.addEventListener("click", () => {
-        const currentSize = selectedVariant && selectedVariant.size;
-        selectedVariant = availableVariants.find((variant) => variant.color === color && (!currentSize || variant.size === currentSize)) || availableVariants.find((variant) => variant.color === color);
+        selectedColor = color;
+        selectedVariant = availableVariants.find((variant) =>
+          variant.color === selectedColor
+          && (!selectedSize || variant.size === selectedSize)
+        ) || null;
         colorContainer.querySelectorAll("button").forEach((option) => option.setAttribute("aria-pressed", String(option === button)));
         byId("selected-color-label").textContent = color;
         syncQuantityLimit();
@@ -213,11 +226,11 @@ const item = images[index];
 
     byId("detail-form").onsubmit = async (event) => {
       event.preventDefault();
-      const hasSize = Boolean(selectedVariant);
-      const hasColor = !hasColorVariants || Boolean(selectedVariant && selectedVariant.color);
+      const hasSize = Boolean(selectedSize);
+      const hasColor = !hasColorVariants || Boolean(selectedColor && selectedVariant);
       byId("size-error").textContent = hasSize ? "" : "Please select an available size.";
       byId("color-error").textContent = hasColor ? "" : "Please select a colour.";
-      if (!hasSize || !hasColor) {
+      if (!hasSize || !hasColor || !selectedVariant) {
         byId("detail-form-error").textContent = "Choose the available options before adding this product to your bag.";
         return;
       }
@@ -258,14 +271,15 @@ const item = images[index];
           category: "products",
           image: mainImage.src,
           unitPrice: product.price,
-          size: selectedVariant.size,
+          size: selectedSize,
           color: selectedVariant.color || "",
+          requiresSize: true,
           variantId: Number(selectedVariant.variant_id),
           cartItemId: Number(itemResult.data.id),
           quantity,
         });
         byId("detail-form-error").textContent = "";
-        byId("detail-cart-status").textContent = `${name} (${selectedVariant.size}) added to your bag. Your bag now contains ${cart.reduce((total, item) => total + item.quantity, 0)} items.`;
+        byId("detail-cart-status").textContent = `${name} (${selectedSize}) added to your bag. Your bag now contains ${cart.reduce((total, item) => total + item.quantity, 0)} items.`;
       } catch (error) {
         byId("detail-cart-status").textContent = error.message || "Could not add this product to your bag. Please try again.";
       }
