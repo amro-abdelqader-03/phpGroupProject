@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/../app/config/Database.php';
 require_once __DIR__ . '/../app/config/Env.php';
@@ -25,9 +29,10 @@ try {
         Env::load(dirname(__DIR__) . '/.env');
         $stripeSecret = Env::get('STRIPE_SECRET_KEY');
         if (!$stripeSecret || !str_starts_with($stripeSecret, 'sk_')) {
-            throw new RuntimeException('Online payment verification is not configured. Contact support with your order details.');
+            throw new RuntimeException('Online payment verification is not configured.');
         }
         \Stripe\Stripe::setApiKey($stripeSecret);
+        
         $stripeSession = \Stripe\Checkout\Session::retrieve($sessionId);
         $metadataOrderId = filter_var($stripeSession->metadata->order_id ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         $metadataUserId = filter_var($stripeSession->metadata->user_id ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -59,7 +64,7 @@ try {
     }
 } catch (Throwable $e) {
     error_log($e->getMessage());
-    $errorMessage = $e instanceof RuntimeException ? $e->getMessage() : 'We could not verify the payment right now. Please contact support if your card was charged.';
+    $errorMessage = $e->getMessage();
 }
 
 function escapeOrderValue(mixed $value): string
@@ -80,20 +85,20 @@ function escapeOrderValue(mixed $value): string
     <?php if ($order): ?>
         <p class="eyebrow">Élan Bridal</p>
         <h1>Thank you for your order</h1>
-        <p><?php echo $order['payment_status'] === 'Paid' ? 'Your payment is confirmed.' : 'Your order has been received. Payment is due on delivery.'; ?> Your order details and current status are below.</p>
+        <p><?php echo $order['payment_status'] === 'Paid' ? 'Your payment is confirmed.' : 'Your order has been received.'; ?> Your order details and current status are below.</p>
         <dl>
             <dt>Order</dt><dd>#<?php echo escapeOrderValue($order['id']); ?></dd>
             <dt>Placed</dt><dd><?php echo escapeOrderValue($order['order_date']); ?></dd>
             <dt>Estimated delivery</dt><dd><?php echo escapeOrderValue($order['estimated_delivery'] ?? 'Not available'); ?></dd>
             <dt>Order status</dt><dd><?php echo escapeOrderValue($order['order_status']); ?></dd>
             <dt>Payment status</dt><dd><?php echo escapeOrderValue($order['payment_status']); ?></dd>
-            <dt>Total paid</dt><dd><?php echo number_format((float) $order['total_amount'], 3); ?> JOD</dd>
+            <dt>Total paid</dt><dd>$<?php echo number_format((float) $order['total_amount'], 3); ?> USD</dd>
             <dt>Delivery address</dt><dd><?php echo escapeOrderValue($order['shipping_address'] . ', ' . $order['area'] . ', ' . $order['city']); ?></dd>
         </dl>
         <h2>Items</h2>
         <ul>
             <?php foreach ($order['items'] as $item): ?>
-                <li><?php echo escapeOrderValue($item['product_name']); ?> × <?php echo escapeOrderValue($item['quantity']); ?> — <?php echo number_format((float) $item['unit_price'] * (int) $item['quantity'], 3); ?> JOD</li>
+                <li><?php echo escapeOrderValue($item['product_name']); ?> × <?php echo escapeOrderValue($item['quantity']); ?> — $<?php echo number_format((float) $item['unit_price'] * (int) $item['quantity'], 3); ?> USD</li>
             <?php endforeach; ?>
         </ul>
     <?php else: ?>

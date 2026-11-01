@@ -144,7 +144,7 @@ function printProductCards($productList, $sectionId)
 
     foreach ($productList as $product) {
         $image = productImage($product["image_url"]);
-        $price = number_format($product["price"], 2) . " JOD";
+        $price = "$" . number_format($product["price"], 2);
 
         // The product's own page (photo, details and sizes)
         $productLink = "accessory.php?id=" . $product["id"];
@@ -533,7 +533,7 @@ function printProductCards($productList, $sectionId)
       <div class="container collection-note__inner">
         <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>A Note on the Collection</p>
         <h2 class="collection-note__title" id="acc-note-title">The finishing touch, chosen with care.</h2>
-        <p class="collection-note__text">Every accessory in our collection is selected to complete the look of our gowns and suits, from polished shoes and silk ties to delicate veils and heirloom-worthy jewelry. Prices are shown in Jordanian dinars, and new pieces are added throughout the season. For help pairing accessories with your dress or suit, visit our atelier and our stylists will guide you through every detail.</p>
+        <p class="collection-note__text">Every accessory in our collection is selected to complete the look of our gowns and suits, from polished shoes and silk ties to delicate veils and heirloom-worthy jewelry. Prices are shown in USD ($), and new pieces are added throughout the season. For help pairing accessories with your dress or suit, visit our atelier and our stylists will guide you through every detail.</p>
       </div>
     </aside>
   </main>

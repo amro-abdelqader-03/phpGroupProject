@@ -522,7 +522,7 @@
           <div class="ai-stylist__field"><label for="ai-width">Width (cm)</label>
             <input id="ai-width" name="width" type="number" min="30" max="200" step="0.1" required>
           </div>
-          <div class="ai-stylist__field"><label for="ai-budget">Maximum budget (JOD)</label>
+          <div class="ai-stylist__field"><label for="ai-budget">Maximum budget (USD $)</label>
             <input id="ai-budget" name="budget" type="number" min="0.01" max="1000000" step="0.001" required>
           </div>
           <button class="btn ai-stylist__submit" type="submit">Find my edit</button>

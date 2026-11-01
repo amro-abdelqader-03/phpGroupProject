@@ -1,5 +1,6 @@
 
 <?php
+require_once __DIR__ . '/../stripe-php/stripe-php-master/init.php';
 require_once __DIR__ . '/session.php';
 if (!$isLoggedIn) {
   header('Location: login.php?next=checkout.php');
@@ -78,8 +79,8 @@ $_SESSION['checkout_nonce'] ??= bin2hex(random_bytes(32));
           <div class="checkout-summary__head"><div><p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>Review</p><h2 id="order-title">Your Order</h2></div><a href="cart.php">Edit bag</a></div>
           <div id="checkout-items" class="checkout-items" aria-live="polite"></div>
           <div class="checkout-empty" id="checkout-empty" hidden><p>Your bag is empty.</p><a class="text-link" href="suits.php">Explore the collections <span aria-hidden="true">&rarr;</span></a></div>
-          <dl class="checkout-totals"><div><dt>Subtotal</dt><dd id="checkout-subtotal">—</dd></div><div><dt>Delivery Fee</dt><dd id="checkout-delivery">5.000 JOD</dd></div><div class="checkout-totals__grand"><dt>Total Price</dt><dd id="checkout-total">—</dd></div></dl>
-          <p class="checkout-currency-note">Totals use catalogue prices and a 5.000 JOD delivery fee. An unavailable item price means the selection cannot be checked out.</p>
+          <dl class="checkout-totals"><div><dt>Subtotal</dt><dd id="checkout-subtotal">—</dd></div><div><dt>Delivery Fee</dt><dd id="checkout-delivery">$5.000</dd></div><div class="checkout-totals__grand"><dt>Total Price</dt><dd id="checkout-total">—</dd></div></dl>
+          <p class="checkout-currency-note">Totals use catalogue prices in USD ($) and a $5.000 delivery fee. An unavailable item price means the selection cannot be checked out.</p>
         </aside>
       </div>
     </div>

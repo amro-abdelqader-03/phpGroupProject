@@ -170,7 +170,7 @@ These responsive pages reuse the Élan navigation, palette, display and body fon
 
 Product detail pages load catalog prices, stock, and variants from the database. Cart mutations require an authenticated session and validate ownership and available stock on the server. Reviews are limited to customers with a completed purchase.
 
-Checkout validates delivery details server-side and calculates totals from the database cart. Card payments use Stripe-hosted Checkout in JOD; card data is never handled by this application. The success page verifies the Stripe session, amount, order owner, and stored transaction reference before setting the payment to Paid and the order to Confirmed. Customers see the persisted order details and current status for card and cash-on-delivery orders.
+Checkout validates delivery details server-side and calculates totals from the database cart. Card payments use Stripe-hosted Checkout in USD ($); card data is never handled by this application. The success page verifies the Stripe session, amount, order owner, and stored transaction reference before setting the payment to Paid and the order to Confirmed. Customers see the persisted order details and current status for card and cash-on-delivery orders.
 
 ## Interactions
 

@@ -163,7 +163,7 @@ function geminiRequestBody(array $preferences, array $products): array
             'height_cm' => $preferences['height'],
             'width_cm' => $preferences['width'],
             'maximum_budget' => $preferences['budget'],
-            'currency' => 'JOD',
+            'currency' => 'USD',
         ],
         'products' => productsForPrompt($products),
     ];
@@ -439,7 +439,7 @@ function verifiedRecommendations(
             'product_name' => (string) $product['product_name'],
             'description' => (string) $product['description'],
             'price' => (float) $product['price'],
-            'currency' => 'JOD',
+            'currency' => 'USD',
             'image_url' => $product['image_url'],
             'category' => (string) $product['category_name'],
             'subcategory' => (string) $product['subcategory_name'],
@@ -486,7 +486,7 @@ function safeAiMessage(mixed $message, array $recommendations, string $productTy
 {
     $fallback = $recommendations === []
         ? 'No suitable ' . ($productType === 'suit' ? 'suits' : 'dresses')
-            . ' matched your preferences within ' . number_format($budget, 2) . ' JOD.'
+            . ' matched your preferences within $' . number_format($budget, 2) . ' USD.'
         : 'Here are the products that best match your preferences.';
 
     if (!is_string($message)) {
@@ -537,7 +537,7 @@ try {
         'height_cm' => $preferences['height'],
         'width_cm' => $preferences['width'],
         'maximum_budget' => $preferences['budget'],
-        'currency' => 'JOD',
+        'currency' => 'USD',
     ];
 
     if ($products === []) {
@@ -545,7 +545,7 @@ try {
             'success' => true,
             'message' => 'No ' . ($preferences['product_type'] === 'suit' ? 'men\'s suits' : 'dresses')
                 . ' are currently available within your maximum budget of '
-                . number_format($preferences['budget'], 2) . ' JOD.',
+                . '$' . number_format($preferences['budget'], 2) . ' USD.',
             'recommendations' => [],
             'fit_note' => 'Try increasing your maximum budget or choosing the other product type. '
                 . 'Only in-stock products within your budget are considered.',
