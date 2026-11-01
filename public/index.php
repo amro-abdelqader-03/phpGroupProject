@@ -141,8 +141,8 @@
                autoplay muted loop playsinline preload="auto"
                poster="assets/images/hero-poster.jpg"
                aria-hidden="true" tabindex="-1">
-          <source src="assets/videos/wedding-hero.mp4" type="video/mp4" media="(min-width: 768px)">
-          <source src="assets/videos/wedding-hero-mobile.mp4" type="video/mp4" media="(max-width: 767px)">
+          <source src="assets/videos/video-hero-mobile.mp4" type="video/mp4" media="(min-width: 768px)">
+          <source src="assets/videos/video-hero.mp4" type="video/mp4" media="(max-width: 767px)">
         </video>
       </div>
       <div class="hero__overlay" aria-hidden="true"></div>
