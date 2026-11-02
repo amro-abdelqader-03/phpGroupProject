@@ -10,7 +10,7 @@ Run the project through XAMPP/Apache with MySQL enabled. Configure the `wedding_
 http://localhost/phpGroupProject/public/
 ```
 
-Apply `database/product_reviews.sql` once to enable product reviews. Stripe Checkout remains unavailable until a valid secret key is configured; use Stripe test keys locally.
+After importing the main database, import `database/product_reviews.sql` into `wedding_store` to create the required product reviews table. Signed-in customers can submit one review per product before or after purchase. Stripe Checkout remains unavailable until a valid secret key is configured; use Stripe test keys locally.
 
 > Google Fonts are loaded from the network. Without a connection, the pages fall back to Georgia and the system UI font; all layout and interactions still work.
 
@@ -168,7 +168,7 @@ These responsive pages reuse the Élan navigation, palette, display and body fon
 
 ### `product.php`, `cart.php`, and `checkout.php` — product, bag, and checkout
 
-Product detail pages load catalog prices, stock, and variants from the database. Cart mutations require an authenticated session and validate ownership and available stock on the server. Reviews are limited to customers with a completed purchase.
+Product detail pages load catalog prices, stock, and variants from the database. Cart mutations require an authenticated session and validate ownership and available stock on the server. Signed-in customers can review each product once, whether or not they have purchased it.
 
 Checkout validates delivery details server-side and calculates totals from the database cart. Card payments use Stripe-hosted Checkout in USD ($); card data is never handled by this application. The success page verifies the Stripe session, amount, order owner, and stored transaction reference before setting the payment to Paid and the order to Confirmed. Customers see the persisted order details and current status for card and cash-on-delivery orders.
 

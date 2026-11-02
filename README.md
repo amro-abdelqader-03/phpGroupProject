@@ -257,7 +257,14 @@ wedding_store
 
 Import the SQL database file provided with the project into the `wedding_store` database.
 
-**6. Configure the database connection**
+**6. Create the product reviews table**
+
+In phpMyAdmin, select `wedding_store`, open the **Import** tab, and import
+`database/product_reviews.sql`. This creates the table required to display and
+submit product reviews. Signed-in customers can review a product before or
+after purchase, once per product.
+
+**7. Configure the database connection**
 
 Open:
 
@@ -267,7 +274,7 @@ app/config/Database.php
 
 Make sure the database host, name, username, and password match your local MySQL configuration.
 
-**7. Configure environment variables**
+**8. Configure environment variables**
 
 From PowerShell in the project root, copy the example environment file:
 
@@ -291,7 +298,7 @@ The Gemini integration reads `GEMINI_API_KEY` from `.env`. Set it only if you
 want to use AI recommendations. `GEMINI_MODEL` has a default and can be
 changed in `.env`; `GEMINI_API_BASE` and `GEMINI_TIMEOUT` are optional.
 
-**8. Run the application**
+**9. Run the application**
 
 Open the following URL in your browser:
 

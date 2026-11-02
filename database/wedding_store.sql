@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 02, 2026 at 06:43 AM
+-- Generation Time: Nov 02, 2026 at 07:19 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -96,14 +96,6 @@ CREATE TABLE `cart_items` (
   `added_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `cart_items`
---
-
-INSERT INTO `cart_items` (`id`, `cart_id`, `product_id`, `variant_id`, `quantity`, `added_at`) VALUES
-(8, 26, 9, NULL, 1, '2026-11-01 07:40:50'),
-(9, 26, 6, NULL, 1, '2026-11-01 07:41:11');
-
 -- --------------------------------------------------------
 
 --
@@ -175,7 +167,9 @@ INSERT INTO `orders` (`id`, `user_id`, `order_date`, `estimated_delivery`, `tota
 (9014, 9004, '2026-10-24 10:00:00', NULL, 169.00, 'Cancelled', 'Dana Mohammad', '0794444444', 'France', 'Paris', 'Central', 'Paris Street', 'Apartment 11', 0.00, 0.00),
 (9015, 9005, '2026-10-28 11:00:00', NULL, 337.00, 'Delivered', 'Rama Hasan', '0795555555', 'Jordan', 'Zarqa', 'New Zarqa', 'Main Street', 'Building 3', 0.00, 337.00),
 (9016, 9006, '2026-11-01 19:22:42', '2026-11-06', 174.00, 'Pending', 'Amro Abdelgader', '42342423424', 'Jordan', 'amman', '42432', 'Street: dadde, Building: 121, Apartment: ewe', '', 5.00, 169.00),
-(9017, 9006, '2026-11-01 22:11:21', '2026-11-06', 223.00, 'Pending', 'Amro Abdelgader', '3214243123', 'Jordan', 'amman', 'efsfsfesf', 'Street: dadde, Bldg: 121, Apt: fsfefs', 'fsfefsfe', 5.00, 98.00);
+(9017, 9006, '2026-11-01 22:11:21', '2026-11-06', 223.00, 'Pending', 'Amro Abdelgader', '3214243123', 'Jordan', 'amman', 'efsfsfesf', 'Street: dadde, Bldg: 121, Apt: fsfefs', 'fsfefsfe', 5.00, 98.00),
+(9018, 9006, '2026-11-02 05:54:18', '2026-11-07', 174.00, 'Pending', 'Amro Abdelgader', '3214243123', 'Jordan', 'amman', 'dad', 'Street: dadde, Building: 121, Apartment: ewe', '', 5.00, 169.00),
+(9019, 9006, '2026-11-02 06:02:40', '2026-11-07', 174.00, 'Pending', 'Amro Abdelgader', '3214243123', 'Jordan', 'amman', 'dad', 'Street: dadde, Bldg: 121, Apt: fds', 'vdxv', 5.00, 74.00);
 
 -- --------------------------------------------------------
 
@@ -221,7 +215,9 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `variant_id`, `quanti
 (22, 9015, 14, NULL, 2, 19.00),
 (23, 9016, 11, NULL, 1, 169.00),
 (24, 9017, 11, 786, 1, 169.00),
-(25, 9017, 22, 837, 1, 49.00);
+(25, 9017, 22, 837, 1, 49.00),
+(26, 9018, 11, 787, 1, 169.00),
+(27, 9019, 11, 787, 1, 169.00);
 
 -- --------------------------------------------------------
 
@@ -261,7 +257,9 @@ INSERT INTO `payments` (`id`, `order_id`, `payment_method`, `amount`, `payment_s
 (14, 9014, 'Credit Card', 169.00, 'Failed', 'DEMO-PAY-9014', NULL, '2026-10-30 20:01:21'),
 (15, 9015, 'Credit Card', 337.00, 'Paid', 'DEMO-PAY-9015', '2026-10-28 11:05:00', '2026-10-30 20:01:21'),
 (16, 9016, 'Credit Card', 174.00, 'Pending', 'cs_test_b1UK1zHiJ78fFMX7AkT86ReFrMEN3IzA5OCcT3RkbdzQKvew0QdVYVvPwJ', NULL, '2026-11-01 19:22:42'),
-(17, 9017, 'Cash on Delivery', 223.00, 'Pending', NULL, NULL, '2026-11-01 22:11:21');
+(17, 9017, 'Cash on Delivery', 223.00, 'Pending', NULL, NULL, '2026-11-01 22:11:21'),
+(18, 9018, 'Credit Card', 174.00, 'Pending', 'cs_test_b14NjlxEpT7Qwr9VSG8rzf81jcynizRb05s9D1lHt73T8qhL9Wkkrg5TCW', NULL, '2026-11-02 05:54:18'),
+(19, 9019, 'Cash on Delivery', 174.00, 'Pending', NULL, NULL, '2026-11-02 06:02:40');
 
 -- --------------------------------------------------------
 
@@ -530,6 +528,134 @@ INSERT INTO `product_images` (`image_id`, `product_id`, `image_url`, `is_primary
 (259, 169, '/Data/women/dress/mermaid/product5/primary.png', 1, '2026-11-01 20:22:03'),
 (260, 169, '/Data/women/dress/mermaid/product5/Screenshot%202026-10-29%20140356.png', 0, '2026-11-01 20:22:03'),
 (261, 169, '/Data/women/dress/mermaid/product5/Screenshot%202026-10-29%20140431.png', 0, '2026-11-01 20:22:03');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_reviews`
+--
+
+CREATE TABLE `product_reviews` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `rating` tinyint(3) UNSIGNED NOT NULL,
+  `review_text` varchar(1200) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ;
+
+--
+-- Dumping data for table `product_reviews`
+--
+
+INSERT INTO `product_reviews` (`id`, `product_id`, `user_id`, `rating`, `review_text`, `created_at`) VALUES
+(1, 11, 9006, 2, 'Great quality and a very stylish look.', '2026-11-02 06:07:17'),
+(2, 2, 9001, 5, 'Beautiful dress with lovely details.', '2026-11-02 06:15:04'),
+(3, 3, 9002, 4, 'Elegant design and comfortable to wear.', '2026-11-02 06:15:04'),
+(4, 4, 9003, 5, 'Exceeded my expectations. Highly recommended.', '2026-11-02 06:15:04'),
+(5, 5, 9004, 4, 'Lovely style and excellent quality.', '2026-11-02 06:15:04'),
+(6, 6, 9005, 5, 'Perfect for the occasion. I loved it.', '2026-11-02 06:15:04'),
+(7, 7, 9001, 4, 'Great fit and a very polished look.', '2026-11-02 06:15:04'),
+(8, 8, 9002, 5, 'The fabric and tailoring are excellent.', '2026-11-02 06:15:04'),
+(9, 9, 9003, 4, 'Stylish suit with a comfortable fit.', '2026-11-02 06:15:04'),
+(10, 1, 9002, 2, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(11, 57, 9004, 3, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(12, 58, 9005, 4, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(13, 59, 9006, 5, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(14, 2, 9003, 3, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(15, 60, 9001, 1, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(16, 61, 9002, 2, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(17, 62, 9003, 3, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(18, 169, 9002, 5, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(19, 3, 9004, 4, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(20, 63, 9004, 4, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(21, 64, 9005, 5, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(22, 65, 9006, 1, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(23, 148, 9005, 4, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(24, 4, 9005, 5, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(25, 66, 9001, 2, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(26, 67, 9002, 3, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(27, 68, 9003, 4, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(28, 158, 9003, 4, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(29, 5, 9006, 1, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(30, 69, 9004, 5, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(31, 70, 9005, 1, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(32, 71, 9006, 2, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(33, 140, 9003, 1, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(34, 34, 9005, 5, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(35, 35, 9006, 1, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(36, 36, 9001, 2, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(37, 37, 9002, 3, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(38, 38, 9003, 4, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(39, 39, 9004, 5, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(40, 40, 9005, 1, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(41, 41, 9006, 2, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(42, 42, 9001, 3, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(43, 43, 9002, 4, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(44, 44, 9003, 5, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(45, 45, 9004, 1, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(46, 6, 9001, 2, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(47, 7, 9002, 3, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(48, 91, 9002, 2, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(49, 92, 9003, 3, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(50, 93, 9004, 4, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(51, 94, 9005, 5, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(52, 8, 9003, 4, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(53, 102, 9001, 3, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(54, 103, 9002, 4, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(55, 104, 9003, 5, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(56, 105, 9004, 1, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(57, 106, 9005, 2, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(58, 9, 9004, 5, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(59, 84, 9001, 5, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(60, 85, 9002, 1, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(61, 86, 9003, 2, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(62, 87, 9004, 3, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(63, 88, 9005, 4, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(64, 10, 9005, 1, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(65, 124, 9005, 5, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(66, 125, 9006, 1, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(67, 126, 9001, 2, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(68, 127, 9002, 3, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(69, 128, 9003, 4, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(70, 96, 9001, 2, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(71, 97, 9002, 3, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(72, 98, 9003, 4, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(73, 99, 9004, 5, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(74, 100, 9005, 1, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(75, 22, 9005, 3, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(76, 23, 9006, 4, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(77, 24, 9001, 5, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(78, 25, 9002, 1, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(79, 26, 9003, 2, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(80, 27, 9004, 3, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(81, 28, 9005, 4, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(82, 29, 9006, 5, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(83, 30, 9001, 1, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(84, 31, 9002, 2, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(85, 32, 9003, 3, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(86, 33, 9004, 4, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(87, 46, 9005, 2, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(88, 47, 9006, 3, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(89, 48, 9001, 4, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(90, 54, 9001, 5, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(91, 55, 9002, 1, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(92, 122, 9003, 3, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(93, 12, 9001, 3, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(94, 13, 9002, 4, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(95, 14, 9003, 5, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(96, 15, 9004, 1, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(97, 16, 9005, 2, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(98, 17, 9006, 3, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(99, 18, 9001, 4, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(100, 19, 9002, 5, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(101, 20, 9003, 1, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(102, 21, 9004, 2, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(103, 49, 9002, 5, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19'),
+(104, 50, 9003, 1, 'A wonderful choice for a special occasion.', '2026-11-02 06:18:19'),
+(105, 51, 9004, 2, 'Great quality and a very stylish look.', '2026-11-02 06:18:19'),
+(106, 52, 9005, 3, 'Beautiful product with excellent quality.', '2026-11-02 06:18:19'),
+(107, 53, 9006, 4, 'Elegant design and lovely attention to detail.', '2026-11-02 06:18:19');
 
 -- --------------------------------------------------------
 
@@ -1606,6 +1732,15 @@ ALTER TABLE `product_images`
   ADD KEY `product_id` (`product_id`);
 
 --
+-- Indexes for table `product_reviews`
+--
+ALTER TABLE `product_reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_product_review` (`product_id`,`user_id`),
+  ADD KEY `idx_product_reviews_created_at` (`product_id`,`created_at`),
+  ADD KEY `fk_product_reviews_user` (`user_id`);
+
+--
 -- Indexes for table `product_variants`
 --
 ALTER TABLE `product_variants`
@@ -1660,7 +1795,7 @@ ALTER TABLE `carts`
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1672,19 +1807,19 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9018;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9020;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -1697,6 +1832,12 @@ ALTER TABLE `products`
 --
 ALTER TABLE `product_images`
   MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=262;
+
+--
+-- AUTO_INCREMENT for table `product_reviews`
+--
+ALTER TABLE `product_reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `product_variants`
@@ -1777,6 +1918,13 @@ ALTER TABLE `products`
 --
 ALTER TABLE `product_images`
   ADD CONSTRAINT `product_images_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `product_reviews`
+--
+ALTER TABLE `product_reviews`
+  ADD CONSTRAINT `fk_product_reviews_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_product_reviews_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `product_variants`
