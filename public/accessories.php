@@ -89,8 +89,13 @@ function productImage($imageUrl)
         return "";
     }
 
-    // The path is relative to the public folder, e.g. "assets/images/accessories/..."
-    if (file_exists(__DIR__ . "/" . $imageUrl)) {
+    $imageUrl = str_replace("\\", "/", $imageUrl);
+    if (strpos($imageUrl, "/Data/") === 0) {
+        $imageUrl = ".." . $imageUrl;
+    }
+
+    // Decode URL-escaped filenames for the filesystem check, but keep the URL encoded.
+    if (is_file(__DIR__ . "/" . rawurldecode($imageUrl))) {
         return $imageUrl;
     }
 
@@ -106,8 +111,22 @@ function arrowIcon()
 // Prints the category cards at the top of a shoe section (Derby, Loafers...)
 function printCategoryCards($shoeTypes, $sectionId)
 {
+    $categoryImages = [
+        15 => "assets/images/accessories/suits/shoes/derby-category.jpg",
+        16 => "assets/images/accessories/suits/shoes/loafers.jpg",
+        17 => "assets/images/accessories/suits/shoes/monk2.jpg",
+        18 => "assets/images/accessories/suits/shoes/oxford-category.jpg",
+        19 => "assets/images/accessories/dresses/shoes/block-heel-category.jpg",
+        20 => "assets/images/accessories/dresses/shoes/highHeels.jpg",
+        24 => "assets/images/accessories/dresses/shoes/bridal-sandal-category.jpg",
+        25 => "assets/images/accessories/dresses/shoes/flat-category.jpg",
+    ];
+
     foreach ($shoeTypes as $type) {
-        $image = productImage($type["image_url"]);
+        $image = productImage($type["image_url"] ?? null);
+        if ($image === "" && isset($categoryImages[$type["id"]])) {
+            $image = productImage($categoryImages[$type["id"]]);
+        }
         ?>
         <a class="acc-cat-card" href="#<?php echo $sectionId; ?>-products" data-reveal
            aria-label="Explore <?php echo safe($type["name"]); ?>">

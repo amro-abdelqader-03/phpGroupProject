@@ -11,14 +11,6 @@
     return node;
   }
 
-  function imageUrl(path) {
-    if (!path) return "";
-    if (/^(https?:)?\/\//i.test(path)) return path;
-
-    const projectRoot = new URL("../", window.location.href);
-    return new URL(path.replace(/^\/+/, ""), projectRoot).href;
-  }
-
   function render() {
     const cart = window.ElanCart.read();
     host.replaceChildren();
@@ -41,7 +33,7 @@
     cart.forEach((item) => {
       const row = element("article", "cart-item");
       const image = element("img", "cart-item__image");
-      image.src = imageUrl(item.image || item.main_image || item.image_url);
+      image.src = window.ElanCart.imageUrl(item.image || item.main_image || item.image_url);
       image.alt = item.productName;
       image.width = 120;
       image.height = 160;

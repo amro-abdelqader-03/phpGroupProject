@@ -11,26 +11,50 @@ require_once __DIR__ . '/../app/models/Order.php';
 require_once __DIR__ . '/includes/helpers.php';
 
 $orderModel = new Order();
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$status = strtolower(trim($_GET['status'] ?? 'all'));
+if (!in_array($status, ['all', 'pending', 'confirmed', 'shipped', 'delivered', 'cancelled'], true)) {
+    $status = 'all';
+}
+$sort = $_GET['sort'] ?? 'newest';
+if (!in_array($sort, ['newest', 'revenue'], true)) {
+    $sort = 'newest';
+}
+$filterParams = [];
+if ($search !== '') {
+    $filterParams['search'] = $search;
+}
+if ($status !== 'all') {
+    $filterParams['status'] = $status;
+}
+if ($sort !== 'newest') {
+    $filterParams['sort'] = $sort;
+}
+$filterQuery = http_build_query($filterParams);
 
 // Delete order
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_order_id'])) {
-    $orderModel->deleteOrder((int) $_POST['delete_order_id']);
+    try {
+        $deleted = $orderModel->deleteOrder((int) $_POST['delete_order_id']);
+        $deleteStatus = $deleted ? 'deleted' : 'protected';
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        $deleteStatus = 'failed';
+    }
 
-    $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
-    $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
-
-    header('Location: orders.php?page=' . $currentPage . (!empty($searchQuery) ? '&search=' . urlencode($searchQuery) : ''));
+    $redirectParams = ['page' => max(1, (int) ($_GET['page'] ?? 1))] + $filterParams;
+    $redirectParams['delete'] = $deleteStatus;
+    header('Location: orders.php?' . http_build_query($redirectParams));
     exit;
 }
 
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $limit = 5;
 $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 $page = max(1, $page);
 $offset = ($page - 1) * $limit;
 
-$orders = $orderModel->getOrdersPaginated($limit, $offset, $search);
-$totalOrders = $orderModel->getTotalOrdersCount($search);
+$orders = $orderModel->getOrdersPaginated($limit, $offset, $search, $status, $sort);
+$totalOrders = $orderModel->getTotalOrdersCount($search, $status);
 $totalPages = (int) ceil($totalOrders / $limit);
 
 // Shared admin layout settings
@@ -55,6 +79,16 @@ require_once __DIR__ . '/includes/header.php';
         </button>
     </div>
 
+    <?php if (($_GET['delete'] ?? '') === 'protected'): ?>
+        <div class="order-delete-notice" role="alert">
+            This order has payment records and cannot be deleted. Cancel the order to preserve its payment history.
+        </div>
+    <?php elseif (($_GET['delete'] ?? '') === 'failed'): ?>
+        <div class="order-delete-notice" role="alert">
+            The order could not be deleted because it is referenced by other records.
+        </div>
+    <?php endif; ?>
+
     <section class="orders-card" aria-label="Order list">
 
         <form method="GET" action="orders.php" class="filters">
@@ -75,28 +109,32 @@ require_once __DIR__ . '/includes/header.php';
             <label class="filter-control">
                 <span class="filter-label">Status</span>
 
-                <select id="status-filter" aria-label="Filter by status">
-                    <option value="all">All statuses</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="pending">Pending</option>
-                    <option value="cancelled">Cancelled</option>
+                <select id="status-filter" name="status" aria-label="Filter by status">
+                    <option value="all" <?= $status === 'all' ? 'selected' : '' ?>>All statuses</option>
+                    <option value="pending" <?= $status === 'pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="confirmed" <?= $status === 'confirmed' ? 'selected' : '' ?>>Confirmed</option>
+                    <option value="shipped" <?= $status === 'shipped' ? 'selected' : '' ?>>Shipped</option>
+                    <option value="delivered" <?= $status === 'delivered' ? 'selected' : '' ?>>Delivered</option>
+                    <option value="cancelled" <?= $status === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
                 </select>
             </label>
 
             <label class="filter-control sort-control">
                 <span class="filter-label">Sort by</span>
 
-                <select id="sort-orders" aria-label="Sort orders">
-                    <option value="newest">Newest first</option>
-                    <option value="revenue">Highest revenue</option>
+                <select id="sort-orders" name="sort" aria-label="Sort orders">
+                    <option value="newest" <?= $sort === 'newest' ? 'selected' : '' ?>>Newest first</option>
+                    <option value="revenue" <?= $sort === 'revenue' ? 'selected' : '' ?>>Highest revenue</option>
                 </select>
             </label>
 
-            <?php if (!empty($search)): ?>
+            <button type="submit" class="button">Apply filters</button>
+
+            <?php if ($filterParams): ?>
                 <a
                     href="orders.php"
                     class="button"
-                    style="padding: 6px 12px; align-self: center; text-decoration: none; font-size: 13px;"
+                    style="align-self: center; text-decoration: none;"
                 >
                     Clear
                 </a>
@@ -189,6 +227,14 @@ require_once __DIR__ . '/includes/header.php';
                                             Confirmed
                                         </option>
 
+                                        <option value="shipped" <?= $currentStatus === 'shipped' ? 'selected' : '' ?>>
+                                            Shipped
+                                        </option>
+
+                                        <option value="delivered" <?= $currentStatus === 'delivered' ? 'selected' : '' ?>>
+                                            Delivered
+                                        </option>
+
                                         <option value="cancelled" <?= $currentStatus === 'cancelled' ? 'selected' : '' ?>>
                                             Cancelled
                                         </option>
@@ -212,7 +258,7 @@ require_once __DIR__ . '/includes/header.php';
 
                                     <form
                                         class="delete-form"
-                                        action="orders.php?page=<?= $page ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>"
+                                        action="orders.php?page=<?= $page ?><?= $filterQuery !== '' ? '&' . htmlspecialchars($filterQuery, ENT_QUOTES, 'UTF-8') : '' ?>"
                                         method="POST"
                                         onsubmit="return confirm('Are you sure you want to delete this order?');"
                                         style="display:inline;"
@@ -263,11 +309,7 @@ require_once __DIR__ . '/includes/header.php';
 
                 <nav class="pagination" aria-label="Page navigation">
 
-                    <?php
-                        $paginationQuery = !empty($search)
-                            ? '&search=' . urlencode($search)
-                            : '';
-                    ?>
+                    <?php $paginationQuery = $filterQuery !== '' ? '&' . htmlspecialchars($filterQuery, ENT_QUOTES, 'UTF-8') : ''; ?>
 
                     <?php if ($page > 1): ?>
 

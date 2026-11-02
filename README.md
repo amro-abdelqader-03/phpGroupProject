@@ -1,7 +1,7 @@
 # phpGroupProject
-# 💍 Wedding Store – E-Commerce Website
+# 💍 Élan Bridal – E-Commerce Website
 
-**Wedding Store** is a web-based e-commerce platform designed to provide customers with an easy and convenient way to explore and purchase wedding-related products online. The platform offers an organized shopping experience where customers can browse products, explore categories, view product details, and complete their purchases.
+**Wedding Store** is a Élan Bridal e-commerce platform designed to provide customers with an easy and convenient way to explore and purchase wedding-related products online. The platform offers an organized shopping experience where customers can browse products, explore categories, view product details, and complete their purchases.
 
 The system also provides an administrative dashboard that enables store administrators to manage products, categories, customers, and orders while monitoring store performance and sales activities.
 
@@ -267,12 +267,36 @@ app/config/Database.php
 
 Make sure the database host, name, username, and password match your local MySQL configuration.
 
-**7. Run the application**
+**7. Configure environment variables**
+
+From PowerShell in the project root, copy the example environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+You can also copy `.env.example` to `.env` in File Explorer. Set `APP_BASE_URL`
+to the URL where the `public` directory is served. For the default XAMPP setup,
+use:
+
+```dotenv
+APP_BASE_URL=http://localhost/phpGroupProject/public
+```
+
+Stripe Checkout is optional for local development. To test it, set
+`STRIPE_SECRET_KEY` to a Stripe **test** secret key (`sk_test_...`). Keep real
+and test credentials out of version control; never commit `.env`.
+
+The Gemini integration reads `GEMINI_API_KEY` from `.env`. Set it only if you
+want to use AI recommendations. `GEMINI_MODEL` has a default and can be
+changed in `.env`; `GEMINI_API_BASE` and `GEMINI_TIMEOUT` are optional.
+
+**8. Run the application**
 
 Open the following URL in your browser:
 
 ```text
-http://localhost/phpGroupProject/
+http://localhost/phpGroupProject/public/
 ```
 
 To access the admin dashboard:
@@ -285,8 +309,9 @@ http://localhost/phpGroupProject/admin/
 
 - Make sure Apache and MySQL are running before accessing the website.
 - Use the correct database credentials in the configuration file.
+- The database connection is configured in `app/config/Database.php`; the optional Stripe and Gemini settings are configured in the project-root `.env` file.
 - Do not upload private credentials, API keys, or OAuth secrets to the public repository.
-- AI Shopping Assistant and Google Authentication require their respective service configurations if enabled.
+- Stripe Checkout requires a valid `STRIPE_SECRET_KEY`. AI recommendations require a valid `GEMINI_API_KEY`.
 
 ---
 

@@ -3,6 +3,24 @@
   "use strict";
   let storageKey = "elan-bridal-cart:guest";
 
+  function imageUrl(path) {
+    if (typeof path !== "string" || path.trim() === "") return "";
+
+    const normalizedPath = path.trim().replace(/\\/g, "/");
+    if (/^(https?:)?\/\//i.test(normalizedPath)) return normalizedPath;
+    if (normalizedPath.startsWith("/Data/")) {
+      return new URL(normalizedPath.slice(1), new URL("../", window.location.href)).href;
+    }
+    if (normalizedPath.startsWith("/assets/")) {
+      return new URL(normalizedPath.slice(1), new URL("./", window.location.href)).href;
+    }
+    if (normalizedPath.startsWith("/")) {
+      return new URL(normalizedPath, window.location.origin).href;
+    }
+
+    return new URL(normalizedPath, window.location.href).href;
+  }
+
   function read() {
     try {
       const parsed = JSON.parse(window.localStorage.getItem(storageKey) || "[]");
@@ -35,7 +53,7 @@
     if (existing) {
       existing.quantity = Number(existing.quantity) + amount;
       existing.productName = selection.productName || existing.productName;
-      existing.image = selection.image || existing.image;
+      existing.image = imageUrl(selection.image) || existing.image;
       existing.size = selection.size || existing.size;
       existing.color = selection.color || existing.color;
       existing.requiresSize = selection.requiresSize == null
@@ -49,7 +67,7 @@
         productId,
         productName: selection.productName,
         category: selection.category,
-        image: selection.image,
+        image: imageUrl(selection.image),
         unitPrice: selection.unitPrice == null ? null : Number(selection.unitPrice),
         size: selection.size,
         color: selection.color,
@@ -148,7 +166,7 @@
         productId: `products:${item.product_id}`,
         productName: item.product_name,
         category: "products",
-        image: item.main_image || item.image_url || "",
+        image: imageUrl(item.main_image || item.image_url || ""),
         unitPrice: Number(item.price),
         size: item.size || item.variant_size || "",
         color: item.color || item.variant_color || "",
@@ -170,6 +188,7 @@
     ready: null,
     read,
     add,
+    imageUrl,
     remove,
     setQuantity,
     syncQuantity,

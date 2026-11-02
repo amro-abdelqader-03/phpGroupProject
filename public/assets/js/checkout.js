@@ -37,7 +37,7 @@
 
       const row = make("article", "checkout-item");
       const image = make("img", "checkout-item__image");
-      image.src = item.image;
+      image.src = window.ElanCart.imageUrl(item.image || item.main_image || item.image_url);
       image.alt = item.productName;
       image.width = 76;
       image.height = 102;

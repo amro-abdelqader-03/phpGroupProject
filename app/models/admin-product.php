@@ -23,7 +23,7 @@ class Admin_product
     {
         // Get product details
         $sql = "SELECT id AS product_id, product_name, price, cost_price,
-                   description, stock_quantity
+                   description, stock_quantity, image_url
             FROM products
             WHERE id = ?";
 
@@ -49,6 +49,12 @@ class Admin_product
         $stmt->execute([$id]);
 
         $product['images'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($product['images'] === [] && !empty($product['image_url'])) {
+            $product['images'][] = [
+                'image_url' => $product['image_url'],
+                'is_primary' => 1,
+            ];
+        }
 
         // Get product variants
         $sql = "SELECT

@@ -3465,7 +3465,7 @@ body.dialog-open {
    dresses share every rule here; only the card modifier changes framing.
    ========================================================================== */
 
-/* Solid header for content pages (the landing hero remains transparent). */
+/* Solid header used across the public site for consistent navigation. */
 .site-header--solid {
   border-bottom-color: var(--line);
   background-color: rgba(250, 248, 245, 0.975);
@@ -5647,15 +5647,262 @@ body.dialog-open {
   }
 }
 
-/* Register page: its own photo (the login page keeps the default one) */
-.auth-editorial--register {
-  background-image: url("../images/registerr.jpg");
-  background-position: center 20%;
+
+/* =========================================
+   DRESSES HERO VIDEO — RESPONSIVE
+   ========================================= */
+
+.collection-hero:has(.dresses-hero-video) {
+    position: relative;
+    min-height: 680px;
+    overflow: hidden;
 }
 
+.collection-hero__media .dresses-hero-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .collection-hero:has(.dresses-hero-video) {
+        min-height: 580px;
+    }
+
+    .collection-hero:has(.dresses-hero-video)
+    .collection-hero__title {
+        font-size: clamp(3.5rem, 7vw, 5.5rem);
+    }
+}
+
+/* Mobile */
 @media (max-width: 767px) {
-  /* On phones the photo is a short strip: show the top so the face stays in view */
-  .auth-editorial--register {
-    background-position: center 12%;
-  }
+    .collection-hero:has(.dresses-hero-video) {
+        min-height: 540px;
+    }
+
+    .collection-hero:has(.dresses-hero-video)
+    .collection-hero__inner {
+        position: relative;
+        z-index: 2;
+        padding-top: 70px;
+        padding-bottom: 55px;
+    }
+
+    .collection-hero:has(.dresses-hero-video)
+    .collection-hero__title {
+        font-size: clamp(2.8rem, 11vw, 4.5rem);
+        line-height: 1;
+    }
+
+    .collection-hero:has(.dresses-hero-video)
+    .collection-hero__text {
+        font-size: 14px;
+        line-height: 1.7;
+        max-width: 100%;
+    }
+
+    .collection-hero:has(.dresses-hero-video)
+    .collection-hero__meta {
+        font-size: 10px;
+        line-height: 1.8;
+    }
+
+    .collection-hero__media .dresses-hero-video {
+        object-position: center;
+    }
+}
+
+
+/* =========================================
+   SUITS HERO VIDEO — RESPONSIVE
+   ========================================= */
+
+.collection-hero:has(.suits-hero-video) {
+    position: relative;
+    min-height: 680px;
+    overflow: hidden;
+}
+
+.collection-hero__media .suits-hero-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .collection-hero:has(.suits-hero-video) {
+        min-height: 580px;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__title {
+        font-size: clamp(3.5rem, 7vw, 5.5rem);
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .collection-hero:has(.suits-hero-video) {
+        min-height: 540px;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__inner {
+        position: relative;
+        z-index: 2;
+        padding-top: 70px;
+        padding-bottom: 55px;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__title {
+        font-size: clamp(2.8rem, 11vw, 4.5rem);
+        line-height: 1;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__text {
+        font-size: 14px;
+        line-height: 1.7;
+        max-width: 100%;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__meta {
+        font-size: 10px;
+        line-height: 1.8;
+    }
+}
+
+
+
+/* =========================================
+   SUITS PAGE - RESPONSIVE
+   ========================================= */
+
+/* Hero video */
+.collection-hero:has(.suits-hero-video) {
+    position: relative;
+    min-height: 680px;
+    overflow: hidden;
+}
+
+.collection-hero:has(.suits-hero-video)
+.collection-hero__media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.suits-hero-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.collection-hero:has(.suits-hero-video)
+.collection-hero__inner {
+    position: relative;
+    z-index: 2;
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+    .collection-hero:has(.suits-hero-video) {
+        min-height: 580px;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__title {
+        font-size: clamp(3.5rem, 7vw, 5.5rem);
+        line-height: 1.05;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__text {
+        max-width: 520px;
+        font-size: 16px;
+    }
+
+    .collection-main:has(.suits-hero-video)
+    .look-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+
+    .collection-hero:has(.suits-hero-video) {
+        min-height: 540px;
+        min-height: max(540px, 75svh);
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__inner {
+        padding-top: 65px;
+        padding-bottom: 55px;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__title {
+        font-size: clamp(2.7rem, 11vw, 4.3rem);
+        line-height: 1.05;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__text {
+        max-width: 100%;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .collection-hero:has(.suits-hero-video)
+    .collection-hero__meta {
+        font-size: 10px;
+        line-height: 1.8;
+    }
+
+    .suits-hero-video {
+        object-position: center;
+    }
+
+    /* Product cards */
+    .collection-main:has(.suits-hero-video)
+    .look-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+    }
+
+    .collection-main:has(.suits-hero-video)
+    .look-card {
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* Category navigation */
+    .collection-main:has(.suits-hero-video)
+    .collection-nav__inner {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .collection-main:has(.suits-hero-video)
+    .collection-nav__list {
+        flex-wrap: nowrap;
+        width: max-content;
+    }
 }

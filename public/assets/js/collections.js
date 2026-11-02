@@ -943,7 +943,6 @@
           }
 
           <div class="look-card__actions">
-
             <a class="text-link text-link--sm look-card__link"
                href="${detailsUrl}">
               View details
@@ -952,21 +951,25 @@
               </svg>
             </a>
 
-            <button class="look-card__toggle"
-                    type="button"
-                    aria-pressed="false"
-                    aria-label="${escapeHtml(`${onLabel} for ${name}`)}"
-                    data-look-toggle
-                    data-label-on="${escapeHtml(onLabel)}"
-                    data-label-off="${escapeHtml(offLabel)}"
-                    data-product="${name}">
+            ${
+              config.kind === "suit"
+                ? ""
+                : `<button class="look-card__toggle"
+                           type="button"
+                           aria-pressed="false"
+                           aria-label="${escapeHtml(`${onLabel} for ${name}`)}"
+                           data-look-toggle
+                           data-label-on="${escapeHtml(onLabel)}"
+                           data-label-off="${escapeHtml(offLabel)}"
+                           data-product="${name}">
 
-              <svg class="icon" aria-hidden="true">
-                <use href="#icon-plus"></use>
-              </svg>
+                     <svg class="icon" aria-hidden="true">
+                       <use href="#icon-plus"></use>
+                     </svg>
 
-              <span data-toggle-label>${escapeHtml(onLabel)}</span>
-            </button>
+                     <span data-toggle-label>${escapeHtml(onLabel)}</span>
+                   </button>`
+            }
 
           </div>
         </div>

@@ -25,6 +25,15 @@ body {
     font-size: 0.875rem;
 }
 
+.order-delete-notice {
+    margin: 0 0 1rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--badge-red-bg);
+    border-radius: 0.5rem;
+    background: var(--badge-red-bg);
+    color: var(--badge-red-text);
+}
+
 /* Layout Structure */
 #wrapper {
     display: flex;
@@ -698,32 +707,32 @@ body {
 ========================= */
 
 .sidebar-footer {
-    padding: 15px;
+    padding: 0.75rem;
     margin-top: auto;
 }
 
 .logout-btn {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0.5rem;
     width: 100%;
-    padding: 12px 16px;
+    padding: 0.625rem 0.75rem;
 
     color: #dc3545;
     background-color: #fff5f5;
 
     border: 1px solid #ffe0e0;
-    border-radius: 10px;
+    border-radius: 8px;
 
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
+    font: inherit;
+    font-weight: 500;
 
     transition: all 0.25s ease;
 }
 
 .logout-btn i {
-    font-size: 18px;
+    font-size: 1em;
 }
 
 .logout-btn:hover {
