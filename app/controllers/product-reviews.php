@@ -83,19 +83,6 @@ try {
         reviewResponse(422, ['success' => false, 'message' => 'Provide a rating from 1 to 5 and a review of up to 1,200 characters.']);
     }
 
-    $purchaseStmt = $pdo->prepare(
-        "SELECT 1 FROM orders o
-         JOIN order_items oi ON oi.order_id = o.id
-         LEFT JOIN payments p ON p.order_id = o.id
-         WHERE o.user_id = ? AND oi.product_id = ?
-           AND (p.payment_status = 'Paid' OR o.order_status = 'Delivered')
-         LIMIT 1"
-    );
-    $purchaseStmt->execute([$userId, $productId]);
-    if (!$purchaseStmt->fetchColumn()) {
-        reviewResponse(403, ['success' => false, 'message' => 'Reviews are available after a completed purchase.']);
-    }
-
     $insertStmt = $pdo->prepare('INSERT INTO product_reviews (product_id, user_id, rating, review_text) VALUES (?, ?, ?, ?)');
     $insertStmt->execute([$productId, $userId, $rating, $reviewText]);
     reviewResponse(201, ['success' => true, 'message' => 'Your review has been published.']);
