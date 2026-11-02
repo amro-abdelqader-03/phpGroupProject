@@ -1,6 +1,13 @@
 
 <?php
 
+session_start();
+
+// Protect admin dashboard
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: login.php');
+    exit;
+}
 
 require_once __DIR__ . '/includes/helpers.php';
 

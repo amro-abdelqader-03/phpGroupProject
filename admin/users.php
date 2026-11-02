@@ -1,4 +1,13 @@
 <?php
+
+session_start();
+
+// Protect admin dashboard
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
 // =====================================================
 // Admin - Users page
 // Shows all users in a table, with search, filters and pages.

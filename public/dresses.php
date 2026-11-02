@@ -32,10 +32,9 @@ function dressImage($imageUrl): string
         return '';
     }
 
-    // Images are stored in the project's Data folder, one level above public/
-    // (a relative path works wherever the project folder is placed)
+    // Images are stored in project_3/Data
     if (str_starts_with($imageUrl, '/Data/')) {
-        return '..' . $imageUrl;
+        return '/phpGroupProject' . $imageUrl;
     }
 
     return $imageUrl;
@@ -123,21 +122,7 @@ function printDressCards(array $dressList): void
                         </svg>
                     </a>
 
-                    <button class="look-card__toggle"
-                            type="button"
-                            aria-pressed="false"
-                            aria-label="View back for <?= $name ?>"
-                            data-look-toggle
-                            data-label-on="View back"
-                            data-label-off="View front"
-                            data-product="<?= $name ?>">
-
-                        <svg class="icon" aria-hidden="true">
-                            <use href="#icon-plus"></use>
-                        </svg>
-
-                        <span data-toggle-label>View back</span>
-                    </button>
+                    
 
                 </div>
             </div>
@@ -287,11 +272,30 @@ function printDressCards(array $dressList): void
 
   <main id="main" class="collection-main" tabindex="-1">
     <section class="collection-hero" aria-labelledby="dresses-title">
-      <div class="collection-hero__media">
+      <!-- <div class="collection-hero__media">
         <img src="assets/images/dress-celeste.jpg"
              alt="A bride in an ivory gown, photographed in a sunlit ballroom."
              width="1200" height="1600" fetchpriority="high" decoding="async">
-      </div>
+      </div> -->
+
+<div class="collection-hero__media">
+  <video
+    class="dresses-hero-video"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    poster="assets/images/dress-celeste.jpg"
+    aria-hidden="true">
+
+    <source src="assets/videos/dresses_video.mp4" type="video/mp4">
+
+  </video>
+</div>
+
+
+
       <div class="collection-hero__overlay" aria-hidden="true"></div>
 
       <div class="container collection-hero__inner">

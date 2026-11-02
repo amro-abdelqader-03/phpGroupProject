@@ -84,8 +84,8 @@ if (
         <nav class="primary-nav" aria-label="Primary">
           <ul class="primary-nav__list">
             <li><a class="primary-nav__link" href="index.php">Home</a></li>
-            <li><a class="primary-nav__link" href="dresses.php">Dress</a></li>
-            <li><a class="primary-nav__link" href="suits.php">Suits</a></li>
+            <li><a class="primary-nav__link<?php echo $dress ? ' is-active' : ''; ?>" href="dresses.php">Dress</a></li>
+            <li><a class="primary-nav__link<?php echo !$dress ? ' is-active' : ''; ?>" href="suits.php">Suits</a></li>
             <li><a class="primary-nav__link" href="accessories.php">Accessories</a></li>
             <li><a class="primary-nav__link" href="index.php#about">About Us</a></li>
             <li><a class="primary-nav__link" href="register.php">Register</a></li>
@@ -103,8 +103,8 @@ if (
         <p class="mobile-menu__eyebrow">Explore Élan Bridal</p>
         <ul class="mobile-menu__list">
           <li><a class="mobile-menu__link" href="index.php"><span>01</span>Home</a></li>
-          <li><a class="mobile-menu__link" href="dresses.php"><span>02</span>Dress</a></li>
-          <li><a class="mobile-menu__link" href="suits.php"><span>03</span>Suits</a></li>
+          <li><a class="mobile-menu__link<?php echo $dress ? ' is-active' : ''; ?>" href="dresses.php"><span>02</span>Dress</a></li>
+          <li><a class="mobile-menu__link<?php echo !$dress ? ' is-active' : ''; ?>" href="suits.php"><span>03</span>Suits</a></li>
           <li><a class="mobile-menu__link" href="accessories.php"><span>04</span>Accessories</a></li>
           <li><a class="mobile-menu__link" href="index.php#about"><span>05</span>About Us</a></li>
           <li><a class="mobile-menu__link" href="register.php"><span>06</span>Register</a></li>
@@ -179,188 +179,6 @@ if (
           href="suits.php">Explore the suit collection</a><a class="text-link" href="dresses.php">Explore the dress
           collection</a>
       </section>
-
-      <section class="ai-recommendation" id="ai-recommendation" aria-labelledby="ai-recommendation-title">
-        <div class="ai-recommendation__head">
-          <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>Personal styling</p>
-          <h2 class="section-title ai-recommendation__title" id="ai-recommendation-title">AI Outfit
-            <em>Recommendation</em></h2>
-          <p class="ai-recommendation__intro">Share a few details and our AI stylist will select pieces from the current
-            Élan Bridal collection that suit your occasion, measurements, and budget.</p>
-        </div>
-
-
-        <div class="ai-recommendation__panel">
-
-          <div class="ai-recommendation__header">
-            <span class="ai-recommendation__badge">
-              <i class="bi bi-stars"></i>
-              AI POWERED
-            </span>
-
-            <h3>Find Your Perfect Look</h3>
-
-            <p>
-              Tell us what you're looking for, and our AI will help you
-              discover the perfect outfit for your style and budget.
-            </p>
-          </div>
-
-          <form class="ai-recommendation__form" id="ai-recommendation-form" novalidate>
-
-            <!-- Product Type -->
-            <fieldset class="ai-field ai-field--type">
-
-              <legend>
-                <i class="bi bi-handbag"></i>
-                What are you looking for?
-              </legend>
-
-              <div class="ai-choices">
-
-                <label class="ai-choice">
-                  <input type="radio" name="product_type" value="suit" checked>
-
-                  <span class="ai-choice__content">
-                    <i class="bi bi-person-standing"></i>
-
-                    <span class="ai-choice__text">
-                      <strong>Men's Suit</strong>
-                      <small>Elegant &amp; formal</small>
-                    </span>
-
-                    <i class="bi bi-check-circle-fill ai-choice__check"></i>
-                  </span>
-                </label>
-
-                <label class="ai-choice">
-                  <input type="radio" name="product_type" value="dress">
-
-                  <span class="ai-choice__content">
-                    <i class="bi bi-gem"></i>
-
-                    <span class="ai-choice__text">
-                      <strong>Women's Dress</strong>
-                      <small>Beautiful &amp; stylish</small>
-                    </span>
-
-                    <i class="bi bi-check-circle-fill ai-choice__check"></i>
-                  </span>
-                </label>
-
-              </div>
-            </fieldset>
-
-            <!-- Measurements and Budget -->
-            <div class="ai-fields">
-
-              <div class="ai-field">
-                <label for="ai-height">
-                  <i class="bi bi-arrows-vertical"></i>
-                  Height
-                </label>
-
-                <div class="ai-input-wrapper">
-                  <input type="number" id="ai-height" name="height" min="100" max="250" step="1" inputmode="decimal"
-                    placeholder="e.g. 180" required aria-describedby="ai-height-hint">
-
-                  <span class="ai-input-unit">cm</span>
-                </div>
-
-                <p class="ai-field__hint" id="ai-height-hint">
-                  Your height in centimeters.
-                </p>
-              </div>
-
-              <div class="ai-field">
-                <label for="ai-width">
-                  <i class="bi bi-rulers"></i>
-                  Chest / Bust Measurement
-                </label>
-
-                <div class="ai-input-wrapper">
-                  <input type="number" id="ai-width" name="width" min="30" max="200" step="1" inputmode="decimal"
-                    placeholder="e.g. 96" required aria-describedby="ai-width-hint">
-
-                  <span class="ai-input-unit">cm</span>
-                </div>
-
-                <p class="ai-field__hint" id="ai-width-hint">
-                  Chest for suits, bust for dresses.
-                </p>
-              </div>
-
-              <div class="ai-field ai-field--budget">
-                <label for="ai-budget">
-                  <i class="bi bi-wallet2"></i>
-                  Maximum Budget
-                </label>
-
-                <div class="ai-input-wrapper">
-                  <input type="number" id="ai-budget" name="budget" min="0.01" max="1000000" step="0.01"
-                    inputmode="decimal" placeholder="e.g. 250" required aria-describedby="ai-budget-hint">
-
-                  <span class="ai-input-unit">USD ($)</span>
-                </div>
-
-                <p class="ai-field__hint" id="ai-budget-hint">
-                  Set your maximum spending limit.
-                </p>
-              </div>
-
-            </div>
-
-            <!-- Disclaimer -->
-            <div class="ai-recommendation__disclaimer">
-              <i class="bi bi-info-circle"></i>
-
-              <p>
-                Your measurements help guide our recommendations but don't
-                guarantee the perfect fit. Always check the product's size
-                information before ordering.
-              </p>
-            </div>
-
-            <!-- Error Message -->
-            <p class="ai-recommendation__error" id="ai-recommendation-error" role="alert"></p>
-
-            <!-- Submit Button -->
-            <button class="btn ai-recommendation__submit" type="submit" id="ai-recommendation-submit">
-              <i class="bi bi-stars"></i>
-              <span>Get AI Recommendations</span>
-              <i class="bi bi-arrow-right"></i>
-            </button>
-
-            <p class="ai-recommendation__footer">
-              <i class="bi bi-shield-check"></i>
-              Personalized suggestions based on your preferences
-            </p>
-
-          </form>
-
-          <!-- Results -->
-          <div class="ai-recommendation__results" id="ai-recommendation-results" hidden>
-
-            <div class="ai-recommendation__results-header">
-              <span class="ai-recommendation__badge">
-                <i class="bi bi-stars"></i>
-                YOUR AI PICKS
-              </span>
-
-              <h3>Recommended For You</h3>
-
-              <p>Discover outfits selected to match your preferences.</p>
-            </div>
-
-            <p class="ai-recommendation__status" id="ai-recommendation-status" role="status" aria-live="polite"></p>
-
-            <div class="ai-recommendation__grid" id="ai-recommendation-grid"></div>
-
-            <p class="ai-recommendation__fit-note" id="ai-recommendation-fit-note"></p>
-
-          </div>
-
-        </div>
 
       </section>
     </div>

@@ -28,7 +28,7 @@
 
   <link rel="preload" as="image" href="assets/images/suit-featured.jpg" type="image/jpeg" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/style.css">
-  <script src="assets/js/collections.js" defer></script>
+  <script src="assets/js/collections.js?v=<?php echo filemtime(__DIR__ . '/assets/js/collections.js'); ?>" defer></script>
   <script src="assets/js/main.js?v=<?php echo filemtime(__DIR__ . '/assets/js/main.js'); ?>" defer></script>
   <script src="assets/js/cart.js?v=<?php echo filemtime(__DIR__ . '/assets/js/cart.js'); ?>" defer></script>
 </head>
@@ -133,9 +133,24 @@
   <main id="main" class="collection-main" tabindex="-1">
     <section class="collection-hero" aria-labelledby="suits-title">
       <div class="collection-hero__media">
-        <img src="assets/images/suit-featured.jpg"
+        <!-- <img src="assets/images/suit-featured.jpg"
              alt="A groom in a tailored dark suit, photographed in full length."
-             width="1400" height="2099" fetchpriority="high" decoding="async">
+             width="1400" height="2099" fetchpriority="high" decoding="async"> -->
+
+             <div class="collection-hero__media">
+    <video
+        class="suits-hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-hidden="true">
+
+        <source src="assets/videos/sutis_video.mp4" type="video/mp4">
+
+    </video>
+</div>
       </div>
       <div class="collection-hero__overlay" aria-hidden="true"></div>
 

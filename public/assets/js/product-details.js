@@ -32,19 +32,8 @@
 
 
   function imageUrl(path) {
-  if (!path) return "";
-
-  if (/^https?:\/\//i.test(path)) {
-    return path;
+    return window.ElanCart.imageUrl(path);
   }
-
-  const projectRoot = new URL("../", window.location.href);
-
-  return new URL(
-    path.replace(/^\/+/, ""),
-    projectRoot
-  ).href;
-}
 
 
 
