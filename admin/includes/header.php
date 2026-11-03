@@ -31,6 +31,8 @@
     <?php if (!empty($pageCss)) { ?>
         <link rel="stylesheet" href="<?php echo safe($pageCss); ?>">
     <?php } ?>
+    <link rel="stylesheet"
+        href="../public/assets/css/admin-theme.css?v=<?php echo filemtime(__DIR__ . '/../../public/assets/css/admin-theme.css'); ?>">
 </head>
 
 <body>

@@ -70,6 +70,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         rel="stylesheet"
         href="../public/assets/css/adminLogin.css"
     >
+    <link
+        rel="stylesheet"
+        href="../public/assets/css/admin-theme.css?v=<?php echo filemtime(__DIR__ . '/../public/assets/css/admin-theme.css'); ?>"
+    >
 </head>
 
 <body>

@@ -283,19 +283,7 @@ require __DIR__ . '/includes/header.php';   // <head>, sidebar and top bar
                         </div>
 
                         <!-- Location filter: one option for each country in the database -->
-                        <div class="col-lg-2 col-md-3">
-                            <select name="country" class="form-select form-select-custom">
-                                <option value="">All Locations</option>
-
-                                <?php foreach ($countries as $countryName) { ?>
-                                    <?php if ($countryName === $country) { ?>
-                                        <option value="<?php echo safe($countryName); ?>" selected><?php echo safe($countryName); ?></option>
-                                    <?php } else { ?>
-                                        <option value="<?php echo safe($countryName); ?>"><?php echo safe($countryName); ?></option>
-                                    <?php } ?>
-                                <?php } ?>
-                            </select>
-                        </div>
+                      
 
                         <!-- Apply: sends the form, so the filters go into the URL -->
                         <div class="col-lg-2 col-md-3">

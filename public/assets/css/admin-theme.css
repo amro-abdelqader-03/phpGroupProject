@@ -1,0 +1,244 @@
+:root {
+    --ivory: #FAF8F5;
+    --champagne: #F1ECE6;
+    --ink: #24211F;
+    --muted: #77716B;
+    --muted-deep: #68625C;
+    --bronze: #9C795D;
+    --bronze-deep: #7E5E46;
+    --bronze-light: #C9AC91;
+    --espresso: #211D1B;
+    --white: #FFFFFF;
+    --line: #E6DED5;
+    --line-dark: rgba(250, 248, 245, 0.14);
+    --success: #D8C3AC;
+    --error: #E7B7AA;
+
+    --bg-main: var(--ivory);
+    --brand-primary: var(--bronze);
+    --brand-primary-hover: var(--bronze-deep);
+    --text-dark: var(--ink);
+    --text-heading: var(--ink);
+    --text-muted: var(--muted-deep);
+    --text-light: var(--muted);
+    --border-color: var(--line);
+    --badge-blue-bg: var(--champagne);
+    --badge-blue-text: var(--bronze-deep);
+    --badge-green-bg: var(--success);
+    --badge-green-text: var(--bronze-deep);
+    --badge-red-bg: var(--error);
+    --badge-red-text: #813D32;
+    --badge-amber-bg: var(--champagne);
+    --badge-amber-text: var(--bronze-deep);
+    --active-nav-bg: var(--champagne);
+    --active-nav-text: var(--bronze-deep);
+    --soft-brand-bg: var(--champagne);
+    --panel: var(--white);
+    --canvas: var(--ivory);
+    --blue: var(--bronze);
+    --blue-soft: var(--champagne);
+}
+
+body {
+    background-color: var(--ivory);
+    color: var(--ink);
+}
+
+#sidebar,
+.sidebar,
+.admin-sidebar,
+.sidebar-footer,
+.sidebar-bottom {
+    background-color: var(--white);
+    border-color: var(--line);
+}
+
+.top-navbar,
+.admin-navbar,
+.topbar {
+    background-color: var(--white);
+    border-color: var(--line);
+}
+
+.sidebar-nav .nav-link,
+.side-nav a,
+.sidebar-link {
+    color: var(--muted-deep);
+}
+
+.sidebar-nav .nav-link:hover,
+.side-nav a:hover,
+.sidebar-link:hover,
+.menu-btn:hover,
+.nav-icon-btn:hover {
+    background-color: var(--champagne);
+    color: var(--ink);
+}
+
+.sidebar-nav .nav-link.active,
+.side-nav a.active,
+.sidebar-link.active {
+    background-color: var(--champagne);
+    color: var(--bronze-deep);
+}
+
+.sidebar-brand-icon,
+.brand-mark,
+.brand-logo,
+.product-icon-box,
+.login-page .brand-icon {
+    background: var(--bronze);
+    color: var(--white);
+}
+
+.btn-primary,
+.btn-primary-custom,
+.btn-brand,
+.login-btn {
+    border-color: var(--bronze);
+    background: var(--bronze);
+    color: var(--white);
+}
+
+.btn-primary:hover,
+.btn-primary-custom:hover,
+.btn-brand:hover,
+.login-btn:hover {
+    border-color: var(--bronze-deep);
+    background: var(--bronze-deep);
+    color: var(--white);
+}
+
+.form-control:focus,
+.form-select:focus,
+.search-box:focus-within,
+.filter-search:focus-within {
+    border-color: var(--bronze);
+    box-shadow: 0 0 0 0.2rem rgba(156, 121, 93, 0.16);
+}
+
+.input-group:focus-within .input-group-text {
+    border-color: var(--bronze);
+    background-color: var(--champagne);
+    color: var(--bronze-deep);
+}
+
+.page-title,
+.page-heading h1,
+.dashboard-content h1,
+.custom-table .user-title,
+.custom-table .product-title {
+    color: var(--ink);
+}
+
+.custom-table tbody tr:hover,
+.table tbody tr:hover {
+    background-color: var(--ivory);
+}
+
+.badge-category,
+.orders-pill,
+.country-code {
+    background-color: var(--champagne);
+    color: var(--bronze-deep);
+}
+
+.btn-status-pill,
+.status-active,
+.status-confirmed,
+.status-completed {
+    background-color: var(--success);
+    color: var(--bronze-deep);
+}
+
+.status-pending,
+.status-processing {
+    background-color: var(--champagne);
+    color: var(--bronze-deep);
+}
+
+.btn-status-pill.inactive,
+.status-inactive,
+.status-cancelled,
+.badge-out-stock {
+    background-color: var(--error);
+    color: #813D32;
+}
+
+.status-active::before,
+.status-inactive::before {
+    background-color: currentColor;
+}
+
+.dot-indicator {
+    background-color: var(--bronze);
+}
+
+.demo-badge,
+.analytics-period,
+.user-initials,
+.avatar,
+.revenue-icon,
+.customers-icon,
+.products-icon,
+.orders-icon {
+    background-color: var(--champagne);
+    color: var(--bronze-deep);
+}
+
+.order-status.pending,
+.order-status.confirmed,
+.order-status.shipped {
+    background-color: var(--champagne);
+    color: var(--bronze-deep);
+}
+
+.order-status.cancelled {
+    background-color: var(--error);
+    color: #813D32;
+}
+
+.country-map,
+#ordersWorldMap,
+#ordersWorldMap .leaflet-container {
+    background-color: var(--ivory);
+}
+
+.country-map > i {
+    color: var(--bronze-light);
+}
+
+.legend-gradient {
+    background: linear-gradient(90deg, var(--bronze-light), var(--bronze));
+}
+
+.login-page {
+    background:
+        radial-gradient(circle at 15% 20%, rgba(201, 172, 145, 0.2), transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(241, 236, 230, 0.9), transparent 35%),
+        linear-gradient(135deg, var(--ivory) 0%, var(--champagne) 55%, var(--white) 100%);
+}
+
+.login-page::before,
+.login-page::after {
+    background: rgba(201, 172, 145, 0.18);
+}
+
+.login-card {
+    border-color: var(--line);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 25px 70px rgba(36, 33, 31, 0.08);
+}
+
+.login-card::before {
+    background: linear-gradient(90deg, var(--bronze-deep), var(--bronze), var(--bronze-light));
+}
+
+.login-page .form-control:focus,
+.login-page .input-group:focus-within .form-control {
+    border-color: var(--bronze);
+}
+
+.login-btn:focus-visible {
+    outline-color: var(--bronze-light);
+}

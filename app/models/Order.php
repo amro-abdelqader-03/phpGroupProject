@@ -61,13 +61,25 @@ class Order {
     ): array {
         [$where, $parameters] = $this->buildOrderFilters($search, $status);
         $orderBy = $sort === 'revenue'
-            ? 'COALESCE(o.revenue, o.total_amount) DESC, o.order_date DESC'
+            ? 'revenue DESC, o.order_date DESC'
             : 'o.order_date DESC';
 
         $stmt = $this->db->prepare("
             SELECT o.id, o.user_id, o.total_amount, o.order_status,
                    o.order_date AS created_at,
-                   COALESCE(u.full_name, 'Guest Customer') AS full_name
+                   COALESCE(u.full_name, 'Guest Customer') AS full_name,
+                   (
+                       SELECT COALESCE(SUM(p.cost_price * oi.quantity), 0)
+                       FROM order_items oi
+                       INNER JOIN products p ON p.id = oi.product_id
+                       WHERE oi.order_id = o.id
+                   ) AS cost,
+                   (
+                       SELECT COALESCE(SUM((p.price - p.cost_price) * oi.quantity), 0)
+                       FROM order_items oi
+                       INNER JOIN products p ON p.id = oi.product_id
+                       WHERE oi.order_id = o.id
+                   ) AS revenue
             FROM orders o
             LEFT JOIN users u ON o.user_id = u.id
             $where

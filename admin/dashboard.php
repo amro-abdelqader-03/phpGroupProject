@@ -503,13 +503,15 @@ require_once __DIR__ . '/includes/header.php';
                 datasets: [{
                     label: 'Monthly Revenue',
                     data: monthlyRevenue,
-                    borderColor: '#5145e8',
-                    backgroundColor: 'rgba(81, 69, 232, 0.08)',
+                    borderColor: '#9C795D',
+                    backgroundColor: 'rgba(156, 121, 93, 0.14)',
                     borderWidth: 3,
                     fill: true,
                     tension: 0.4,
                     pointRadius: 4,
-                    pointBackgroundColor: '#5145e8'
+                    pointBackgroundColor: '#9C795D',
+                    pointBorderColor: '#FFFFFF',
+                    pointHoverBackgroundColor: '#7E5E46'
                 }]
             },
 
@@ -526,7 +528,11 @@ require_once __DIR__ . '/includes/header.php';
                 scales: {
                     y: {
                         beginAtZero: true,
+                        grid: {
+                            color: '#E6DED5'
+                        },
                         ticks: {
+                            color: '#68625C',
                             callback: function(value) {
                                 return '$' + value;
                             }
@@ -536,6 +542,9 @@ require_once __DIR__ . '/includes/header.php';
                     x: {
                         grid: {
                             display: false
+                        },
+                        ticks: {
+                            color: '#68625C'
                         }
                     }
                 }
@@ -567,13 +576,8 @@ require_once __DIR__ . '/includes/header.php';
                 datasets: [{
                     label: 'Number of Orders',
                     data: productSales,
-                    backgroundColor: [
-                        '#3730db',
-                        '#4f46e5',
-                        '#625af4',
-                        '#aaa5fa',
-                        '#d9d6ff'
-                    ],
+                    backgroundColor: '#9C795D',
+                    hoverBackgroundColor: '#7E5E46',
                     borderRadius: 7,
                     maxBarThickness: 45
                 }]
@@ -595,6 +599,7 @@ require_once __DIR__ . '/includes/header.php';
                             display: false
                         },
                         ticks: {
+                            color: '#68625C',
                             font: {
                                 size: 10
                             }
@@ -604,9 +609,10 @@ require_once __DIR__ . '/includes/header.php';
                     y: {
                         beginAtZero: true,
                         grid: {
-                            color: '#edf0f7'
+                            color: '#E6DED5'
                         },
                         ticks: {
+                            color: '#68625C',
                             precision: 0
                         }
                     }
@@ -698,14 +704,14 @@ require_once __DIR__ . '/includes/header.php';
 
                     return {
                         fillColor: !info
-                            ? '#d9d6f8'
+                            ? '#F1ECE6'
                             : density >= 0.7
-                                ? '#5145e8'
+                                ? '#7E5E46'
                                 : density >= 0.4
-                                    ? '#8177f1'
-                                    : '#aaa4f8',
+                                    ? '#9C795D'
+                                    : '#C9AC91',
                         fillOpacity: 0.9,
-                        color: '#ffffff',
+                        color: '#FAF8F5',
                         weight: 1
                     };
                 },
@@ -754,9 +760,9 @@ require_once __DIR__ . '/includes/header.php';
 
                 const marker = L.circleMarker(coordinates, {
                     radius: 5 + Math.min(info.orders, 10),
-                    color: '#ffffff',
+                    color: '#FAF8F5',
                     weight: 2,
-                    fillColor: '#5145e8',
+                    fillColor: '#7E5E46',
                     fillOpacity: 0.95
                 }).addTo(worldMap);
 
