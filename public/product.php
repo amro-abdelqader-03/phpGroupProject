@@ -126,20 +126,8 @@ if (
         <section class="detail-gallery" aria-label="Product gallery">
           <figure class="detail-gallery__main"><img id="detail-primary-image" src="" alt="" width="900" height="1200"
               fetchpriority="high"><span class="detail-gallery__label" id="detail-image-label">Full look</span></figure>
-          <div class="detail-thumbnails" role="group" aria-label="Choose a view">
-            <button class="detail-thumbnail is-selected" type="button" data-gallery-view="0" aria-pressed="true"
-              aria-label="Full product photograph"><img src="" alt="" data-thumb-image="0"></button>
-            <button class="detail-thumbnail" type="button" data-gallery-view="1" aria-pressed="false"
-              aria-label="Upper silhouette crop from the product photograph"><img src="" alt=""
-                data-thumb-image="1"></button>
-            <button class="detail-thumbnail" type="button" data-gallery-view="2" aria-pressed="false"
-              aria-label="Bodice or jacket detail crop from the product photograph"><img src="" alt=""
-                data-thumb-image="2"></button>
-            <button class="detail-thumbnail" type="button" data-gallery-view="3" aria-pressed="false"
-              aria-label="Lower silhouette crop from the product photograph"><img src="" alt=""
-                data-thumb-image="3"></button>
-          </div>
-          <p class="detail-gallery__note">Alternate gallery views are crops from the available campaign photograph.</p>
+          <div class="detail-thumbnails" role="group" aria-label="Choose a product photograph"></div>
+          <p class="detail-gallery__note">Select a photograph to view it.</p>
         </section>
         <section class="detail-info" aria-labelledby="detail-name">
           <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span><span id="detail-category">Élan

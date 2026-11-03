@@ -8,6 +8,7 @@ class Accessories{
 
      public function getBySubcategories(array $subcategoryIds):array{
         
+     
      if(count($subcategoryIds)==0){
         return [];
      }

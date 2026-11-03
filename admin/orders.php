@@ -246,12 +246,12 @@ require_once __DIR__ . '/includes/header.php';
                                     $<?= number_format((float) ($order['total_amount'] ?? 0), 2) ?>
                                 </td>
 
-                                <td class="numeric cost-unavailable">
-                                    $0.00
+                                <td class="numeric">
+                                    $<?= number_format((float) ($order['cost'] ?? 0), 2) ?>
                                 </td>
 
                                 <td class="numeric muted-amount">
-                                    $<?= number_format((float) ($order['total_amount'] ?? 0), 2) ?>
+                                    $<?= number_format((float) ($order['revenue'] ?? 0), 2) ?>
                                 </td>
 
                                 <td>

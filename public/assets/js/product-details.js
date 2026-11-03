@@ -64,24 +64,23 @@
   function renderProduct(product) {
     if (!product || !detail) return showMissing();
     const name = product.product_name || "Product";
-    // const images = Array.isArray(product.images) ? product.images : [];
-    // const primary = images.find((item) => Number(item.is_primary) === 1) || images[0];
+    const apiImages = Array.isArray(product.images) ? product.images : [];
+    const isDress = params.get("category") === "dresses";
+    const dressImages =
+      isDress && Array.isArray(window.ELAN_DB_DRESS?.images)
+        ? window.ELAN_DB_DRESS.images
+        : [];
+    const images = [...dressImages, ...apiImages].filter((item, index, all) =>
+      typeof item.image_url === "string"
+      && item.image_url !== ""
+      && all.findIndex((other) => other.image_url === item.image_url) === index
+    );
+    if (images.length === 0 && product.image_url) {
+      images.push({ image_url: product.image_url, is_primary: 1 });
+    }
 
-const apiImages = Array.isArray(product.images) ? product.images : [];
-
-const isDress = new URLSearchParams(window.location.search).get("category") === "dresses";
-
-const dressImage = isDress ? window.ELAN_DB_DRESS?.image : null;
-
-const images = [
-  ...(dressImage ? [{ image_url: dressImage, is_primary: 1 }] : []),
-  ...apiImages
-].filter((item, index, all) => {
-  return item.image_url &&
-    all.findIndex(other => other.image_url === item.image_url) === index;
-});
-
-const primary = images[0] || null;
+    const primary =
+      images.find((item) => Number(item.is_primary) === 1) || images[0] || null;
 
     const variants = Array.isArray(product.variants) ? product.variants : [];
     const availableVariants = variants.filter((variant) => Number(variant.stock_quantity) > 0);
@@ -94,34 +93,47 @@ const primary = images[0] || null;
     byId("detail-price").textContent = product.price == null ? "Price available on request" : currency.format(Number(product.price));
     byId("detail-category").textContent = "Élan Bridal Collection";
     byId("detail-breadcrumb-name").textContent = name;
+    const collectionName = isDress ? "Dress" : "Suits";
+    const collectionUrl = isDress ? "dresses.php" : "suits.php";
+    const collectionLink = byId("detail-collection-link");
+    collectionLink.textContent = collectionName;
+    collectionLink.href = collectionUrl;
+    const backLink = byId("detail-back-link");
+    backLink.href = collectionUrl;
+    backLink.setAttribute("aria-label", `Back to the ${collectionName.toLowerCase()} collection`);
     document.title = `${name} | ÉLAN BRIDAL`;
     const mainImage = byId("detail-primary-image");
     mainImage.src = imageUrl(primary && primary.image_url);
     mainImage.alt = `${name} product photograph`;
-    const galleryButtons = [...document.querySelectorAll("[data-gallery-view]")];
-    const thumbs = [...document.querySelectorAll("[data-thumb-image]")];
-    galleryButtons.forEach((button, index) => {
-      // const item = images[index] || primary;
-const item = images[index];
-
+    const thumbnails = document.querySelector(".detail-thumbnails");
+    thumbnails.replaceChildren();
+    images.forEach((item, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `detail-thumbnail${index === 0 ? " is-selected" : ""}`;
+      button.dataset.galleryView = String(index);
+      button.setAttribute("aria-pressed", String(index === 0));
+      button.setAttribute(
+        "aria-label",
+        index === 0 ? "View primary product photograph" : `View product photograph ${index + 1}`
+      );
 
       const src = imageUrl(item && item.image_url);
-      button.hidden = !item;
-      if (thumbs[index]) {
-        thumbs[index].src = src;
-        thumbs[index].alt = "";
-      }
-      button.onclick = () => {
-        if (!item) return;
+      const thumbnail = document.createElement("img");
+      thumbnail.src = src;
+      thumbnail.alt = "";
+      button.append(thumbnail);
+      button.addEventListener("click", () => {
         mainImage.src = src;
         mainImage.alt = `${name} product photograph ${index + 1}`;
         byId("detail-image-label").textContent = index === 0 ? "Primary image" : `Image ${index + 1}`;
-        galleryButtons.forEach((other) => {
+        thumbnails.querySelectorAll(".detail-thumbnail").forEach((other) => {
           const active = other === button;
           other.classList.toggle("is-selected", active);
           other.setAttribute("aria-pressed", String(active));
         });
-      };
+      });
+      thumbnails.append(button);
     });
 
     const sizeContainer = byId("size-options");
